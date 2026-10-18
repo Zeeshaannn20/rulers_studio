@@ -1418,3 +1418,14 @@ body{font-variant-numeric:lining-nums}
 
 /* home opening: no side pager (MARK / dots / 01/03) */
 .pager-wrap{display:none!important}
+
+/* ── footer type: cinematic serif for links and lines, spaced capitals for the bottom bar ── */
+.fx-credit a{font:600 clamp(19px,1.5vw,22px)/1.15 var(--serif)!important;letter-spacing:-.005em!important;color:rgba(236,236,236,.9)}
+.fx-credit a:hover{color:var(--lime)}
+.fx-credit .fx-ig{gap:12px}
+.fx-credit .fx-ig svg{width:17px;height:17px;opacity:.75}
+.fx-credit p{font:500 clamp(17px,1.3vw,19px)/1.45 var(--serif)!important;letter-spacing:0!important;color:rgba(230,230,230,.62)}
+.fx-credit .fx-time{font:600 clamp(30px,2.6vw,42px)/1 var(--serif)!important}
+.fx-bot,.fx-bot span,.fx-bot a,.fx-bot button{font:600 11px/1 var(--caps)!important;letter-spacing:.18em!important;text-transform:uppercase}
+.fx-bot{color:rgba(230,230,230,.5)}
+.fx-credit .fx-time{font-variant-numeric:lining-nums!important;font-feature-settings:"lnum" 1!important}
