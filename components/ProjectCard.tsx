@@ -22,12 +22,14 @@ export function SoundIcon({ on }: { on: boolean }) {
   );
 }
 
-// Project card: the film plays silently while the card is on screen; the sound button turns audio on.
+// Project card: a light, silent preview loop plays while the card is on screen. The full film
+// (with sound) is only downloaded when someone taps for sound, so the page stays fast.
 export default function ProjectCard({ p }: { p: Project }) {
   const vid = useRef<HTMLVideoElement>(null);
   const [imgOk, setImgOk] = useState(true);
   const [sound, setSound] = useState(false);
-  const src = p.videoUrl || p.previewUrl;
+  const src = p.previewUrl || p.videoUrl;
+  const swapToFilm = !!(p.videoUrl && p.previewUrl && p.videoUrl !== p.previewUrl);
   const vertical = p.aspectRatio === "9:16";
 
   // play while visible, pause (and go quiet) when scrolled away
@@ -69,6 +71,11 @@ export default function ProjectCard({ p }: { p: Project }) {
     const v = vid.current;
     if (!v) return;
     const on = v.muted;
+    if (on && swapToFilm && p.videoUrl && !v.src.endsWith(p.videoUrl)) {
+      // first tap: swap the silent preview for the full film and play it from the start
+      v.src = p.videoUrl;
+      v.preload = "auto";
+    }
     v.muted = !on;
     if (on) {
       document.dispatchEvent(new CustomEvent(SOUND_EVENT, { detail: p.slug }));

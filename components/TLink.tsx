@@ -20,6 +20,9 @@ export default function TLink({ href, onClick, ...rest }: ComponentProps<typeof 
       window.scrollTo({ top: 0 });
       return;
     }
+    // same page, different #section or ?query: the page doesn't change, so no loader
+    const path = href.split(/[?#]/)[0] || pathname;
+    if (path === pathname) return router.push(href, { scroll: true });
     coverThen(() => router.push(href, { scroll: true }));
   }
 

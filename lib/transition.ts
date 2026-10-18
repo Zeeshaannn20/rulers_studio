@@ -62,22 +62,34 @@ function build(el: HTMLElement) {
   return tl;
 }
 
+// Navigation goes straight away. The R loader only appears if the next page has not
+// shown up within SLOW_MS (slow network); on a normal click there is no loader at all.
+const SLOW_MS = 400;
+let slowTimer = 0;
+let pending = false;
+
 export function coverThen(go: () => void) {
   const el = document.getElementById("curtain");
   if (!el || prefersReducedMotion()) return go();
-  coverTl?.kill();
-  el.classList.add("live");
-  coverTl = build(el);
-  readyAt = performance.now() + 1350;
-  // push the new route while the logo is still forming, so loading overlaps the animation
-  coverTl.call(go, [], 0.9);
-  // safety net: never leave the logo on screen if the new page is slow to report in
-  window.clearTimeout(guard);
-  guard = window.setTimeout(uncover, 4500);
+  window.clearTimeout(slowTimer);
+  pending = true;
+  slowTimer = window.setTimeout(() => {
+    if (!pending) return;
+    coverTl?.kill();
+    el.classList.add("live");
+    coverTl = build(el);
+    readyAt = performance.now() + 700; // once it shows, let the R form briefly so it doesn't flicker
+    // safety net: never leave the logo on screen if the new page is slow to report in
+    window.clearTimeout(guard);
+    guard = window.setTimeout(uncover, 6000);
+  }, SLOW_MS);
+  go();
 }
 let guard = 0;
 
 export function uncover() {
+  pending = false;
+  window.clearTimeout(slowTimer);
   window.clearTimeout(guard);
   const el = document.getElementById("curtain");
   if (!el || !el.classList.contains("live")) return;

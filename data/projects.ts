@@ -148,7 +148,8 @@ export const PROJECTS: Project[] = ROWS.map(([slug, name, typeTag, home, isConce
   aspectRatio: typeTag === "UGC Ad" || typeTag === "AI Avatar" || VERTICAL.has(slug) ? "9:16" : "16:9",
   deliverables: typeTag,
   coverImage: FILMS.has(slug) ? `/media/films/${slug}.jpg` : LOCAL_COVER[slug] ?? driveCover(slug),
-  previewUrl: LOCAL_PREVIEW[slug],
+  // Projects page cards play a light 6-second silent loop; the full film loads only on tap-for-sound or its own page
+  previewUrl: FILMS.has(slug) ? `/media/previews/cards/${slug}.mp4` : LOCAL_PREVIEW[slug],
   videoUrl: FILMS.has(slug) ? `/media/films/${slug}.mp4` : undefined,
   attachments:
     slug === "the-only-regret"
