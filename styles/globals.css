@@ -1508,3 +1508,13 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 
 /* the opening now plays by itself, so no "scroll" hint */
 .stage-hint{display:none!important}
+
+/* letter reveal: lime hairline above the video-filled letters, zooming with them */
+.knock .work-word{color:#000}
+.knock-line{position:absolute;inset:0;z-index:5;display:grid;place-items:center;opacity:0;visibility:hidden;pointer-events:none;will-change:opacity}
+.knock-line-in{transform-origin:41% 54%;will-change:transform}
+.knock-line .work-word,.knock-line .work-word span,.knock-line .work-word em{color:transparent;background:none;-webkit-text-stroke:1px rgba(216,255,0,.85);filter:drop-shadow(0 0 10px rgba(216,255,0,.35))}
+.knock .work-word span,.knock .work-word em{color:inherit}
+.knock-line .work-word{opacity:1}
+.stage .reel-video{transition:filter .5s ease}
+.stage-wrap.revealing .reel-video{filter:brightness(1.6) contrast(1.1) saturate(1.15);transition:none}

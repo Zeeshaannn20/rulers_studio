@@ -88,16 +88,22 @@ export default function HeroStage() {
       tl.fromTo(".work-title", { opacity: 0, scale: 1.35 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 0.36);
 
       // ── 1 → 2: the showreel pours INTO the letters of "Rulers Studio" (a black layer with the
-      // name cut out of it, multiplied over the video), then we zoom through the letters, the
-      // black falls away and the headline lands over a dimmed, graded video ──
-      tl.fromTo(".stage .hero-panel", { opacity: 0, scale: 1, yPercent: 0 }, { opacity: 1, duration: 0.01, immediateRender: false }, 1.0)
-        .fromTo(".knock", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.12, ease: "power1.out", immediateRender: false }, 1.0)
-        .to(".work-title", { opacity: 0, duration: 0.1 }, 1.05)
-        .fromTo(".knock-in", { scale: 1 }, { scale: 7, duration: 0.34, ease: "power3.in", immediateRender: false }, 1.16)
-        .to(".knock", { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.36)
-        .fromTo(".stage .reel-dim", { opacity: 0 }, { opacity: 1, duration: 0.24, ease: "power1.inOut" }, 1.4)
-        .fromTo(".stage .hero-copy", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.24, ease: "power3.out" }, 1.44)
-        .to(".pager-wrap", { autoAlpha: 0, duration: 0.14 }, 1.6);
+      // name cut out of it, multiplied over the video). The video is held on one still frame (a
+      // close-up of an eye) so nothing flickers inside the letters; a lime hairline traces them.
+      // Then we zoom through the letters, the black falls away, the eye shot plays on and the
+      // headline lands over a dimmed, graded video. ──
+      tl.set(".knock", { autoAlpha: 1 }, 1.0)
+        .set(".knock-line", { autoAlpha: 1 }, 1.0)
+        .fromTo(".stage .hero-panel", { opacity: 0, scale: 1, yPercent: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 1.0)
+        .to(".work-title", { opacity: 0, duration: 0.06 }, 1.0)
+        .fromTo(".knock .work-word", { color: "#000000" }, { color: "#ffffff", duration: 0.18, ease: "power1.inOut", immediateRender: false }, 1.0)
+        .fromTo([".knock-in", ".knock-line-in"], { scale: 1 }, { scale: 1.035, duration: 0.3, ease: "sine.inOut", immediateRender: false }, 1.0)
+        .to([".knock-in", ".knock-line-in"], { scale: 8, duration: 0.24, ease: "power3.in" }, 1.3)
+        .to(".knock-line", { opacity: 0, duration: 0.08 }, 1.38)
+        .to(".knock", { opacity: 0, duration: 0.12, ease: "power1.in" }, 1.44)
+        .fromTo(".stage .reel-dim", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.inOut" }, 1.5)
+        .fromTo(".stage .hero-copy", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.24, ease: "power3.out" }, 1.54)
+        .to(".pager-wrap", { autoAlpha: 0, duration: 0.14 }, 1.7);
       tl.to({}, { duration: 0.05 }, 1.95); // ends at exactly 2
 
       if (reduce) {
@@ -120,6 +126,9 @@ export default function HeroStage() {
       const workTitle = el.querySelector<HTMLElement>(".work-title")!;
       let titleOn = false;
       let reelClean = false;
+      let seeded = false;
+      let revealing = false;
+      const REVEAL_FRAME = 7.05; // seconds into the showreel: the eye close-up
       const apply = () => {
         if (head.t > 0.001) settleEntrance();
         tl.time(head.t);
@@ -130,6 +139,12 @@ export default function HeroStage() {
           reelClean = clean;
           el.classList.toggle("reel-on", clean);
         }
+        // the video is brightened while it is only seen through the letters
+        const rev = p > 0.95 && p < 1.42;
+        if (rev !== revealing) {
+          revealing = rev;
+          el.classList.toggle("revealing", rev);
+        }
         const on = p > 0.4 && p < 1.04;
         if (on !== titleOn) {
           titleOn = on;
@@ -138,8 +153,23 @@ export default function HeroStage() {
         }
         const reel = el.querySelector<HTMLVideoElement>(".reel-video");
         if (reel) {
-          if (p > 0.97 && reel.paused) reel.play().catch(() => {});
-          else if (p <= 0.97 && !reel.paused) reel.pause();
+          // hold one calm frame inside the letters, then let the reel run from there
+          if (p > 0.2 && !seeded) {
+            seeded = true;
+            reel.pause();
+            reel.preload = "auto";
+            const go = () => {
+              try {
+                reel.currentTime = REVEAL_FRAME;
+              } catch {}
+            };
+            if (reel.readyState >= 1) go();
+            else reel.addEventListener("loadedmetadata", go, { once: true });
+          }
+          if (p >= 1.44 && reel.paused) {
+            if (reel.currentTime < REVEAL_FRAME - 0.3 && reel.readyState >= 1) reel.currentTime = REVEAL_FRAME;
+            reel.play().catch(() => {});
+          } else if (p < 1.44 && !reel.paused) reel.pause();
         }
         // while a key/dot glide runs the pager already shows the destination — never flip it back
         const idx = gliding ? target : Math.min(STEPS, Math.round(p));
@@ -150,11 +180,10 @@ export default function HeroStage() {
         }
       };
       // ── autoplay: no scrolling needed. After the R builds in, the whole opening plays by itself
-      // (blast → "Rulers Studio" → video through the letters → headline) in about 3 seconds.
+      // (blast → "Rulers Studio" → video through the letters → headline) in about 3.3 seconds.
       // Scrolling is held while it plays; any wheel, swipe or key press fast-forwards it. ──
       const gliding = false;
       const target = 0;
-      const PLAY = 3.1; // seconds from the blast to the headline
       const lenis = getLenis();
       let playing = true;
       document.body.classList.add("in-stage");
@@ -168,7 +197,10 @@ export default function HeroStage() {
         el.classList.add("stage-done");
         removeSkip();
       };
-      const run = gsap.to(head, { t: STEPS, duration: PLAY, ease: "none", paused: true, onUpdate: apply, onComplete: finish });
+      const run = gsap
+        .timeline({ paused: true, onComplete: finish })
+        .to(head, { t: 1, duration: 1.3, ease: "none", onUpdate: apply })
+        .to(head, { t: STEPS, duration: 2.0, ease: "none", onUpdate: apply });
       // start right after the R has built in (the load-in below takes about a second)
       const kick = gsap.delayedCall(1.05, () => {
         settleEntrance();
@@ -366,6 +398,14 @@ export default function HeroStage() {
         {/* "Rulers Studio" cut out of black: multiplied over the showreel, the video shows only inside the letters */}
         <div className="knock" aria-hidden="true">
           <div className="knock-in">
+            <div className="work-word">
+              <span className="ww-r">Rulers</span> <em>Studio</em>
+            </div>
+          </div>
+        </div>
+        {/* a fine lime hairline around the video-filled letters */}
+        <div className="knock-line" aria-hidden="true">
+          <div className="knock-line-in">
             <div className="work-word">
               <span className="ww-r">Rulers</span> <em>Studio</em>
             </div>

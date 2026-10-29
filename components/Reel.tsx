@@ -10,8 +10,11 @@ export default function Reel({ controlled = false }: { controlled?: boolean }) {
 
   useEffect(() => {
     const phone = window.matchMedia("(max-width: 700px) and (orientation: portrait)").matches;
-    setSrc(phone ? { v: SITE.showreelMobile, p: SITE.showreelPosterMobile } : { v: SITE.showreel, p: SITE.showreelPoster });
-  }, []);
+    // on the opening stage the reel is first seen through the letters, held on the eye close-up,
+    // so its poster is that same frame (never a different shot flashing in first)
+    const poster = controlled ? (phone ? "/media/showreel-reveal-mobile.jpg" : "/media/showreel-reveal.jpg") : phone ? SITE.showreelPosterMobile : SITE.showreelPoster;
+    setSrc(phone ? { v: SITE.showreelMobile, p: poster } : { v: SITE.showreel, p: poster });
+  }, [controlled]);
 
   useEffect(() => {
     const v = ref.current;
