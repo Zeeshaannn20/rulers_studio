@@ -84,7 +84,7 @@ export default function Footer() {
         <div className="fx-credits">
           <div className="fx-credit">
             <h5>The studio</h5>
-            <p>AI film studio for brands. Ad films, brand stories, micro dramas, UGC and AI avatars.</p>
+            <p>AI film studio for brands. AI ad creatives, product videos, brand stories and UGC ads.</p>
             <span className="fx-open">
               <b /> Booking new projects
             </span>
