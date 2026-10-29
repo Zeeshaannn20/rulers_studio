@@ -56,6 +56,7 @@ export default function Hero({ embedded = false }: { embedded?: boolean }) {
             <i />
             <b />
           </div>
+          <div className="reel-dim" />
         </div>
 
         <div className="hero-copy">

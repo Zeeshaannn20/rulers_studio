@@ -1480,3 +1480,7 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 .sv-ring.paused .sv-pp::before{left:2px;bottom:auto;width:0;height:0;background:none;border-radius:0;border-style:solid;border-width:5.5px 0 5.5px 9px;border-color:transparent transparent transparent var(--paper)}
 .sv-ring.paused .sv-pp::after{display:none}
 @media (max-width:860px){.sv-pp{left:18px;transform:translate(-50%,-50%) scale(.85)}}
+
+/* hero: the showreel dims behind the headline so the words take the focus */
+.reel-dim{position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.62) 0%,rgba(0,0,0,.42) 45%,rgba(0,0,0,.2) 100%),linear-gradient(0deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 55%)}
+.stage .reel-dim{opacity:0;will-change:opacity}

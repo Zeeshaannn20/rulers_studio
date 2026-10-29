@@ -88,11 +88,13 @@ export default function HeroStage() {
       });
       tl.fromTo(".work-title", { opacity: 0, scale: 1.35 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 0.36);
 
-      // ── 1 → 2: the name lifts away and the showreel opens straight into the hero ──
-      tl.to(".work-title", { yPercent: -40, scale: 1.08, opacity: 0, duration: 0.42, ease: "power2.in" }, 1.08)
-        .fromTo(".stage .hero-panel", { scale: 0.86, opacity: 0, yPercent: 14, transformOrigin: "50% 60%" }, { scale: 1, opacity: 1, yPercent: 0, duration: 0.5, ease: "power3.out" }, 1.3)
-        .fromTo(".stage .hero-copy", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.2 }, 1.62)
-        .to(".pager-wrap", { autoAlpha: 0, duration: 0.14 }, 1.78);
+      // ── 1 → 2: the name lifts away, the showreel opens, and the headline arrives quickly;
+      // as it lands the video dims so the words take the focus ──
+      tl.to(".work-title", { yPercent: -40, scale: 1.08, opacity: 0, duration: 0.3, ease: "power2.in" }, 1.0)
+        .fromTo(".stage .hero-panel", { scale: 0.86, opacity: 0, yPercent: 14, transformOrigin: "50% 60%" }, { scale: 1, opacity: 1, yPercent: 0, duration: 0.38, ease: "power3.out" }, 1.1)
+        .fromTo(".stage .hero-copy", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 1.34)
+        .fromTo(".stage .reel-dim", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.inOut" }, 1.32)
+        .to(".pager-wrap", { autoAlpha: 0, duration: 0.14 }, 1.56);
       tl.to({}, { duration: 0.05 }, 1.95); // ends at exactly 2
 
       if (reduce) {
@@ -120,12 +122,12 @@ export default function HeroStage() {
         tl.time(head.t);
         const p = head.t;
         // once the showreel is up, every stage overlay (grain, light rays, vignette) steps aside
-        const clean = p > 1.3;
+        const clean = p > 1.12;
         if (clean !== reelClean) {
           reelClean = clean;
           el.classList.toggle("reel-on", clean);
         }
-        const on = p > 0.4 && p < 1.25;
+        const on = p > 0.4 && p < 1.05;
         if (on !== titleOn) {
           titleOn = on;
           workTitle.classList.remove("shine-go");
@@ -133,8 +135,8 @@ export default function HeroStage() {
         }
         const reel = el.querySelector<HTMLVideoElement>(".reel-video");
         if (reel) {
-          if (p > 1.35 && reel.paused) reel.play().catch(() => {});
-          else if (p <= 1.35 && !reel.paused) reel.pause();
+          if (p > 1.15 && reel.paused) reel.play().catch(() => {});
+          else if (p <= 1.15 && !reel.paused) reel.pause();
         }
         // while a key/dot glide runs the pager already shows the destination — never flip it back
         const idx = gliding ? target : Math.min(STEPS, Math.round(p));
@@ -164,7 +166,7 @@ export default function HeroStage() {
       const st = ScrollTrigger.create({
         trigger: el,
         start: "top top",
-        end: () => "+=" + Math.round(window.innerHeight * 2.2 * STEPS),
+        end: () => "+=" + Math.round(window.innerHeight * 1.25 * STEPS),
         pin: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
