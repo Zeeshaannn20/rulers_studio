@@ -1484,3 +1484,24 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 /* hero: the showreel dims behind the headline so the words take the focus */
 .reel-dim{position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.62) 0%,rgba(0,0,0,.42) 45%,rgba(0,0,0,.2) 100%),linear-gradient(0deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 55%)}
 .stage .reel-dim{opacity:0;will-change:opacity}
+
+/* opening → hero: the showreel seen through the letters of "Rulers Studio", then a zoom through them.
+   A black layer with white letters, multiplied over the video: black hides it, white lets it through. */
+.knock{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:#000;mix-blend-mode:multiply;opacity:0;visibility:hidden;pointer-events:none;will-change:opacity}
+.knock-in{transform-origin:41% 54%;will-change:transform}
+.knock .work-word,.knock .work-word span,.knock .work-word em{color:#fff;-webkit-text-stroke:0;background:none;opacity:1}
+
+/* hero showreel: cinematic grade (soft vignette + fine moving grain) and a stronger dim behind the words */
+.stage .reel-video{filter:contrast(1.06) saturate(1.08)}
+.reel-grade{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;
+  background:radial-gradient(120% 95% at 55% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
+.reel-grade::before{content:"";position:absolute;inset:-60%;background:url(/media/noise.png) repeat;opacity:.16;mix-blend-mode:overlay;animation:reelGrain .9s steps(6) infinite;will-change:transform}
+@keyframes reelGrain{0%{transform:translate(0,0)}17%{transform:translate(-4%,3%)}33%{transform:translate(3%,-5%)}50%{transform:translate(-6%,-2%)}67%{transform:translate(5%,4%)}83%{transform:translate(-2%,6%)}100%{transform:translate(0,0)}}
+.reel-dim{background:linear-gradient(90deg,rgba(0,0,0,.74) 0%,rgba(0,0,0,.5) 42%,rgba(0,0,0,.26) 100%),linear-gradient(0deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 60%)}
+
+/* headline: a soft halo so it lifts off the video, and a slow light sweep across "remember" */
+.hero-title{text-shadow:0 2px 28px rgba(0,0,0,.45),0 0 1px rgba(0,0,0,.3)}
+.hero-title .lime{color:transparent;text-shadow:none;background:linear-gradient(100deg,#c8ef00 0%,#d8ff00 30%,#f6ffc4 46%,#d8ff00 60%,#b9dc00 100%);background-size:240% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 0 22px rgba(216,255,0,.28));animation:limeSweep 5.5s cubic-bezier(.45,.05,.55,.95) infinite}
+@keyframes limeSweep{0%{background-position:100% 0}55%,100%{background-position:0% 0}}
+@media (prefers-reduced-motion:reduce){.reel-grade::before,.hero-title .lime{animation:none}}
