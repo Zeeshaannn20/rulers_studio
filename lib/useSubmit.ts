@@ -25,6 +25,8 @@ export function useSubmit(endpoint: string, schema: ZodTypeAny) {
     if (!r.success) {
       const errs = toFieldErrors(r.error);
       setErrors(errs);
+      // never fail silently: say something even if the problem is in a field without its own message
+      setFormError("Please check the highlighted fields and try again.");
       const first = form.querySelector<HTMLElement>(`[name="${Object.keys(errs)[0]}"]`);
       first?.focus();
       return;

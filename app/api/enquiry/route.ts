@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, errors: toFieldErrors(parsed.error) }, { status: 400 });
   }
   const d = parsed.data;
-  if (d.website) return NextResponse.json({ ok: true }); // honeypot hit: pretend success
+  if (d.rs_extra) return NextResponse.json({ ok: true }); // honeypot hit: pretend success
 
   const record = {
     name: d.name,

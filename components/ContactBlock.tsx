@@ -97,7 +97,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
               <Field id={f("budget")} label="Budget range" full>
                 <Select id={f("budget")} name="budget" options={BUDGETS} placeholder="Select a range" />
               </Field>
-              <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+              <input className="hp" name="rs_extra" type="text" tabIndex={-1} autoComplete="new-password" data-lpignore="true" data-1p-ignore aria-hidden="true" />
               {formError && <p className="form-error">{formError}</p>}
               <div className="form-foot full">
                 <p className="consent">

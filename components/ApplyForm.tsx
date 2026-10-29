@@ -168,7 +168,7 @@ export default function ApplyForm({ role, roleTitle }: { role: string; roleTitle
         <input id="ap-portfolio" name="portfolio" type="url" inputMode="url" placeholder="https://drive.google.com/… or your showreel" onBlur={blur} aria-invalid={!!errors.portfolio} />
       </Field>
 
-      <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+      <input className="hp" name="rs_extra" type="text" tabIndex={-1} autoComplete="new-password" data-lpignore="true" data-1p-ignore aria-hidden="true" />
       {formError && <p className="form-error">{formError}</p>}
       <div className="form-foot full">
         <p className="consent">

@@ -38,7 +38,7 @@ export const enquirySchema = z
     details: z.string().trim().max(1000).optional().or(z.literal("")),
     budget: z.string().trim().max(40).optional().or(z.literal("")),
     sourcePage: z.string().max(200).optional(),
-    website: z.string().max(0).optional(), // honeypot: must stay empty
+    rs_extra: z.string().max(200).optional(), // hidden anti-spam field (bots fill it; checked on the server only)
   })
   .superRefine((d, ctx) => {
     // "Other" needs a description
@@ -61,7 +61,7 @@ export const applicationSchema = z.object({
   cv: z.string().min(1, "Attach your CV: PDF or Word, up to 5 MB."),
   cvName: z.string().max(200).optional(),
   cvType: z.string().max(120).optional(),
-  website: z.string().max(0).optional(),
+  rs_extra: z.string().max(200).optional(),
 });
 
 export type FieldErrors = Record<string, string>;

@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, errors: toFieldErrors(parsed.error) }, { status: 400 });
   }
   const d = parsed.data;
-  if (d.website) return NextResponse.json({ ok: true });
+  if (d.rs_extra) return NextResponse.json({ ok: true });
 
   const role = getRole(d.role);
   if (!role) return NextResponse.json({ ok: false, error: "That role isn't open any more." }, { status: 400 });
