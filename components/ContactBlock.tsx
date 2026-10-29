@@ -79,6 +79,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
                   {REQUIREMENTS.map((r) => (
                     <label key={r} className={"chip" + (picked.includes(r) ? " on" : "")}>
                       <input type="checkbox" checked={picked.includes(r)} onChange={() => toggle(r)} />
+                      <Clapper />
                       {r}
                     </label>
                   ))}
@@ -124,5 +125,24 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
         </div>
       </div>
     </section>
+  );
+}
+
+// Film clapper used as the tick on the requirement chips: open when not picked, snaps shut when picked.
+function Clapper() {
+  return (
+    <svg className="clap" viewBox="0 0 22 20" aria-hidden="true">
+      <g className="clap-hit" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+        <path d="M21.6 3.2l2.4-1.8" />
+        <path d="M22.2 7.2h2.8" />
+        <path d="M21.4 11l2.2 1.4" />
+      </g>
+      <g className="clap-arm">
+        <rect x="1.5" y="3" width="19" height="4.2" rx="1" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        <path d="M6 3L3.6 7.2M11 3L8.6 7.2M16 3l-2.4 4.2M20.5 3.4L18.6 7.2" stroke="currentColor" strokeWidth="1.4" />
+      </g>
+      <rect className="clap-body" x="1.5" y="8.6" width="19" height="9.9" rx="1.6" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path className="clap-line" d="M5 12.6h12M5 15.2h7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 
 // Themed dropdown (replaces the browser's native select menu so it matches the site).
 // Keyboard: Enter/Space/↓ opens, ↑/↓ moves, Enter picks, Esc closes. Submits via a hidden input.
@@ -19,8 +19,30 @@ export default function Select({
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [active, setActive] = useState(0);
+  const [up, setUp] = useState(false);
   const root = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLUListElement>(null);
   const listId = useId();
+
+  // Open upward when the list would be cut off below: by the screen edge or by a card that hides overflow.
+  useLayoutEffect(() => {
+    if (!open || !root.current || !list.current) return;
+    const box = root.current.getBoundingClientRect();
+    let top = 0;
+    let bottom = window.innerHeight;
+    for (let el = root.current.parentElement; el && el !== document.body; el = el.parentElement) {
+      const o = getComputedStyle(el);
+      if (/(hidden|clip|auto|scroll)/.test(o.overflow + o.overflowY)) {
+        const r = el.getBoundingClientRect();
+        top = Math.max(top, r.top);
+        bottom = Math.min(bottom, r.bottom);
+      }
+    }
+    const need = list.current.scrollHeight + 16;
+    const below = bottom - box.bottom;
+    const above = box.top - top;
+    setUp(below < need && above > below);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -53,7 +75,7 @@ export default function Select({
   }
 
   return (
-    <div className={"sel" + (open ? " open" : "")} ref={root}>
+    <div className={"sel" + (open ? " open" : "") + (up ? " up" : "")} ref={root}>
       <input type="hidden" name={name} value={value} />
       <button
         id={id}
@@ -73,7 +95,7 @@ export default function Select({
           <path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.6" />
         </svg>
       </button>
-      <ul className="sel-list" id={listId} role="listbox" aria-labelledby={id} hidden={!open}>
+      <ul className="sel-list" ref={list} id={listId} role="listbox" aria-labelledby={id} hidden={!open}>
         {options.map((o, i) => (
           <li
             key={o}

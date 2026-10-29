@@ -1433,3 +1433,27 @@ body{font-variant-numeric:lining-nums}
 /* official logo tile in the header and menu */
 .logo-l svg.rbadge{width:34px;height:34px;border-radius:8px}
 @media (max-width:860px){.logo-l svg.rbadge{width:30px;height:30px}}
+
+/* budget dropdown: scroll if long, and open upward when there's no room below */
+.sel-list{max-height:min(320px,60vh);overflow:auto;overscroll-behavior:contain}
+.sel.up .sel-list{top:auto;bottom:calc(100% + 8px);animation:dropup .22s var(--ease)}
+@keyframes dropup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* requirement chips: film clapper instead of the dot */
+.chip::before{content:none}
+.fld .chip:has(.clap){gap:7px;padding:0 15px 0 13px}
+.clap{width:17px;height:15px;flex:none;overflow:visible;color:var(--mute);transition:color .25s}
+.clap-arm{transform-box:view-box;transform-origin:1.5px 7.2px;transform:rotate(-26deg);transition:transform .35s var(--ease)}
+.clap-hit{opacity:0}
+.fld .chip:hover .clap{color:var(--paper)}
+.fld .chip:hover:not(.on) .clap-arm{transform:rotate(-34deg)}
+.fld .chip.on .clap{color:var(--ink)}
+.fld .chip.on .clap-arm{transform:none;animation:clapSnap .42s cubic-bezier(.3,1.6,.5,1) both}
+.fld .chip.on .clap-body{fill:currentColor}
+.fld .chip.on .clap-line{stroke:var(--lime)}
+.fld .chip.on .clap-hit{animation:clapHit .5s ease-out .12s both}
+.fld .chip.on{animation:chipSnap .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes clapSnap{0%{transform:rotate(-30deg)}55%{transform:rotate(5deg)}75%{transform:rotate(-3deg)}100%{transform:none}}
+@keyframes clapHit{0%{opacity:0;transform:translateX(-3px)}30%{opacity:1}100%{opacity:0;transform:translateX(3px)}}
+@keyframes chipSnap{0%{transform:scale(.94);box-shadow:0 0 0 0 rgba(216,255,0,.75)}45%{transform:scale(1.05)}100%{transform:none;box-shadow:0 0 0 16px rgba(216,255,0,0)}}
+@media (prefers-reduced-motion:reduce){.clap-arm,.fld .chip.on .clap-arm,.fld .chip.on,.fld .chip.on .clap-hit{animation:none;transition:none}}
