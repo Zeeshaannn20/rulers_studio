@@ -38,6 +38,19 @@ export default function RMark({ className, fill }: { className?: string; fill?: 
   );
 }
 
+// The official logo tile: black R on a lime rounded square (header, menu, favicon)
+export const LOGO_LIME = "#E0FE52";
+export function RBadge({ className }: { className?: string }) {
+  return (
+    <svg className={"rbadge" + (className ? " " + className : "")} viewBox="0 0 120 120" aria-hidden="true">
+      <rect width="120" height="120" rx="26" fill={LOGO_LIME} />
+      <g fill="#0a0a0a" transform="translate(15 19) scale(0.82)">
+        <RSegments />
+      </g>
+    </svg>
+  );
+}
+
 // "Rulers Studio." set like the big name in the opening animation: one line of the italic serif, gold full stop
 export function Wordmark({ className }: { className?: string }) {
   return (

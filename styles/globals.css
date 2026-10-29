@@ -1429,3 +1429,7 @@ body{font-variant-numeric:lining-nums}
 .fx-bot,.fx-bot span,.fx-bot a,.fx-bot button{font:600 11px/1 var(--caps)!important;letter-spacing:.18em!important;text-transform:uppercase}
 .fx-bot{color:rgba(230,230,230,.5)}
 .fx-credit .fx-time{font-variant-numeric:lining-nums!important;font-feature-settings:"lnum" 1!important}
+
+/* official logo tile in the header and menu */
+.logo-l svg.rbadge{width:34px;height:34px;border-radius:8px}
+@media (max-width:860px){.logo-l svg.rbadge{width:30px;height:30px}}
