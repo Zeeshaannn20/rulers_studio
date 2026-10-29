@@ -1457,3 +1457,7 @@ body{font-variant-numeric:lining-nums}
 @keyframes clapHit{0%{opacity:0;transform:translateX(-3px)}30%{opacity:1}100%{opacity:0;transform:translateX(3px)}}
 @keyframes chipSnap{0%{transform:scale(.94);box-shadow:0 0 0 0 rgba(216,255,0,.75)}45%{transform:scale(1.05)}100%{transform:none;box-shadow:0 0 0 16px rgba(216,255,0,0)}}
 @media (prefers-reduced-motion:reduce){.clap-arm,.fld .chip.on .clap-arm,.fld .chip.on,.fld .chip.on .clap-hit{animation:none;transition:none}}
+
+/* forms (contact + job application) and the contact card text in Montserrat */
+.fld label,fieldset.fld legend,.fld input,.fld textarea,.fld .phone,.fld .phone span,.sel-btn,.sel-list li,.fld .chip,.fld .err,.form-error,.consent,.talk p,.talk .meta{font-family:var(--caps);letter-spacing:0}
+.fld input::placeholder,.fld textarea::placeholder{font-family:var(--caps)}
