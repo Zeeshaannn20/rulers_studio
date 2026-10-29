@@ -112,9 +112,8 @@ export default function Header() {
             AI Studio
           </span>
           <nav className="nav" aria-label="Main" ref={nav}>
-            {LINKS.map((l, i) => (
+            {LINKS.map((l) => (
               <TLink key={l.href} href={l.href} aria-current={current(l.href)}>
-                <em>{String(i + 1).padStart(2, "0")}</em>
                 <span className="roll" data-t={l.label}>
                   <span>{l.label}</span>
                 </span>
