@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import TLink from "./TLink";
-import { RBadge, Wordmark } from "./RMark";
+import RMark, { Wordmark } from "./RMark";
 import { Arrow } from "./Icons";
 import { gsap, getLenis } from "@/lib/motion";
 import { SITE } from "@/data/site";
@@ -105,7 +105,7 @@ export default function Header() {
       <header className="hdr" data-v={HEADER_STYLE} ref={hdr}>
         <div className="wrap">
           <TLink className="logo-l" href="/" aria-label="Rulers Studio home">
-            <RBadge />
+            <RMark />
             <Wordmark />
           </TLink>
           <span className="hdr-tag" aria-hidden="true">
@@ -145,7 +145,7 @@ export default function Header() {
       <div className="menu" id="menu" ref={menu} role="dialog" aria-label="Menu" aria-hidden={!open}>
         <div className="top">
           <TLink className="logo-l" href="/">
-            <RBadge />
+            <RMark fill="#101010" />
             <Wordmark />
           </TLink>
           <button className="close" type="button" onClick={() => setOpen(false)}>
