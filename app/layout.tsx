@@ -31,6 +31,16 @@ const serif = localFont({
   variable: "--font-serif",
   display: "swap",
 });
+// Body text across the site (paragraphs, forms, FAQ, captions)
+const sans = localFont({
+  src: [
+    { path: "./fonts/montserrat-latin-400-normal.woff2", weight: "100 449" },
+    { path: "./fonts/montserrat-latin-500-normal.woff2", weight: "450 549" },
+    { path: "./fonts/montserrat-latin-600-normal.woff2", weight: "550 900" },
+  ],
+  variable: "--font-sans",
+  display: "swap",
+});
 // Spaced capitals for kickers, labels, buttons and the wordmark
 const caps = localFont({
   src: [
@@ -78,7 +88,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${inter.variable} ${mono.variable} ${serif.variable} ${caps.variable}`}>
+    <html lang="en-IN" className={`${inter.variable} ${mono.variable} ${serif.variable} ${caps.variable} ${sans.variable}`}>
       <body className={SHOW_INTRO ? "intro-on" : undefined}>
         <JsonLd data={orgSchema()} />
         <SmoothScroll />

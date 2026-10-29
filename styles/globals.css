@@ -1459,5 +1459,10 @@ body{font-variant-numeric:lining-nums}
 @media (prefers-reduced-motion:reduce){.clap-arm,.fld .chip.on .clap-arm,.fld .chip.on,.fld .chip.on .clap-hit{animation:none;transition:none}}
 
 /* forms (contact + job application) and the contact card text in Montserrat */
-.fld label,fieldset.fld legend,.fld input,.fld textarea,.fld .phone,.fld .phone span,.sel-btn,.sel-list li,.fld .chip,.fld .err,.form-error,.consent,.talk p,.talk .meta{font-family:var(--caps);letter-spacing:0}
-.fld input::placeholder,.fld textarea::placeholder{font-family:var(--caps)}
+.fld label,fieldset.fld legend,.fld input,.fld textarea,.fld .phone,.fld .phone span,.sel-btn,.sel-list li,.fld .chip,.fld .err,.form-error,.consent,.talk p,.talk .meta{font-family:var(--body);letter-spacing:0}
+.fld input::placeholder,.fld textarea::placeholder{font-family:var(--body)}
+
+/* body text across the whole site in Montserrat (was Inter); headings stay in the serif, labels stay in spaced capitals */
+:root{--body:var(--font-sans),"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif}
+body{font-family:var(--body)}
+.hero-sub,.hero-services,.lede,.acc-body p,.pd .copy,.facts dt,.facts dd,.role p,.rd li,.concept,.legal,.toast,.crumb,.card-title,.sv-body,.st-text,.step p,.stat p{letter-spacing:-.005em}
