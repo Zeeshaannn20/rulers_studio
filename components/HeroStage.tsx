@@ -421,7 +421,7 @@ export default function HeroStage() {
 
         <div className="stage-meta" aria-hidden="true">
           <span>Rulers Studio</span>
-          <span>AI film studio · India</span>
+          <span>AI Studio</span>
         </div>
 
         <div className="pager-wrap">
