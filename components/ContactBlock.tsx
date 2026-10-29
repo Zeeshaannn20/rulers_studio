@@ -52,7 +52,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
 
           {state === "sent" ? (
             <div className="sent on">
-              <b>Got it. We&apos;ll reply within 24 hours.</b>
+              <b>Got it. We&apos;ll get back to you soon.</b>
             </div>
           ) : (
             <form className="form" noValidate onSubmit={(e) => onSubmit(e, { sourcePage: pathname, services: picked.join(", ") })}>
@@ -101,9 +101,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
               {formError && <p className="form-error">{formError}</p>}
               <div className="form-foot full">
                 <p className="consent">
-                  <span className="free-tag">Free</span> Sending a message costs nothing. We reply within 24 hours.
-                  <br />
-                  By submitting, you agree to our <TLink href="/terms">Terms</TLink> and <TLink href="/privacy">Privacy Policy</TLink>.
+                  <span className="free-tag">Free</span> Sending a message costs nothing.
                 </p>
                 <button className="btn solid" type="submit" disabled={state === "sending"}>
                   {state === "sending" ? "Sending…" : "Send message"} <Arrow />
