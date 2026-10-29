@@ -38,7 +38,6 @@ export default function ServicesStage() {
     const no = el.querySelector<HTMLElement>(".sv-no")!;
     const body = el.querySelector<HTMLElement>(".sv-body")!;
     const tags = el.querySelector<HTMLElement>(".sv-tags")!;
-    const ring = el.querySelector<SVGCircleElement>(".sv-ring .bar")!;
     const count = el.querySelector<HTMLElement>(".sv-count b")!;
     const navs = Array.from(el.querySelectorAll<HTMLButtonElement>(".sv-nav button"));
     const cleanups: Array<() => void> = [];
@@ -126,7 +125,6 @@ export default function ServicesStage() {
     let shown = -1;
     let gliding = false;
     let target = 0;
-    const CIRC = 2 * Math.PI * 22;
     const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
     const apply = () => {
       if (!alive || !el.isConnected) return;
@@ -164,24 +162,20 @@ export default function ServicesStage() {
     };
 
     // ── autoplay: one screen, no long scroll. Each service holds for HOLD seconds while a bar fills
-    // under its tab and the ring fills, then the next one plays in. Click a tab to jump, swipe on
-    // phones, hover the text or tabs to hold, and the ring button pauses or plays. ──
-    const HOLD = 4.2;
+    // under its tab, then the next one plays in. Click a tab to jump, swipe on
+    // phones, and hovering the text or tabs holds the current one. ──
+    const HOLD = 2.8;
     const bars = navs.map((b) => b.querySelector<HTMLElement>(".sv-prog"));
     const fx = Array.from(el.querySelectorAll<HTMLElement>(".sv-bgw, .sv-canvas"));
-    const ringBtn = el.querySelector<HTMLButtonElement>(".sv-ring")!;
-    const ringLabel = ringBtn.querySelector("span")!;
     const prog = { p: 0 };
     let timer: gsap.core.Tween | null = null;
     let glide: gsap.core.Animation | null = null;
-    let paused = false;
     let hovering = false;
     let visible = false;
     const setProg = () => {
       bars.forEach((b, k) => b && (b.style.transform = `scaleX(${k === target ? prog.p : 0})`));
-      ring.style.strokeDashoffset = String(CIRC * (1 - prog.p));
     };
-    const running = () => visible && !paused && !hovering && !document.hidden;
+    const running = () => visible && !hovering && !document.hidden;
     const sync = () => {
       if (!timer) return;
       if (running() && !gliding) timer.play();
@@ -214,14 +208,14 @@ export default function ServicesStage() {
         // last → first, or a long jump: cut through black instead of rewinding every panel
         glide = gsap
           .timeline({ onComplete: done })
-          .to(fx, { opacity: 0, duration: 0.35, ease: "power2.in" })
+          .to(fx, { opacity: 0, duration: 0.28, ease: "power2.in" })
           .call(() => {
             head.t = next;
             apply();
           })
-          .to(fx, { opacity: 1, duration: 0.6, ease: "power2.out" });
+          .to(fx, { opacity: 1, duration: 0.45, ease: "power2.out" });
       } else {
-        glide = gsap.to(head, { t: next, duration: 1.25, ease: "power1.inOut", onUpdate: apply, onComplete: done });
+        glide = gsap.to(head, { t: next, duration: 0.95, ease: "power1.inOut", onUpdate: apply, onComplete: done });
       }
     };
     navs.forEach((b, i) => {
@@ -229,15 +223,6 @@ export default function ServicesStage() {
       b.addEventListener("click", h);
       cleanups.push(() => b.removeEventListener("click", h));
     });
-    const togglePause = () => {
-      paused = !paused;
-      ringBtn.classList.toggle("paused", paused);
-      ringBtn.setAttribute("aria-label", paused ? "Play services" : "Pause services");
-      ringLabel.textContent = paused ? "Play" : "Pause";
-      sync();
-    };
-    ringBtn.addEventListener("click", togglePause);
-    cleanups.push(() => ringBtn.removeEventListener("click", togglePause));
     // hold while the visitor is reading the text or choosing a tab
     const holdEls = Array.from(el.querySelectorAll<HTMLElement>(".sv-copy, .sv-nav"));
     const enter = () => {
@@ -402,14 +387,6 @@ export default function ServicesStage() {
           ))}
         </nav>
 
-        <button type="button" className="sv-ring" aria-label="Pause services">
-          <svg viewBox="0 0 50 50" aria-hidden="true">
-            <circle cx="25" cy="25" r="22" className="track" />
-            <circle cx="25" cy="25" r="22" className="bar" />
-          </svg>
-          <i className="sv-pp" aria-hidden="true" />
-          <span>Pause</span>
-        </button>
       </section>
     </div>
   );
