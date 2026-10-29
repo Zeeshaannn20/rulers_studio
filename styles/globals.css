@@ -1505,3 +1505,6 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
   filter:drop-shadow(0 0 22px rgba(216,255,0,.28));animation:limeSweep 5.5s cubic-bezier(.45,.05,.55,.95) infinite}
 @keyframes limeSweep{0%{background-position:100% 0}55%,100%{background-position:0% 0}}
 @media (prefers-reduced-motion:reduce){.reel-grade::before,.hero-title .lime{animation:none}}
+
+/* the opening now plays by itself, so no "scroll" hint */
+.stage-hint{display:none!important}

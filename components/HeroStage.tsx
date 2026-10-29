@@ -2,8 +2,7 @@
 import { useEffect, useRef } from "react";
 import Hero from "./Hero";
 import { R_PATHS, R_VIEWBOX } from "./RMark";
-import { gsap, ScrollTrigger, getLenis, afterIntro, prefersReducedMotion } from "@/lib/motion";
-import { bindStageInput } from "@/lib/stageInput";
+import { gsap, getLenis, afterIntro, prefersReducedMotion } from "@/lib/motion";
 
 // Opening stage on Home (reference: alche.studio). One smooth, reversible timeline driven by
 // scroll / swipe / arrow keys, settling on three resting points:
@@ -150,122 +149,63 @@ export default function HeroStage() {
           if (counter) counter.textContent = "0" + (idx + 1);
         }
       };
-      // wheel/trackpad drive a separate proxy, so it can never fight a key glide over head.t
-      const wheel = { t: 0 };
-      const follow = gsap.quickTo(wheel, "t", {
-        duration: 0.16,
-        ease: "power1.out",
-        onUpdate: () => {
-          if (gliding) return;
-          head.t = wheel.t;
-          apply();
-        },
+      // ── autoplay: no scrolling needed. After the R builds in, the whole opening plays by itself
+      // (blast → "Rulers Studio" → video through the letters → headline) in about 3 seconds.
+      // Scrolling is held while it plays; any wheel, swipe or key press fast-forwards it. ──
+      const gliding = false;
+      const target = 0;
+      const PLAY = 3.1; // seconds from the blast to the headline
+      const lenis = getLenis();
+      let playing = true;
+      document.body.classList.add("in-stage");
+      window.scrollTo(0, 0);
+      lenis?.scrollTo(0, { immediate: true, force: true });
+      lenis?.stop();
+      const finish = () => {
+        playing = false;
+        lenis?.start();
+        document.body.classList.remove("in-stage");
+        el.classList.add("stage-done");
+        removeSkip();
+      };
+      const run = gsap.to(head, { t: STEPS, duration: PLAY, ease: "none", paused: true, onUpdate: apply, onComplete: finish });
+      // start right after the R has built in (the load-in below takes about a second)
+      const kick = gsap.delayedCall(1.05, () => {
+        settleEntrance();
+        run.play();
       });
-      let gliding = false;
-      let target = 0;
-      let glide: gsap.core.Tween | null = null;
-      let timer = 0;
-      let calmUntil = 0;
-
-      const st = ScrollTrigger.create({
-        trigger: el,
-        start: "top top",
-        end: () => "+=" + Math.round(window.innerHeight * 1.25 * STEPS),
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onRefresh: (self) => {
-          if (!gliding) {
-            head.t = wheel.t = self.progress * STEPS;
-            apply();
-          }
-        },
-        onLeave: () => {
-          window.setTimeout(() => {
-            if (window.scrollY > st.end + window.innerHeight) el.querySelector<HTMLVideoElement>(".reel-video")?.pause();
-          }, 1200);
-        },
-        onUpdate: (self) => {
-          if (!gliding) follow(self.progress * STEPS);
-          document.body.classList.toggle("in-stage", self.progress < 0.999);
-        },
+      const skip = (e: Event) => {
+        if (!playing) return;
+        if (e.type === "keydown" && !["ArrowDown", "ArrowRight", "PageDown", " ", "Enter"].includes((e as KeyboardEvent).key)) return;
+        kick.kill();
+        settleEntrance();
+        run.play().timeScale(3.5);
+      };
+      const opts = { passive: true } as AddEventListenerOptions;
+      window.addEventListener("wheel", skip, opts);
+      window.addEventListener("touchmove", skip, opts);
+      window.addEventListener("keydown", skip);
+      function removeSkip() {
+        window.removeEventListener("wheel", skip, opts);
+        window.removeEventListener("touchmove", skip, opts);
+        window.removeEventListener("keydown", skip);
+      }
+      // the showreel only plays while the stage is on screen
+      const seen = new IntersectionObserver(([en]) => {
+        const reel = el.querySelector<HTMLVideoElement>(".reel-video");
+        if (!reel) return;
+        if (en.isIntersecting && head.t > 0.97) reel.play().catch(() => {});
+        else if (!en.isIntersecting) reel.pause();
       });
+      seen.observe(el);
       cleanups.push(() => {
-        glide?.kill();
-        getLenis()?.start();
+        kick.kill();
+        run.kill();
+        removeSkip();
+        seen.disconnect();
+        if (playing) lenis?.start();
         document.body.classList.remove("in-stage");
       });
-
-      const posOf = (n: number) => st.start + (st.end - st.start) * (n / STEPS);
-
-      // jump the (pinned, so invisible) scroll position at once and play the timeline to the step
-      const glideTo = (n: number) => {
-        target = Math.max(0, Math.min(STEPS, n));
-        const dist = Math.abs(head.t - target);
-        gliding = true;
-        glide?.kill();
-        settleEntrance();
-        window.clearTimeout(timer);
-        const lenis = getLenis();
-        // freeze smooth scrolling (and any trackpad inertia) for the length of the glide
-        if (lenis) {
-          lenis.scrollTo(posOf(target), { immediate: true, force: true });
-          document.documentElement.classList.add("rs-glide");
-          lenis.stop();
-        } else window.scrollTo(0, posOf(target));
-        idxNow(target);
-        apply();
-        // starts moving on the same frame the key goes down, then eases into the resting point
-        glide = gsap.to(head, {
-          t: target,
-          duration: 1.25 + Math.max(0, Math.min(dist, 3) - 1) * 0.45,
-          ease: "power1.inOut",
-          onUpdate: apply,
-          onComplete: () => {
-            follow(target, target);
-            lenis?.start();
-            document.documentElement.classList.remove("rs-glide");
-            gliding = false;
-            calmUntil = performance.now() + 250;
-          },
-        });
-      };
-      // the pager reacts on key-down, before the motion even starts
-      const idxNow = (n: number) => {
-        shown = n;
-        dots.forEach((d, i) => d.classList.toggle("on", i === n));
-        if (counter) counter.textContent = "0" + (n + 1);
-      };
-      dots.forEach((d, i) => {
-        const h = () => glideTo(i);
-        d.addEventListener("click", h);
-        cleanups.push(() => d.removeEventListener("click", h));
-      });
-
-      // wheel, trackpad and keys: one flick / one press = one resting point, starting this frame
-      cleanups.push(
-        bindStageInput({
-          st,
-          steps: STEPS,
-          at: () => (gliding ? target : head.t),
-          gliding: () => gliding,
-          glideTo,
-          interrupt: () => {
-            glide?.kill();
-            gliding = false;
-            const lenis = getLenis();
-            document.documentElement.classList.remove("rs-glide");
-            if (lenis) {
-              lenis.start();
-              lenis.scrollTo(posOf(head.t), { immediate: true, force: true });
-            } else window.scrollTo(0, posOf(head.t));
-            follow(head.t, head.t);
-          },
-        })
-      );
-
-      // after a wheel/trackpad/touch scroll stops between resting points, settle in the direction travelled
-
 
       // pointer parallax: the logo tilts with the mouse
       if (window.matchMedia("(pointer:fine)").matches) {
@@ -285,7 +225,7 @@ export default function HeroStage() {
 
       cleanups.push(
         afterIntro(() => {
-          if (head.t > 0.05 || gliding) return; // already on the move: skip the load-in
+          if (head.t > 0.05) return; // already on the move: skip the load-in
           entrance.push(
             gsap.fromTo(".bp .ln", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: "power3.inOut", stagger: 0.02 }),
             gsap.fromTo(".bp-dots rect, .bp-label", { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.015, delay: 0.5 }),
