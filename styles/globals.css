@@ -1466,3 +1466,17 @@ body{font-variant-numeric:lining-nums}
 :root{--body:var(--font-sans),"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif}
 body{font-family:var(--body)}
 .hero-sub,.hero-services,.lede,.acc-body p,.pd .copy,.facts dt,.facts dd,.role p,.rd li,.concept,.legal,.toast,.crumb,.card-title,.sv-body,.st-text,.step p,.stat p{letter-spacing:-.005em}
+
+/* services: one-screen autoplay. A bar fills under the active tab; the ring is a pause / play button */
+.sv-nav button{position:relative}
+.sv-prog{position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:2px;background:currentColor;opacity:.6;transform:scaleX(0);transform-origin:left center;pointer-events:none}
+button.sv-ring{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:500 12px/1 var(--body);letter-spacing:.04em;text-transform:uppercase;color:rgba(var(--paper-rgb),.6);transition:color .3s}
+button.sv-ring:hover{color:var(--paper)}
+button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;border-radius:99px}
+.sv-pp{position:absolute;left:23px;top:50%;width:10px;height:11px;transform:translate(-50%,-50%);pointer-events:none}
+.sv-pp::before,.sv-pp::after{content:"";position:absolute;top:0;bottom:0;width:3px;border-radius:1px;background:var(--paper)}
+.sv-pp::before{left:1px}
+.sv-pp::after{right:1px}
+.sv-ring.paused .sv-pp::before{left:2px;bottom:auto;width:0;height:0;background:none;border-radius:0;border-style:solid;border-width:5.5px 0 5.5px 9px;border-color:transparent transparent transparent var(--paper)}
+.sv-ring.paused .sv-pp::after{display:none}
+@media (max-width:860px){.sv-pp{left:18px;transform:translate(-50%,-50%) scale(.85)}}

@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import TLink from "./TLink";
 import { Arrow } from "./Icons";
 import { SERVICES } from "@/data/site";
-import { gsap, ScrollTrigger, getLenis, prefersReducedMotion } from "@/lib/motion";
+import { gsap, prefersReducedMotion } from "@/lib/motion";
 import { createField, SCENES, type Field } from "@/lib/particleField";
-import { bindStageInput } from "@/lib/stageInput";
 
-// Services as a pinned, full-screen stage (reference: the Pioneer "Corn. Revolutionized." site).
+// Services as one full-screen stage that plays through the four services on its own (reference: the Pioneer "Corn. Revolutionized." site).
 // Each service owns a living background: a WebGL particle formation that disintegrates and
 // re-forms into the next one, a colour-graded panel that sweeps up on a slanted edge, ambient dust
 // and grain, and a headline that decodes in outline before it fills. Wheel, trackpad, touch and
@@ -122,7 +121,7 @@ export default function ServicesStage() {
       cancelAnimationFrame(decodeRaf);
     });
 
-    // ── playhead → everything that is scrubbed ──
+    // ── playhead → everything that is drawn (particles, colour panels, headline, tabs) ──
     const head = { t: 0 };
     let shown = -1;
     let gliding = false;
@@ -134,15 +133,12 @@ export default function ServicesStage() {
       const t = head.t;
       const from = Math.min(STEPS, Math.floor(t));
       const to = Math.min(STEPS, from + 1);
-      // each shape stays fully formed for the first and last stretch of its step and only
-      // re-forms in the middle, so stopping anywhere near a service shows a crisp shape
       const m = Math.max(0, Math.min(1, (t - from - 0.2) / 0.6));
       field?.set(from, to, m);
-      // slanted colour panels sweeping up from the bottom (right edge leads) — transforms only,
-      // so the GPU moves them without repainting a full-screen layer every frame
+      // slanted colour panels sweeping up from the bottom (right edge leads); transforms only
       const vh = window.innerHeight;
       const es = panels.map((_, i) => (i === 0 ? 1 : ease(Math.max(0, Math.min(1, (t - (i - 1) - 0.08) / 0.84)))));
-      let top = 0; // the last panel that fully covers the screen — everything under it can stop drawing
+      let top = 0;
       es.forEach((e, i) => e >= 1 && (top = i));
       for (let i = 0; i < panels.length; i++) {
         const e = es[i];
@@ -155,7 +151,6 @@ export default function ServicesStage() {
         w.style.transform = `translate3d(0,${Y.toFixed(1)}px,0) rotate(-5deg)`;
         panels[i].style.transform = `rotate(5deg) translate3d(0,${(-Y).toFixed(1)}px,0)`;
       }
-      ring.style.strokeDashoffset = String(CIRC * (1 - t / STEPS));
       const idx = gliding ? target : Math.min(STEPS, Math.round(t));
       if (idx !== shown) {
         const first = shown < 0;
@@ -168,109 +163,126 @@ export default function ServicesStage() {
       }
     };
 
-    const wheel = { t: 0 };
-    const follow = gsap.quickTo(wheel, "t", {
-      duration: 0.16,
-      ease: "power1.out",
-      onUpdate: () => {
-        if (gliding || !alive) return;
-        head.t = wheel.t;
-        apply();
-      },
-    });
-    let glide: gsap.core.Tween | null = null;
-    let timer = 0;
-    let calmUntil = 0;
-
-    const st = ScrollTrigger.create({
-      trigger: el,
-      start: "top top",
-      end: () => "+=" + Math.round(window.innerHeight * 1.6 * STEPS),
-      pin: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onRefresh: (self) => {
-        field?.resize();
-        if (!gliding) {
-          head.t = wheel.t = self.progress * STEPS;
-          apply();
-        }
-      },
-      onUpdate: (self) => {
-        if (!gliding) follow(self.progress * STEPS);
-      },
-    });
-    cleanups.push(() => {
-      glide?.kill();
-      getLenis()?.start();
-      document.documentElement.classList.remove("rs-glide");
-    });
-
-    const posOf = (n: number) => st.start + (st.end - st.start) * (n / STEPS);
-
-    // inside the pin the scroll position is invisible, so jump it and play the playhead
+    // ── autoplay: one screen, no long scroll. Each service holds for HOLD seconds while a bar fills
+    // under its tab and the ring fills, then the next one plays in. Click a tab to jump, swipe on
+    // phones, hover the text or tabs to hold, and the ring button pauses or plays. ──
+    const HOLD = 4.2;
+    const bars = navs.map((b) => b.querySelector<HTMLElement>(".sv-prog"));
+    const fx = Array.from(el.querySelectorAll<HTMLElement>(".sv-bgw, .sv-canvas"));
+    const ringBtn = el.querySelector<HTMLButtonElement>(".sv-ring")!;
+    const ringLabel = ringBtn.querySelector("span")!;
+    const prog = { p: 0 };
+    let timer: gsap.core.Tween | null = null;
+    let glide: gsap.core.Animation | null = null;
+    let paused = false;
+    let hovering = false;
+    let visible = false;
+    const setProg = () => {
+      bars.forEach((b, k) => b && (b.style.transform = `scaleX(${k === target ? prog.p : 0})`));
+      ring.style.strokeDashoffset = String(CIRC * (1 - prog.p));
+    };
+    const running = () => visible && !paused && !hovering && !document.hidden;
+    const sync = () => {
+      if (!timer) return;
+      if (running() && !gliding) timer.play();
+      else timer.pause();
+    };
+    const startTimer = () => {
+      timer?.kill();
+      prog.p = 0;
+      setProg();
+      timer = gsap.to(prog, { p: 1, duration: HOLD, ease: "none", paused: true, onUpdate: setProg, onComplete: () => glideTo(target + 1) });
+      sync();
+    };
+    const done = () => {
+      gliding = false;
+      startTimer();
+    };
     const glideTo = (n: number) => {
-      target = Math.max(0, Math.min(STEPS, n));
-      const dist = Math.abs(head.t - target);
-      gliding = true;
+      if (!alive) return;
+      const next = ((n % SCENES) + SCENES) % SCENES;
+      const wrapped = n !== next;
+      timer?.kill();
+      timer = null;
       glide?.kill();
-      window.clearTimeout(timer);
-      const lenis = getLenis();
-      if (lenis) {
-        lenis.scrollTo(posOf(target), { immediate: true, force: true });
-        document.documentElement.classList.add("rs-glide");
-        lenis.stop();
-      } else window.scrollTo(0, posOf(target));
-      apply();
-      glide = gsap.to(head, {
-        t: target,
-        duration: 1.25 + Math.max(0, Math.min(dist, 3) - 1) * 0.45,
-        ease: "power1.inOut",
-        onUpdate: apply,
-        onComplete: () => {
-          follow(target, target);
-          lenis?.start();
-          document.documentElement.classList.remove("rs-glide");
-          gliding = false;
-          calmUntil = performance.now() + 250;
-        },
-      });
+      target = next;
+      prog.p = 0;
+      setProg();
+      gliding = true;
+      apply(); // tabs and headline switch at once
+      if (wrapped || Math.abs(head.t - next) > 1.5) {
+        // last → first, or a long jump: cut through black instead of rewinding every panel
+        glide = gsap
+          .timeline({ onComplete: done })
+          .to(fx, { opacity: 0, duration: 0.35, ease: "power2.in" })
+          .call(() => {
+            head.t = next;
+            apply();
+          })
+          .to(fx, { opacity: 1, duration: 0.6, ease: "power2.out" });
+      } else {
+        glide = gsap.to(head, { t: next, duration: 1.25, ease: "power1.inOut", onUpdate: apply, onComplete: done });
+      }
     };
     navs.forEach((b, i) => {
-      const h = () => glideTo(i);
+      const h = () => (i === target && !gliding ? startTimer() : glideTo(i));
       b.addEventListener("click", h);
       cleanups.push(() => b.removeEventListener("click", h));
     });
-
-    // wheel, trackpad and keys: one flick / one press = one service, starting this frame
-    cleanups.push(
-      bindStageInput({
-        st,
-        steps: STEPS,
-        at: () => (gliding ? target : head.t),
-        gliding: () => gliding,
-        glideTo,
-        interrupt: () => {
-          glide?.kill();
-          gliding = false;
-          const lenis = getLenis();
-          document.documentElement.classList.remove("rs-glide");
-          if (lenis) {
-            lenis.start();
-            lenis.scrollTo(posOf(head.t), { immediate: true, force: true });
-          } else window.scrollTo(0, posOf(head.t));
-          follow(head.t, head.t);
-        },
-      })
-    );
-
-    // touch / scrollbar: when the scroll comes to rest between two services, settle onto one
-
+    const togglePause = () => {
+      paused = !paused;
+      ringBtn.classList.toggle("paused", paused);
+      ringBtn.setAttribute("aria-label", paused ? "Play services" : "Pause services");
+      ringLabel.textContent = paused ? "Play" : "Pause";
+      sync();
+    };
+    ringBtn.addEventListener("click", togglePause);
+    cleanups.push(() => ringBtn.removeEventListener("click", togglePause));
+    // hold while the visitor is reading the text or choosing a tab
+    const holdEls = Array.from(el.querySelectorAll<HTMLElement>(".sv-copy, .sv-nav"));
+    const enter = () => {
+      hovering = true;
+      sync();
+    };
+    const leave = () => {
+      hovering = false;
+      sync();
+    };
+    holdEls.forEach((h) => {
+      h.addEventListener("pointerenter", enter);
+      h.addEventListener("pointerleave", leave);
+    });
+    // swipe left / right on phones
+    let sx = 0;
+    let sy = 0;
+    const down = (e: PointerEvent) => {
+      sx = e.clientX;
+      sy = e.clientY;
+    };
+    const up = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      const dx = e.clientX - sx;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(e.clientY - sy) * 1.3) glideTo(target + (dx < 0 ? 1 : -1));
+    };
+    el.addEventListener("pointerdown", down, { passive: true });
+    el.addEventListener("pointerup", up, { passive: true });
+    document.addEventListener("visibilitychange", sync);
+    cleanups.push(() => {
+      holdEls.forEach((h) => {
+        h.removeEventListener("pointerenter", enter);
+        h.removeEventListener("pointerleave", leave);
+      });
+      el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointerup", up);
+      document.removeEventListener("visibilitychange", sync);
+      timer?.kill();
+      glide?.kill();
+      gsap.killTweensOf([head, prog, fx]);
+    });
 
     // build the field when the stage is ~1.5 screens away; render only while it is on screen
     const mobile = window.matchMedia("(max-width: 860px)").matches;
     const cores = navigator.hardwareConcurrency || 4;
-    let visible = false;
     let built = false;
     const build = () => {
       if (built) return;
@@ -279,6 +291,12 @@ export default function ServicesStage() {
       if (!field) return el.classList.add("no-gl");
       field.resize();
       apply();
+      const onResize = () => {
+        field?.resize();
+        apply();
+      };
+      window.addEventListener("resize", onResize);
+      cleanups.push(() => window.removeEventListener("resize", onResize));
       if (visible) field.start();
     };
     const idle = (fn: () => void) => {
@@ -294,8 +312,10 @@ export default function ServicesStage() {
         if (visible && !built) build();
         if (visible) field?.start();
         else field?.stop();
+        if (visible && !timer && !gliding) startTimer();
+        else sync();
       },
-      { rootMargin: "10% 0px" }
+      { threshold: 0.35 }
     );
     io.observe(el);
     const onPtr = (ev: PointerEvent) => field?.pointer((ev.clientX / window.innerWidth) * 2 - 1, (ev.clientY / window.innerHeight) * 2 - 1);
@@ -311,10 +331,7 @@ export default function ServicesStage() {
     return () => {
       alive = false;
       cleanups.forEach((f) => f());
-      gsap.killTweensOf([wheel, head]);
-      window.clearTimeout(timer);
       cancelAnimationFrame(decodeRaf);
-      st.kill();
     };
   }, []);
 
@@ -380,17 +397,19 @@ export default function ServicesStage() {
             <button type="button" key={i}>
               <i>0{i + 1}</i>
               <span>{n}</span>
+              <b className="sv-prog" aria-hidden="true" />
             </button>
           ))}
         </nav>
 
-        <div className="sv-ring" aria-hidden="true">
-          <svg viewBox="0 0 50 50">
+        <button type="button" className="sv-ring" aria-label="Pause services">
+          <svg viewBox="0 0 50 50" aria-hidden="true">
             <circle cx="25" cy="25" r="22" className="track" />
             <circle cx="25" cy="25" r="22" className="bar" />
           </svg>
-          <span>Scroll</span>
-        </div>
+          <i className="sv-pp" aria-hidden="true" />
+          <span>Pause</span>
+        </button>
       </section>
     </div>
   );
