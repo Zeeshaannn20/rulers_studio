@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import TLink from "./TLink";
 import RMark from "./RMark";
 import { Arrow, Instagram, LinkedIn, XLogo, YouTube } from "./Icons";
@@ -12,16 +12,6 @@ const RING = "AI FILM STUDIO  ·  FILMS BRANDS REMEMBER  ·  EST. 2026  ·  ";
 // the details laid out like end credits, and a quiet bottom bar.
 export default function Footer() {
   const root = useRef<HTMLElement>(null);
-  const [time, setTime] = useState("");
-
-  // Bengaluru local time, updated every 20 s
-  useEffect(() => {
-    const fmt = new Intl.DateTimeFormat("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "Asia/Kolkata" });
-    const tick = () => setTime(fmt.format(new Date()).toUpperCase());
-    tick();
-    const id = window.setInterval(tick, 20000);
-    return () => window.clearInterval(id);
-  }, []);
 
   // everything rises gently into place as the footer arrives
   useEffect(() => {
@@ -112,11 +102,8 @@ export default function Footer() {
             </a>
           </div>
           <div className="fx-credit">
-            <h5>Bengaluru</h5>
-            <p className="fx-time" suppressHydrationWarning>
-              {time || " "} <small>IST</small>
-            </p>
-            <p>Working with brands across India and worldwide.</p>
+            <h5>Worldwide</h5>
+            <p>Working with brands all over the world. Everything is handled online.</p>
           </div>
         </div>
 

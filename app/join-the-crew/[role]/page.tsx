@@ -16,8 +16,8 @@ export function generateMetadata({ params }: { params: { role: string } }): Meta
   const r = getRole(params.role);
   if (!r) return {};
   const url = `/join-the-crew/${r.slug}`;
-  const title = `${r.title} Job in Bengaluru at an AI Film Studio`;
-  const description = `${r.title} job at Rulers Studio, an AI ad film studio in Bengaluru. ${r.tagline} Apply online with your CV and portfolio.`;
+  const title = `${r.title} Job at an AI Film Studio`;
+  const description = `${r.title} job at Rulers Studio, an AI ad film studio. ${r.tagline} Apply online with your CV and portfolio.`;
   return { title, description, alternates: { canonical: url }, openGraph: { url, title: `${title} | Rulers Studio`, description, images: [OG_IMAGE] } };
 }
 

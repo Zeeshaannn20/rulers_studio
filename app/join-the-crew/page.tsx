@@ -10,9 +10,9 @@ import { OG_IMAGE } from "@/data/seo";
 export const metadata: Metadata = {
   title: "Careers: AI Director & AI Video Editor Jobs",
   description:
-    "Rulers Studio, an AI film studio in Bengaluru, is hiring an AI Director, an Ad Alchemist and an AI Video Editor. Apply online with your CV and portfolio.",
+    "Rulers Studio, an AI film studio, is hiring an AI Director, an Ad Alchemist and an AI Video Editor. Apply online with your CV and portfolio.",
   alternates: { canonical: "/join-the-crew" },
-  openGraph: { url: "/join-the-crew", title: "Careers at Rulers Studio: AI Film Jobs in Bengaluru", images: [OG_IMAGE] },
+  openGraph: { url: "/join-the-crew", title: "Careers at Rulers Studio: AI Film Jobs", images: [OG_IMAGE] },
 };
 
 // Join the Crew: G-01 → JC-01 → G-04

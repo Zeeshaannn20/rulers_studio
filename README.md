@@ -1,6 +1,6 @@
 # Rulers Studio
 
-The website of **Rulers Studio**, an AI film studio in Bengaluru, India. We make AI ad creatives, AI product videos, AI brand stories and UGC ads for brands.
+The website of **Rulers Studio**, an AI film studio working with brands worldwide. We make AI ad creatives, AI product videos, AI brand stories and UGC ads for brands.
 
 Built with Next.js 14 (App Router), React 18, TypeScript, GSAP + ScrollTrigger, Lenis smooth scrolling and hand-written WebGL particle scenes.
 

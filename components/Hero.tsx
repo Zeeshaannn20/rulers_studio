@@ -66,13 +66,13 @@ export default function Hero({ embedded = false }: { embedded?: boolean }) {
             <br />
             {words("brands")}
             {words("remember", "lime")}
-            <span className="sr-only">, AI ad film and AI video production company in India</span>
+            <span className="sr-only">, AI ad film and AI video production studio</span>
           </h1>
 
           <div className="hero-bottom">
             <div className="hero-left">
               <p className="hero-sub">
-                AI video production studio in Bengaluru, India. AI ad films, product videos, brand stories and micro dramas, directed like real productions and delivered in days.
+                AI video production studio for brands worldwide. AI ad creatives, product videos, brand stories and UGC ads, directed like real productions and delivered in days.
               </p>
               <div className="hero-ctas">
                 <TLink className="btn solid" href="/contact">

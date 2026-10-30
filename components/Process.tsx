@@ -87,7 +87,7 @@ export default function Process() {
             <span className="eyebrow">How we work</span>
             <Words className="h-xl" text="Four steps" />
           </div>
-          <p className="lede">From the first call to the final file, the same process for a 15-second ad or a full micro drama.</p>
+          <p className="lede">From the first call to the final file, the same process for a 15-second ad or a full brand film.</p>
         </div>
         <div className="steps">
           {STEPS.map((s, i) => (

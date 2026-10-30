@@ -114,7 +114,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
         <aside className="talk">
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <h2 className="h-l">Let&apos;s talk</h2>
-            <p>Tell us about your project: a product ad, a brand film, UGC or a micro drama.</p>
+            <p>Tell us about your project: an ad creative, a product video, a brand story or UGC ads.</p>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
             <MeetButton />

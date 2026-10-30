@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/motion";
 
 const TEXT =
-  "We're an AI film studio in Bengaluru. We write, direct and finish AI ad films, brand stories and micro dramas. No shoot, no crew, no compromise on craft.";
+  "We're an AI film studio working with brands all over the world. We write, direct and finish AI ad creatives, product videos, brand stories and UGC ads. No shoot, no crew, no compromise on craft.";
 // words shown in lime once lit
 const ACCENT = new Set(["AI", "film", "studio"]);
 

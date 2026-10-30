@@ -6,7 +6,7 @@ export const SITE = {
   name: "Rulers Studio",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://rulersstudio.com",
   tagline: "We make films brands remember.", // [confirm] final tagline
-  description: "We make films brands remember: AI ad films, micro dramas, UGC ads and AI avatars.",
+  description: "We make films brands remember: AI ad creatives, product videos, brand stories and UGC ads.",
   email: "business@rulersstudio.com",
   phoneDisplay: "+91 76766 02862",
   whatsapp: "https://wa.me/917676602862",
@@ -27,15 +27,7 @@ export const SITE = {
   introEnterAt: 7.0, // second in the intro clip where ENTER is pressed
 };
 
-export const TICKER = [
-  "AI Ad Films",
-  "AI Product Videos",
-  "AI Brand Stories",
-  "AI Films",
-  "AI Micro Dramas",
-  "UGC Ads",
-  "AI Avatars",
-];
+export const TICKER = ["AI Ad Creatives", "AI Product Videos", "AI Brand Stories", "UGC Ads"];
 
 export const SERVICES = [
   {

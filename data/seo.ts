@@ -16,15 +16,13 @@ export const KEYWORDS = [
   "ad film makers",
   "ad film production house",
   "video production company",
-  "advertising agency in Bangalore",
-  "ad agency in Bengaluru",
   "corporate video production",
   "product video",
   // AI-specific, fast-growing
   "AI video production company",
-  "AI video production company in India",
+  "AI video production company",
   "AI ad agency",
-  "AI advertising agency India",
+  "AI advertising agency",
   "AI ad film",
   "AI ad films",
   "AI video ads",
@@ -33,22 +31,21 @@ export const KEYWORDS = [
   "AI product videos",
   "AI UGC ads",
   "UGC ads",
-  "UGC video ads India",
-  "AI avatar videos",
+  "UGC video ads",
+  "AI commercial production",
   "AI brand film",
   "AI short film",
-  "AI micro drama",
-  "micro drama production",
+  "AI brand film",
+  "AI product video",
   "AI film studio",
   "generative AI video agency",
-  "AI video agency Bangalore",
 ];
 
-export const HOME_TITLE = "Rulers Studio | AI Ad Film & AI Video Production in India";
+export const HOME_TITLE = "Rulers Studio | AI Ad Film & AI Video Production Studio";
 export const HOME_DESC =
-  "AI video production company in Bengaluru, India. We make AI ad films, AI commercials, product videos, UGC ads, AI avatars and micro dramas for brands.";
+  "AI video production studio working with brands worldwide. We make AI ad films, AI commercials, product videos, brand stories and UGC ads.";
 
-export const OG_IMAGE = { url: "/og.jpg", width: 1200, height: 630, alt: "Rulers Studio, AI ad film and AI video production company in India" };
+export const OG_IMAGE = { url: "/og.jpg", width: 1200, height: 630, alt: "Rulers Studio, AI ad film and AI video production studio" };
 
 // ── Structured data ──────────────────────────────────────────────────────────
 const ORG_ID = abs("/#organization");
@@ -67,16 +64,15 @@ export function orgSchema() {
         image: abs(OG_IMAGE.url),
         description: HOME_DESC,
         slogan: SITE.tagline.replace(/\.$/, ""),
-        address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressRegion: "Karnataka", addressCountry: "IN" },
-        areaServed: [{ "@type": "Country", name: "India" }, "Worldwide"],
+        areaServed: "Worldwide",
         sameAs: [SITE.instagram, SITE.linkedin, SITE.x, SITE.youtube].filter(Boolean),
-        knowsAbout: ["AI video production", "AI ad films", "AI commercials", "UGC ads", "AI avatars", "AI micro dramas", "Generative AI filmmaking"],
+        knowsAbout: ["AI video production", "AI ad films", "AI commercials", "AI product videos", "AI brand stories", "UGC ads", "Generative AI filmmaking"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
           name: "AI video production services",
           itemListElement: SERVICES.map((s) => ({
             "@type": "Offer",
-            itemOffered: { "@type": "Service", name: s.title, description: s.body, serviceType: s.title, areaServed: "India", provider: { "@id": ORG_ID } },
+            itemOffered: { "@type": "Service", name: s.title, description: s.body, serviceType: s.title, areaServed: "Worldwide", provider: { "@id": ORG_ID } },
           })),
         },
       },
@@ -106,7 +102,7 @@ export const projectLabel = (p: Project) => `${p.name} ${p.typeTag}${p.isConcept
 export function projectDescription(p: Project) {
   const kind = p.typeTag.replace("Ad Film", "ad film").replace("Short Film", "short film").replace("UGC Ad", "UGC ad").replace("AI Avatar", "AI avatar video");
   const concept = p.isConcept ? "a concept " : "an ";
-  return `${p.name}: ${concept}${kind}${p.industry ? ` for ${p.industry.toLowerCase()}` : ""}, made with generative AI by Rulers Studio, an AI video production company in Bengaluru, India.`;
+  return `${p.name}: ${concept}${kind}${p.industry ? ` for ${p.industry.toLowerCase()}` : ""}, made with generative AI by Rulers Studio, an AI video production studio.`;
 }
 
 export function videoSchema(p: Project) {
@@ -152,7 +148,7 @@ export function jobSchema(r: Role) {
     industry: "Advertising, Film and Video Production",
     occupationalCategory: r.title,
     hiringOrganization: { "@type": "Organization", name: SITE.name, sameAs: abs("/"), logo: abs("/logo.png") },
-    jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressRegion: "Karnataka", addressCountry: "IN" } },
+    jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressCountry: "IN" } },
     url: abs(`/join-the-crew/${r.slug}`),
   };
 }
@@ -164,11 +160,11 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What kinds of AI videos do you make?",
-    a: "AI ad films and commercials, AI product videos, AI brand stories, AI short films, AI micro dramas, UGC-style video ads for Instagram and Meta, and realistic AI avatar videos for explainers and courses.",
+    a: "AI ad creatives and commercials, AI product videos, AI brand stories, and UGC-style video ads for Instagram and Meta.",
   },
   {
-    q: "How much does an AI ad film cost in India?",
-    a: "It depends on the length, the number of shots and characters, and how many versions you need for different platforms. Send us your brief through the form and we'll reply within 24 hours with a clear quote.",
+    q: "How much does an AI ad film cost?",
+    a: "It depends on the length, the number of shots and characters, and how many versions you need for different platforms. Send us your brief through the form and we'll come back with a clear quote.",
   },
   {
     q: "How long does it take to make an AI video ad?",
@@ -187,8 +183,8 @@ export const FAQS: { q: string; a: string }[] = [
     a: "Yes. We make creator-style UGC video ads that feel native to Instagram Reels and Meta ads, and we can produce many variations for testing without booking a creator for each one.",
   },
   {
-    q: "Do you work with brands outside Bengaluru?",
-    a: "Yes. Rulers Studio is based in Bengaluru and works with brands across India and worldwide. Everything is handled online.",
+    q: "Do you work with brands worldwide?",
+    a: "Yes. We work with brands all over the world. Everything from the brief to the final film is handled online.",
   },
 ];
 

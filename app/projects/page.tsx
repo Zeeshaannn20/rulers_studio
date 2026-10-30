@@ -10,7 +10,7 @@ import { OG_IMAGE, breadcrumbs, itemListSchema } from "@/data/seo";
 export const metadata: Metadata = {
   title: "AI Ad Films & AI Video Portfolio",
   description:
-    "Watch AI ad films and AI commercials by Rulers Studio, an AI video production company in Bengaluru. Concept films for Rolex, Amul, Snitch and more.",
+    "Watch AI ad films and AI commercials by Rulers Studio, an AI video production studio working with brands worldwide. Concept films for Rolex, Amul, Snitch and more.",
   alternates: { canonical: "/projects" },
   openGraph: { url: "/projects", title: "AI Ad Films & AI Video Portfolio | Rulers Studio", images: [OG_IMAGE] },
 };
@@ -23,7 +23,7 @@ export default function ProjectsPage() {
       <section className="wrap page-head">
         <span className="eyebrow">Selected work</span>
         <Words as="h1" className="h-xl" text="Projects" immediate />
-        <p className="lede">AI ad films, product videos and micro dramas from our AI video production studio in Bengaluru.</p>
+        <p className="lede">AI ad films, product videos and brand stories from our AI video production studio.</p>
       </section>
       <section className="wrap" style={{ paddingBottom: "clamp(80px,10vw,140px)" }}>
         <ProjectGrid projects={SORTED_PROJECTS} />
