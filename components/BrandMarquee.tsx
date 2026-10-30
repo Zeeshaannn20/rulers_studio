@@ -21,47 +21,60 @@ function logoFor(slug: string): { src: string; scale: number } | null {
   return null;
 }
 
-// "Speculative work": the brands we've made concept films for, gliding past in two rows that run
-// in opposite directions. Hovering a row slows it down and lights the brand under the pointer.
+// "Speculative work" as a strip of 35mm film running through a projector: every brand sits in its
+// own frame between sprocket holes, the strip weaves gently in the gate, and the frame passing the
+// lit gate in the middle lights up under the projector beam (flicker, grain and scratches included).
 export default function BrandMarquee() {
-  const items = BRANDS.map((b) => ({ ...b, logo: logoFor(b.slug) }));
-  const half = Math.ceil(items.length / 2);
-  const rows = [items, [...items.slice(half), ...items.slice(0, half)].reverse()];
+  const items = BRANDS.map((b) => ({ ...b, logo: logoFor(b.slug) })).filter((b) => b.logo);
 
   return (
-    <div className="bm" aria-label="Speculative work">
-      <div className="bm-head">
+    <div className="fr" aria-label="Speculative work">
+      <div className="fr-head">
         <span className="eyebrow">Speculative work</span>
+        <span className="fr-tag" aria-hidden="true">
+          <b /> Reel 01 · 35mm · {String(items.length).padStart(2, "0")} films
+        </span>
       </div>
       <ul className="sr-only">
         {items.map((b) => (
           <li key={b.slug}>{b.name}</li>
         ))}
       </ul>
-      {rows.map((row, ri) => (
-        <div className={"bm-row" + (ri ? " rev" : "")} key={ri} aria-hidden="true">
-          <div className="bm-track">
-            {[0, 1].map((copy) => (
-              <div className="bm-set" key={copy}>
-                {row.map((b) => (
-                  <span
-                    className={"bm-item" + (b.logo ? " has-logo" : "")}
-                    key={b.slug}
-                    style={b.logo ? ({ "--s": b.logo.scale } as React.CSSProperties) : undefined}
-                  >
-                    {b.logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={b.logo.src} alt="" loading="lazy" decoding="async" />
-                    ) : null}
-                    <b>{b.name}</b>
-                    <i className="bm-star">✦</i>
-                  </span>
-                ))}
-              </div>
-            ))}
+
+      <div className="fr-stage" aria-hidden="true">
+        <div className="fr-beam" />
+        <div className="fr-film">
+          <div className="fr-track">
+            {[0, 1].map((copy) =>
+              items.map((b, i) => (
+                <div className="fr-frame" key={copy + b.slug}>
+                  <span className="fr-no">{String(i + 1).padStart(2, "0")}A</span>
+                  <div className="fr-win">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={b.logo!.src} alt="" loading="lazy" decoding="async" style={{ "--s": b.logo!.scale } as React.CSSProperties} />
+                  </div>
+                  <span className="fr-edge">RULERS STUDIO ▸ SAFETY FILM ▸ {String(i + 1).padStart(2, "0")}</span>
+                </div>
+              ))
+            )}
+          </div>
+          <div className="fr-gate">
+            <span className="fr-now">
+              <i /> Now screening
+            </span>
+            <i className="c tl" />
+            <i className="c tr" />
+            <i className="c bl" />
+            <i className="c br" />
           </div>
         </div>
-      ))}
+        <div className="fr-grain" />
+        <div className="fr-scratch">
+          <i />
+          <i />
+          <i />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1518,3 +1518,62 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 .knock-line .work-word{opacity:1}
 .stage .reel-video{transition:filter .5s ease}
 .stage-wrap.revealing .reel-video{filter:brightness(1.6) contrast(1.1) saturate(1.15);transition:none}
+
+/* ───────── Speculative work: a 35mm film strip running through a projector gate ───────── */
+.fr{display:flex;flex-direction:column;gap:clamp(16px,2vw,26px);margin-top:clamp(10px,1.6vw,24px)}
+.fr-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.fr-tag{display:inline-flex;align-items:center;gap:8px;font:500 11px/1 var(--mono,ui-monospace),monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(var(--paper-rgb),.5)}
+.fr-tag b{width:7px;height:7px;border-radius:50%;background:#ff3b30;box-shadow:0 0 10px rgba(255,59,48,.8);animation:frRec 1.6s steps(1) infinite}
+@keyframes frRec{0%,60%{opacity:1}61%,100%{opacity:.15}}
+.fr-stage{--h:clamp(150px,15vw,224px);position:relative;height:calc(var(--h) + 70px);padding-top:56px;overflow:hidden;isolation:isolate;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+/* projector beam falling onto the gate */
+.fr-beam{position:absolute;left:50%;top:-10px;width:min(560px,60vw);height:calc(56px + var(--h) * .9);transform:translateX(-50%);pointer-events:none;z-index:3;
+  background:linear-gradient(180deg,rgba(246,255,196,.32),rgba(216,255,0,.08) 70%,transparent);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);filter:blur(6px);mix-blend-mode:screen;animation:frFlick 3.2s steps(1) infinite}
+@keyframes frFlick{0%{opacity:.85}7%{opacity:.6}9%{opacity:.9}34%{opacity:.8}36%{opacity:.5}38%{opacity:.88}71%{opacity:.82}73%{opacity:.68}100%{opacity:.85}}
+/* the strip */
+.fr-film{position:relative;height:var(--h);transform:perspective(1600px) rotateX(10deg);transform-origin:50% 60%;animation:frWeave 1.1s steps(3) infinite}
+@keyframes frWeave{0%{translate:0 0}33%{translate:0 .6px}66%{translate:0 -.4px}100%{translate:0 0}}
+.fr-track{display:flex;width:max-content;height:100%;animation:frRun 46s linear infinite;will-change:transform}
+.fr-stage:hover .fr-track{animation-play-state:paused}
+@keyframes frRun{to{transform:translateX(-50%)}}
+.fr-frame{--w:calc(var(--h) * 1.42);position:relative;flex:none;width:var(--w);height:100%;padding:calc(var(--h) * .17) calc(var(--h) * .05);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='18'%3E%3Crect x='6' y='4' width='14' height='10' rx='2.6' fill='%23d9d4c7' fill-opacity='.18'/%3E%3C/svg%3E") repeat-x 0 calc(var(--h) * .03) / 26px 18px,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='18'%3E%3Crect x='6' y='4' width='14' height='10' rx='2.6' fill='%23d9d4c7' fill-opacity='.18'/%3E%3C/svg%3E") repeat-x 0 calc(100% - var(--h) * .03) / 26px 18px,
+    linear-gradient(180deg,#0d0b09,#14110d 50%,#0d0b09);
+  border-left:1px solid rgba(255,214,150,.05)}
+.fr-win{position:relative;height:100%;border-radius:5px;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(120% 100% at 50% 45%,#1c1a17 0%,#0b0a09 85%);box-shadow:inset 0 0 0 1px rgba(255,236,200,.06),inset 0 0 30px rgba(0,0,0,.8)}
+.fr-win img{height:calc(var(--h) * .27 * var(--s,1));width:auto;max-width:82%;object-fit:contain;opacity:.42;filter:grayscale(1) sepia(.25) brightness(.95);transition:opacity .5s,filter .5s}
+.fr-frame:hover .fr-win img{opacity:1;filter:none}
+.fr-no{position:absolute;top:calc(var(--h) * .055);left:10px;font:600 9px/1 var(--mono,ui-monospace),monospace;letter-spacing:.12em;color:rgba(255,190,90,.45)}
+.fr-edge{position:absolute;bottom:calc(var(--h) * .055);right:10px;font:600 8px/1 var(--mono,ui-monospace),monospace;letter-spacing:.18em;color:rgba(255,190,90,.32);white-space:nowrap}
+/* the lit gate in the middle: whatever passes under it lights up */
+.fr-gate{--gw:calc(var(--h) * 1.42 - var(--h) * .1);position:absolute;left:50%;top:calc(var(--h) * .17);width:var(--gw);height:calc(var(--h) * .66);transform:translateX(-50%);border-radius:6px;pointer-events:none;z-index:2;
+  -webkit-backdrop-filter:brightness(2.4) contrast(1.15) saturate(1.3);backdrop-filter:brightness(2.4) contrast(1.15) saturate(1.3);
+  box-shadow:0 0 0 1px rgba(216,255,0,.35),0 0 40px rgba(216,255,0,.18),inset 0 0 50px rgba(246,255,196,.12);animation:frGate 3.2s steps(1) infinite}
+@keyframes frGate{0%{opacity:1}7%{opacity:.82}9%{opacity:1}36%{opacity:.88}38%{opacity:1}73%{opacity:.9}100%{opacity:1}}
+.fr-gate .c{position:absolute;width:16px;height:16px;border:2px solid var(--lime)}
+.fr-gate .tl{left:-7px;top:-7px;border-right:0;border-bottom:0}
+.fr-gate .tr{right:-7px;top:-7px;border-left:0;border-bottom:0}
+.fr-gate .bl{left:-7px;bottom:-7px;border-right:0;border-top:0}
+.fr-gate .br{right:-7px;bottom:-7px;border-left:0;border-top:0}
+.fr-now{position:absolute;left:50%;top:calc(-1 * var(--h) * .17 - 30px);transform:translateX(-50%);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+  font:600 10px/1 var(--mono,ui-monospace),monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--lime);text-shadow:0 0 12px rgba(216,255,0,.5)}
+.fr-now i{width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime);animation:frRec 1.2s steps(1) infinite}
+/* film texture over everything */
+.fr-grain{position:absolute;inset:-60%;z-index:4;pointer-events:none;background:url(/media/noise.png) repeat;opacity:.13;mix-blend-mode:overlay;animation:reelGrain .7s steps(5) infinite}
+.fr-scratch{position:absolute;inset:0;z-index:4;pointer-events:none}
+.fr-scratch i{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(255,240,210,.35) 20%,rgba(255,240,210,.1) 70%,transparent);opacity:0}
+.fr-scratch i:nth-child(1){left:31%;animation:frScr 4.3s steps(1) infinite}
+.fr-scratch i:nth-child(2){left:58%;animation:frScr 6.1s steps(1) infinite 1.2s}
+.fr-scratch i:nth-child(3){left:72%;width:2px;animation:frScr 5.2s steps(1) infinite 2.7s}
+@keyframes frScr{0%,86%{opacity:0;transform:translateX(0)}88%{opacity:1;transform:translateX(6px)}91%{opacity:.6;transform:translateX(-4px)}94%,100%{opacity:0}}
+@media (max-width:700px){.fr-stage{--h:132px;padding-top:48px}.fr-beam{width:80vw}.fr-tag{font-size:9.5px}}
+@media (prefers-reduced-motion:reduce){.fr-track,.fr-film,.fr-beam,.fr-gate,.fr-grain,.fr-scratch i,.fr-tag b,.fr-now i{animation:none}}
+.fr-grain{opacity:.06}
+.fr-no{top:calc(var(--h) * .03 + 20px)}
+.fr-edge{bottom:calc(var(--h) * .03 + 20px)}
+.fr-beam{width:min(420px,46vw);background:linear-gradient(180deg,rgba(246,255,196,.28),rgba(216,255,0,.05) 75%,transparent)}
+@media (max-width:700px){.fr-no{top:calc(var(--h) * .03 + 17px)}.fr-edge{bottom:calc(var(--h) * .03 + 17px)}}
