@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Words from "@/components/Words";
 import ProjectGrid from "@/components/ProjectGrid";
-import ContactBlock from "@/components/ContactBlock";
 import Footer from "@/components/Footer";
 import { SORTED_PROJECTS } from "@/data/projects";
 import JsonLd from "@/components/JsonLd";
@@ -28,7 +27,6 @@ export default function ProjectsPage() {
       <section className="wrap" style={{ paddingBottom: "clamp(80px,10vw,140px)" }}>
         <ProjectGrid projects={SORTED_PROJECTS} />
       </section>
-      <ContactBlock id="projects-contact" />
       <Footer />
     </>
   );
