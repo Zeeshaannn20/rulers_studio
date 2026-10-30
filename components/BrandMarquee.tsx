@@ -31,9 +31,6 @@ export default function BrandMarquee() {
     <div className="fr" aria-label="Speculative work">
       <div className="fr-head">
         <span className="eyebrow">Speculative work</span>
-        <span className="fr-tag" aria-hidden="true">
-          <b /> Reel 01 · 35mm · {String(items.length).padStart(2, "0")} films
-        </span>
       </div>
       <ul className="sr-only">
         {items.map((b) => (
