@@ -72,7 +72,7 @@ export default function MeetButton({ className = "btn dark" }: { className?: str
 
   return (
     <button type="button" className={className} onClick={start} disabled={!!busy} aria-busy={!!busy} style={{ alignSelf: "flex-start" }}>
-      {busy === "opening" ? "Opening payment…" : busy === "verifying" ? "Confirming…" : "Book your 30 minutes"} <Arrow />
+      {busy === "opening" ? "Opening payment…" : busy === "verifying" ? "Confirming…" : "Book a call with a founder"} <Arrow />
     </button>
   );
 }

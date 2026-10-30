@@ -1611,18 +1611,14 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 /* ── reveal: the stage fades to black behind the outline title (opacity only) ── */
 .stage-black{position:absolute;inset:0;z-index:0;background:#000;opacity:0;pointer-events:none;will-change:opacity}
 
-/* ── contact: "30 minutes with the founders" card ── */
-.talk{gap:30px}
-.talk-top{display:flex;flex-direction:column;gap:16px}
-.talk-tag{display:inline-flex;align-items:center;gap:9px;font:600 11px/1 var(--caps);letter-spacing:.22em;text-transform:uppercase;color:rgba(var(--ink-rgb),.72)}
-.talk-tag i{width:7px;height:7px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 0 rgba(10,10,10,.45);animation:talkPulse 2.2s ease-out infinite}
+/* ── contact: founders' desk card ── */
+.talk{justify-content:flex-start}
+.talk-top{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(22px,2.4vw,34px)}
+.talk-tag{display:inline-flex;align-items:center;gap:12px;font:600 12px/1 var(--caps);letter-spacing:.3em;text-transform:uppercase;color:var(--ink)}
+.talk-tag i{width:10px;height:10px;border-radius:50%;background:var(--ink);animation:talkPulse 2.2s ease-out infinite}
 @keyframes talkPulse{0%{box-shadow:0 0 0 0 rgba(10,10,10,.4)}70%,100%{box-shadow:0 0 0 9px rgba(10,10,10,0)}}
-.talk .talk-h{margin:0;font:500 clamp(40px,4.3vw,72px)/.98 var(--serif);letter-spacing:-.035em;color:var(--ink);max-width:12ch}
-.talk .talk-h span{font-style:italic;font-weight:400}
-.talk-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid rgba(var(--ink-rgb),.16)}
-.talk-steps li{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:18px;padding:16px 0;border-bottom:1px solid rgba(var(--ink-rgb),.16)}
-.talk-steps b{display:block;font:500 clamp(20px,1.6vw,26px)/1.1 var(--serif);letter-spacing:-.01em;color:var(--ink)}
-.talk-steps small{display:block;margin-top:5px;font-size:14px;line-height:1.45;color:rgba(var(--ink-rgb),.66)}
-.talk-foot{display:flex;flex-direction:column;gap:16px}
-.talk-meta{font:600 11px/1.4 var(--caps);letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--ink-rgb),.62)}
+.talk .talk-h{margin:0;font:500 clamp(46px,5vw,84px)/.98 var(--serif);letter-spacing:-.04em;color:var(--ink);max-width:10ch}
+.talk .talk-sub{margin:0;max-width:none;font:italic 400 clamp(32px,3.3vw,54px)/1.05 var(--serif);letter-spacing:-.025em;color:var(--ink)}
 @media (prefers-reduced-motion:reduce){.talk-tag i{animation:none}}
+@media (max-width:520px){.talk .btn{max-width:100%;font-size:10.5px;letter-spacing:.1em;gap:10px;padding-left:18px;white-space:nowrap}}
+@media (max-width:380px){.talk .btn{font-size:10px;letter-spacing:.06em;gap:8px;padding:0 6px 0 16px;height:46px}.talk .btn .arr{width:32px;height:32px;padding:9px}}

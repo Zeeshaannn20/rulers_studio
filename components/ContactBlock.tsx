@@ -116,36 +116,8 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
             <span className="talk-tag">
               <i /> Founders&apos; desk
             </span>
-            <h2 className="talk-h">
-              Your Brand. <span>Our Founders.</span> 30&nbsp;Minutes.
-            </h2>
-            <p>No sales team, no middlemen. The people who make the films, talking about yours.</p>
-          </div>
-          <ol className="talk-steps">
-            <li>
-              <span className="w-no">01</span>
-              <div>
-                <b>Your idea, heard.</b>
-                <small>The brand, the product and the feeling you want people to have.</small>
-              </div>
-            </li>
-            <li>
-              <span className="w-no">02</span>
-              <div>
-                <b>Concepts, live.</b>
-                <small>Two or three film ideas shaped with you on the call.</small>
-              </div>
-            </li>
-            <li>
-              <span className="w-no">03</span>
-              <div>
-                <b>A clear plan.</b>
-                <small>Format, timeline and price before we hang up.</small>
-              </div>
-            </li>
-          </ol>
-          <div className="talk-foot">
-            <span className="talk-meta">₹99 · 30 minutes · Online, anywhere in the world</span>
+            <h2 className="talk-h">Big ideas deserve a seat at the table.</h2>
+            <p className="talk-sub">Let&rsquo;s build something remarkable.</p>
             <MeetButton />
           </div>
         </aside>
