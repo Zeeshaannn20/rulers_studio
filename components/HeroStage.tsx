@@ -92,21 +92,14 @@ export default function HeroStage() {
       // close-up of an eye) so nothing flickers inside the letters.
       // Then we zoom through the letters, the black falls away, the eye shot plays on and the
       // headline lands over a dimmed, graded video. ──
-      // The change is a light wipe: a lime light bar sweeps left to right; behind it the stage
-      // falls to black and the video pours into the outline letters, so the two looks blend
-      // across the bar instead of cutting. The letters bloom with light, then sharpen.
-      tl.set(".knock", { autoAlpha: 1 }, 1.0)
-        .fromTo(".stage .hero-panel", { opacity: 0, scale: 1, yPercent: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 1.0)
-        .fromTo(el, { "--wipe": "-6%" }, { "--wipe": "128%", duration: 0.3, ease: "power1.inOut", immediateRender: false }, 1.0)
-        .fromTo(
-          ".knock .work-word",
-          { textShadow: "0 0 70px rgba(255,255,255,0.75)" },
-          { textShadow: "0 0 0px rgba(255,255,255,0)", duration: 0.3, ease: "power2.out", immediateRender: false },
-          1.04
-        )
-        .to(".work-title", { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.12)
+      // A soft crossfade, opacity only (no repaints): the grey stage fades to black around the
+      // outline title, then the video fades up inside the letters while the outline melts away.
+      tl.to(".stage-black", { opacity: 1, duration: 0.14, ease: "sine.inOut" }, 0.98)
         .fromTo(".work-shine", { opacity: 1 }, { opacity: 0, duration: 0.08, immediateRender: false }, 0.97)
-        .fromTo(".knock-in", { scale: 0.985 }, { scale: 1.035, duration: 0.34, ease: "sine.out", immediateRender: false }, 1.0)
+        .set(".knock", { autoAlpha: 1 }, 1.12)
+        .fromTo(".stage .hero-panel", { opacity: 0, scale: 1, yPercent: 0 }, { opacity: 1, duration: 0.18, ease: "sine.inOut", immediateRender: false }, 1.12)
+        .to(".work-title", { opacity: 0, duration: 0.16, ease: "sine.in" }, 1.15)
+        .fromTo(".knock-in", { scale: 1 }, { scale: 1.035, duration: 0.22, ease: "sine.out", immediateRender: false }, 1.12)
         .to(".knock-in", { scale: 8, duration: 0.24, ease: "power3.in" }, 1.34)
         .to(".knock", { opacity: 0, duration: 0.12, ease: "power1.in" }, 1.48)
         .fromTo(".stage .reel-dim", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.inOut" }, 1.54)
@@ -136,7 +129,6 @@ export default function HeroStage() {
       let reelClean = false;
       let seeded = false;
       let revealing = false;
-      let wiping = false;
       const REVEAL_FRAME = 7.05; // seconds into the showreel: the eye close-up
       const apply = () => {
         if (head.t > 0.001) settleEntrance();
@@ -149,17 +141,12 @@ export default function HeroStage() {
           el.classList.toggle("reel-on", clean);
         }
         // the video is brightened while it is only seen through the letters
-        const wipe = p > 0.98 && p < 1.32;
-        if (wipe !== wiping) {
-          wiping = wipe;
-          el.classList.toggle("wiping", wipe);
-        }
         const rev = p > 0.95 && p < 1.46;
         if (rev !== revealing) {
           revealing = rev;
           el.classList.toggle("revealing", rev);
         }
-        const on = p > 0.4 && p < 1.27;
+        const on = p > 0.4 && p < 1.2;
         if (on !== titleOn) {
           titleOn = on;
           workTitle.classList.remove("shine-go");
@@ -310,6 +297,9 @@ export default function HeroStage() {
         </svg>
 
         {/* giant title that lights up behind the blast */}
+        {/* plain black that the stage fades into before the video fills the letters */}
+        <div className="stage-black" aria-hidden="true" />
+
         <div className="work">
           <div className="work-title" aria-hidden="true">
             <div className="work-word">
@@ -417,9 +407,6 @@ export default function HeroStage() {
             </div>
           </div>
         </div>
-
-        {/* the light bar that carries the change from the outline title to the video letters */}
-        <div className="wipe-bar" aria-hidden="true" />
 
         <div className="stage-grain" aria-hidden="true" />
 
