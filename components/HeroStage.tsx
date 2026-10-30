@@ -89,17 +89,15 @@ export default function HeroStage() {
 
       // ── 1 → 2: the showreel pours INTO the letters of "Rulers Studio" (a black layer with the
       // name cut out of it, multiplied over the video). The video is held on one still frame (a
-      // close-up of an eye) so nothing flickers inside the letters; a lime hairline traces them.
+      // close-up of an eye) so nothing flickers inside the letters.
       // Then we zoom through the letters, the black falls away, the eye shot plays on and the
       // headline lands over a dimmed, graded video. ──
       tl.set(".knock", { autoAlpha: 1 }, 1.0)
-        .set(".knock-line", { autoAlpha: 1 }, 1.0)
         .fromTo(".stage .hero-panel", { opacity: 0, scale: 1, yPercent: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 1.0)
         .to(".work-title", { opacity: 0, duration: 0.06 }, 1.0)
         .fromTo(".knock .work-word", { color: "#000000" }, { color: "#ffffff", duration: 0.18, ease: "power1.inOut", immediateRender: false }, 1.0)
-        .fromTo([".knock-in", ".knock-line-in"], { scale: 1 }, { scale: 1.035, duration: 0.3, ease: "sine.inOut", immediateRender: false }, 1.0)
-        .to([".knock-in", ".knock-line-in"], { scale: 8, duration: 0.24, ease: "power3.in" }, 1.3)
-        .to(".knock-line", { opacity: 0, duration: 0.08 }, 1.38)
+        .fromTo(".knock-in", { scale: 1 }, { scale: 1.035, duration: 0.3, ease: "sine.inOut", immediateRender: false }, 1.0)
+        .to(".knock-in", { scale: 8, duration: 0.24, ease: "power3.in" }, 1.3)
         .to(".knock", { opacity: 0, duration: 0.12, ease: "power1.in" }, 1.44)
         .fromTo(".stage .reel-dim", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.inOut" }, 1.5)
         .fromTo(".stage .hero-copy", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.24, ease: "power3.out" }, 1.54)
@@ -398,14 +396,6 @@ export default function HeroStage() {
         {/* "Rulers Studio" cut out of black: multiplied over the showreel, the video shows only inside the letters */}
         <div className="knock" aria-hidden="true">
           <div className="knock-in">
-            <div className="work-word">
-              <span className="ww-r">Rulers</span> <em>Studio</em>
-            </div>
-          </div>
-        </div>
-        {/* a fine lime hairline around the video-filled letters */}
-        <div className="knock-line" aria-hidden="true">
-          <div className="knock-line-in">
             <div className="work-word">
               <span className="ww-r">Rulers</span> <em>Studio</em>
             </div>

@@ -22,8 +22,8 @@ function logoFor(slug: string): { src: string; scale: number } | null {
 }
 
 // "Speculative work" as a strip of 35mm film running through a projector: every brand sits in its
-// own frame between sprocket holes, the strip weaves gently in the gate, and the frame passing the
-// lit gate in the middle lights up under the projector beam (flicker, grain and scratches included).
+// own frame between sprocket holes, the strip weaves gently, and each brand lights up as it passes
+// through a soft spotlight in the middle (with grain and the odd scratch).
 export default function BrandMarquee() {
   const items = BRANDS.map((b) => ({ ...b, logo: logoFor(b.slug) })).filter((b) => b.logo);
 
@@ -42,31 +42,27 @@ export default function BrandMarquee() {
       </ul>
 
       <div className="fr-stage" aria-hidden="true">
-        <div className="fr-beam" />
         <div className="fr-film">
-          <div className="fr-track">
-            {[0, 1].map((copy) =>
-              items.map((b, i) => (
-                <div className="fr-frame" key={copy + b.slug}>
-                  <span className="fr-no">{String(i + 1).padStart(2, "0")}A</span>
-                  <div className="fr-win">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={b.logo!.src} alt="" loading="lazy" decoding="async" style={{ "--s": b.logo!.scale } as React.CSSProperties} />
+          {/* two copies of the same strip run in step: a dim one, and a bright one that only
+              shows through a soft spotlight in the middle, so each brand lights up as it passes */}
+          {["", " lit"].map((k) => (
+            <div className={"fr-lane" + k} key={k}>
+            <div className={"fr-track" + k}>
+              {[0, 1].map((copy) =>
+                items.map((b, i) => (
+                  <div className="fr-frame" key={copy + b.slug}>
+                    <span className="fr-no">{String(i + 1).padStart(2, "0")}A</span>
+                    <div className="fr-win">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={b.logo!.src} alt="" loading="lazy" decoding="async" style={{ "--s": b.logo!.scale } as React.CSSProperties} />
+                    </div>
+                    <span className="fr-edge">RULERS STUDIO ▸ {String(i + 1).padStart(2, "0")}</span>
                   </div>
-                  <span className="fr-edge">RULERS STUDIO ▸ SAFETY FILM ▸ {String(i + 1).padStart(2, "0")}</span>
-                </div>
-              ))
-            )}
-          </div>
-          <div className="fr-gate">
-            <span className="fr-now">
-              <i /> Now screening
-            </span>
-            <i className="c tl" />
-            <i className="c tr" />
-            <i className="c bl" />
-            <i className="c br" />
-          </div>
+                ))
+              )}
+            </div>
+            </div>
+          ))}
         </div>
         <div className="fr-grain" />
         <div className="fr-scratch">

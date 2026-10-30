@@ -1577,3 +1577,33 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 .fr-edge{bottom:calc(var(--h) * .03 + 20px)}
 .fr-beam{width:min(420px,46vw);background:linear-gradient(180deg,rgba(246,255,196,.28),rgba(216,255,0,.05) 75%,transparent)}
 @media (max-width:700px){.fr-no{top:calc(var(--h) * .03 + 17px)}.fr-edge{bottom:calc(var(--h) * .03 + 17px)}}
+
+/* film strip, v2: no beam or gate box; colours from the site (black, grey, lime accent);
+   a second, bright copy of the strip shows through a soft spotlight in the middle */
+.fr-tag b{background:var(--lime);box-shadow:0 0 10px rgba(216,255,0,.7)}
+.fr-film{display:grid}
+.fr-film>.fr-track{grid-area:1/1}
+.fr-frame{background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='18'%3E%3Crect x='6' y='4' width='14' height='10' rx='2.6' fill='%23e7e7e7' fill-opacity='.13'/%3E%3C/svg%3E") repeat-x 0 calc(var(--h) * .03) / 26px 18px,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='18'%3E%3Crect x='6' y='4' width='14' height='10' rx='2.6' fill='%23e7e7e7' fill-opacity='.13'/%3E%3C/svg%3E") repeat-x 0 calc(100% - var(--h) * .03) / 26px 18px,
+    linear-gradient(180deg,#0b0b0b,#121212 50%,#0b0b0b);border-left:1px solid rgba(var(--paper-rgb),.05)}
+.fr-win{background:radial-gradient(120% 100% at 50% 45%,#191919 0%,#0a0a0a 85%);box-shadow:inset 0 0 0 1px rgba(var(--paper-rgb),.06),inset 0 0 30px rgba(0,0,0,.8)}
+.fr-win img{opacity:.32;filter:grayscale(1) brightness(.9)}
+.fr-no{color:rgba(216,255,0,.45)}
+.fr-edge{color:rgba(var(--paper-rgb),.24)}
+.fr-track.lit{pointer-events:none;-webkit-mask-image:radial-gradient(closest-side,#000 35%,transparent 100%);mask-image:radial-gradient(closest-side,#000 35%,transparent 100%);
+  -webkit-mask-size:min(520px,46vw) 100%;mask-size:min(520px,46vw) 100%;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.fr-track.lit .fr-frame{background:none;border-color:transparent}
+.fr-track.lit .fr-win{background:radial-gradient(120% 100% at 50% 45%,#262626 0%,#111 85%)}
+.fr-track.lit .fr-win img{opacity:1;filter:none;drop-shadow:none}
+.fr-track.lit .fr-no{color:var(--lime)}
+.fr-track.lit .fr-edge{color:rgba(var(--paper-rgb),.55)}
+.fr-stage:hover .fr-track{animation-play-state:paused}
+.fr-stage{padding-top:14px;height:calc(var(--h) + 28px)}
+@media (max-width:700px){.fr-stage{padding-top:10px}}
+/* the spotlight mask sits on a lane that stays still while the strip slides inside it */
+.fr-film>.fr-lane{grid-area:1/1;overflow:hidden;height:100%}
+.fr-track.lit{-webkit-mask-image:none;mask-image:none}
+.fr-lane.lit{pointer-events:none;-webkit-mask-image:radial-gradient(closest-side,#000 40%,transparent 100%);mask-image:radial-gradient(closest-side,#000 40%,transparent 100%);
+  -webkit-mask-size:min(560px,50vw) 100%;mask-size:min(560px,50vw) 100%;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+@media (max-width:700px){.fr-lane.lit{-webkit-mask-size:80vw 100%;mask-size:80vw 100%}}
