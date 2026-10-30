@@ -16,6 +16,10 @@ function logoFor(slug: string): { src: string; scale: number } | null {
       const h = b.readUInt32BE(20);
       if (w && h) scale = Math.max(0.55, Math.min(1.15, Math.sqrt(2.2 / (w / h))));
     }
+    if (ext === "svg") {
+      const vb = fs.readFileSync(file, "utf8").match(/viewBox="[\d.\-]+ [\d.\-]+ ([\d.]+) ([\d.]+)"/);
+      if (vb) scale = Math.max(0.55, Math.min(1.15, Math.sqrt(2.2 / (Number(vb[1]) / Number(vb[2])))));
+    }
     return { src: `/media/brands/${slug}.${ext}`, scale };
   }
   return null;

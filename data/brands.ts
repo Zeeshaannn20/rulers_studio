@@ -7,6 +7,7 @@ export const BRANDS: { slug: string; name: string }[] = [
   { slug: "blinkit", name: "Blinkit" },
   { slug: "amul", name: "Amul" },
   { slug: "sony", name: "Sony" },
+  { slug: "emergent", name: "Emergent" },
   { slug: "made-by-alas", name: "Made by Alas" },
   { slug: "nilkamal", name: "Nilkamal" },
   { slug: "swish", name: "Swish" },

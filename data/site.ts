@@ -62,7 +62,6 @@ export const FILM_STRIP: { slug: string; clip?: string }[] = [
   { slug: "monster", clip: "/media/previews/monster.mp4" },
   { slug: "bonkers-corner", clip: "/media/previews/bonkers-corner.mp4" },
   { slug: "rolex", clip: "/media/previews/rolex.mp4" },
-  { slug: "snitch", clip: "/media/previews/snitch.mp4" },
 ];
 
 // Client names (kept for later use; the strip under the hero now shows the film strip)
