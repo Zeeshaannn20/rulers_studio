@@ -1510,7 +1510,7 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 .stage-hint{display:none!important}
 
 /* letter reveal: lime hairline above the video-filled letters, zooming with them */
-.knock .work-word{color:#000}
+.knock .work-word{color:#fff}
 .knock-line{position:absolute;inset:0;z-index:5;display:grid;place-items:center;opacity:0;visibility:hidden;pointer-events:none;will-change:opacity}
 .knock-line-in{transform-origin:41% 54%;will-change:transform}
 .knock-line .work-word,.knock-line .work-word span,.knock-line .work-word em{color:transparent;background:none;-webkit-text-stroke:1px rgba(216,255,0,.85);filter:drop-shadow(0 0 10px rgba(216,255,0,.35))}
@@ -1607,3 +1607,13 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 .fr-lane.lit{pointer-events:none;-webkit-mask-image:radial-gradient(closest-side,#000 40%,transparent 100%);mask-image:radial-gradient(closest-side,#000 40%,transparent 100%);
   -webkit-mask-size:min(560px,50vw) 100%;mask-size:min(560px,50vw) 100%;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 @media (max-width:700px){.fr-lane.lit{-webkit-mask-size:80vw 100%;mask-size:80vw 100%}}
+
+/* ── reveal: light wipe from the outline title into the video letters ── */
+.stage-wrap{--wipe:-6%}
+.stage-wrap.wiping .knock{-webkit-mask-image:linear-gradient(90deg,#000 calc(var(--wipe) - 16%),transparent var(--wipe));mask-image:linear-gradient(90deg,#000 calc(var(--wipe) - 16%),transparent var(--wipe))}
+.stage-wrap.wiping .stage .hero-panel{background:#000;-webkit-mask-image:linear-gradient(90deg,#000 calc(var(--wipe) - 24%),transparent calc(var(--wipe) - 8%));mask-image:linear-gradient(90deg,#000 calc(var(--wipe) - 24%),transparent calc(var(--wipe) - 8%))}
+.wipe-bar{position:absolute;top:-6%;bottom:-6%;left:calc(var(--wipe) - 9%);width:min(34vw,520px);transform:translateX(-50%);z-index:5;pointer-events:none;mix-blend-mode:screen;opacity:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(216,255,0,.05) 22%,rgba(216,255,0,.22) 40%,rgba(240,255,170,.75) 48.6%,#fff 50%,rgba(216,255,0,.55) 51.6%,rgba(216,255,0,.12) 64%,transparent 82%)}
+.wipe-bar::after{content:"";position:absolute;inset:0 30%;background:radial-gradient(50% 40% at 50% 50%,rgba(216,255,0,.35),transparent 70%);filter:blur(18px)}
+.stage-wrap.wiping .wipe-bar{opacity:1}
+@media (prefers-reduced-motion:reduce){.wipe-bar{display:none}}

@@ -92,16 +92,26 @@ export default function HeroStage() {
       // close-up of an eye) so nothing flickers inside the letters.
       // Then we zoom through the letters, the black falls away, the eye shot plays on and the
       // headline lands over a dimmed, graded video. ──
+      // The change is a light wipe: a lime light bar sweeps left to right; behind it the stage
+      // falls to black and the video pours into the outline letters, so the two looks blend
+      // across the bar instead of cutting. The letters bloom with light, then sharpen.
       tl.set(".knock", { autoAlpha: 1 }, 1.0)
         .fromTo(".stage .hero-panel", { opacity: 0, scale: 1, yPercent: 0 }, { opacity: 1, duration: 0.001, immediateRender: false }, 1.0)
-        .to(".work-title", { opacity: 0, duration: 0.06 }, 1.0)
-        .fromTo(".knock .work-word", { color: "#000000" }, { color: "#ffffff", duration: 0.18, ease: "power1.inOut", immediateRender: false }, 1.0)
-        .fromTo(".knock-in", { scale: 1 }, { scale: 1.035, duration: 0.3, ease: "sine.inOut", immediateRender: false }, 1.0)
-        .to(".knock-in", { scale: 8, duration: 0.24, ease: "power3.in" }, 1.3)
-        .to(".knock", { opacity: 0, duration: 0.12, ease: "power1.in" }, 1.44)
-        .fromTo(".stage .reel-dim", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.inOut" }, 1.5)
-        .fromTo(".stage .hero-copy", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.24, ease: "power3.out" }, 1.54)
-        .to(".pager-wrap", { autoAlpha: 0, duration: 0.14 }, 1.7);
+        .fromTo(el, { "--wipe": "-6%" }, { "--wipe": "128%", duration: 0.3, ease: "power1.inOut", immediateRender: false }, 1.0)
+        .fromTo(
+          ".knock .work-word",
+          { textShadow: "0 0 70px rgba(255,255,255,0.75)" },
+          { textShadow: "0 0 0px rgba(255,255,255,0)", duration: 0.3, ease: "power2.out", immediateRender: false },
+          1.04
+        )
+        .to(".work-title", { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.12)
+        .fromTo(".work-shine", { opacity: 1 }, { opacity: 0, duration: 0.08, immediateRender: false }, 0.97)
+        .fromTo(".knock-in", { scale: 0.985 }, { scale: 1.035, duration: 0.34, ease: "sine.out", immediateRender: false }, 1.0)
+        .to(".knock-in", { scale: 8, duration: 0.24, ease: "power3.in" }, 1.34)
+        .to(".knock", { opacity: 0, duration: 0.12, ease: "power1.in" }, 1.48)
+        .fromTo(".stage .reel-dim", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.inOut" }, 1.54)
+        .fromTo(".stage .hero-copy", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.24, ease: "power3.out" }, 1.58)
+        .to(".pager-wrap", { autoAlpha: 0, duration: 0.14 }, 1.72);
       tl.to({}, { duration: 0.05 }, 1.95); // ends at exactly 2
 
       if (reduce) {
@@ -126,24 +136,30 @@ export default function HeroStage() {
       let reelClean = false;
       let seeded = false;
       let revealing = false;
+      let wiping = false;
       const REVEAL_FRAME = 7.05; // seconds into the showreel: the eye close-up
       const apply = () => {
         if (head.t > 0.001) settleEntrance();
         tl.time(head.t);
         const p = head.t;
         // once the showreel is up, every stage overlay (grain, light rays, vignette) steps aside
-        const clean = p > 1.02;
+        const clean = p > 1.2;
         if (clean !== reelClean) {
           reelClean = clean;
           el.classList.toggle("reel-on", clean);
         }
         // the video is brightened while it is only seen through the letters
-        const rev = p > 0.95 && p < 1.42;
+        const wipe = p > 0.98 && p < 1.32;
+        if (wipe !== wiping) {
+          wiping = wipe;
+          el.classList.toggle("wiping", wipe);
+        }
+        const rev = p > 0.95 && p < 1.46;
         if (rev !== revealing) {
           revealing = rev;
           el.classList.toggle("revealing", rev);
         }
-        const on = p > 0.4 && p < 1.04;
+        const on = p > 0.4 && p < 1.27;
         if (on !== titleOn) {
           titleOn = on;
           workTitle.classList.remove("shine-go");
@@ -164,10 +180,10 @@ export default function HeroStage() {
             if (reel.readyState >= 1) go();
             else reel.addEventListener("loadedmetadata", go, { once: true });
           }
-          if (p >= 1.44 && reel.paused) {
+          if (p >= 1.48 && reel.paused) {
             if (reel.currentTime < REVEAL_FRAME - 0.3 && reel.readyState >= 1) reel.currentTime = REVEAL_FRAME;
             reel.play().catch(() => {});
-          } else if (p < 1.44 && !reel.paused) reel.pause();
+          } else if (p < 1.48 && !reel.paused) reel.pause();
         }
         // while a key/dot glide runs the pager already shows the destination — never flip it back
         const idx = gliding ? target : Math.min(STEPS, Math.round(p));
@@ -401,6 +417,9 @@ export default function HeroStage() {
             </div>
           </div>
         </div>
+
+        {/* the light bar that carries the change from the outline title to the video letters */}
+        <div className="wipe-bar" aria-hidden="true" />
 
         <div className="stage-grain" aria-hidden="true" />
 
