@@ -2,18 +2,14 @@
 import { useRef, useState } from "react";
 import TLink from "./TLink";
 import Field from "./Field";
+import PhoneField from "./PhoneField";
 import Select from "./Select";
 import { Arrow } from "./Icons";
 import { useSubmit } from "@/lib/useSubmit";
-import { applicationSchema, CV_MAX_BYTES, CV_TYPES, normalisePhone } from "@/lib/validation";
+import { applicationSchema, CV_MAX_BYTES, CV_TYPES } from "@/lib/validation";
 import { EXPERIENCE } from "@/data/roles";
 
-// Phone boxes keep only the 10 digits (a pasted "+91 98765-43210" becomes 9876543210); email boxes drop spaces.
-const onlyPhone = (e: React.FormEvent<HTMLInputElement>) => {
-  const t = e.currentTarget;
-  const v = normalisePhone(t.value);
-  if (t.value !== v) t.value = v;
-};
+// Email boxes drop spaces.
 const noSpaces = (e: React.FormEvent<HTMLInputElement>) => {
   const t = e.currentTarget;
   if (/\s/.test(t.value)) t.value = t.value.replace(/\s+/g, "");
@@ -93,10 +89,7 @@ export default function ApplyForm({ role, roleTitle }: { role: string; roleTitle
         <input id="ap-name" name="name" autoComplete="name" onBlur={blur} aria-invalid={!!errors.name} />
       </Field>
       <Field id="ap-phone" label="Phone number" required error={errors.phone}>
-        <div className="phone">
-          <span>+91</span>
-          <input id="ap-phone" name="phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98765 43210" pattern="[6-9][0-9]{9}" onInput={onlyPhone} onBlur={blur} aria-invalid={!!errors.phone} />
-        </div>
+        <PhoneField id="ap-phone" name="phone" onBlur={blur} invalid={!!errors.phone} />
       </Field>
       <Field id="ap-email" label="Email" required error={errors.email}>
         <input id="ap-email" name="email" type="email" inputMode="email" autoComplete="email" placeholder="name@gmail.com" onInput={noSpaces} onBlur={blur} aria-invalid={!!errors.email} />

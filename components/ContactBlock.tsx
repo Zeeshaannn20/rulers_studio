@@ -4,19 +4,15 @@ import { usePathname } from "next/navigation";
 import TLink from "./TLink";
 import Words from "./Words";
 import Field from "./Field";
+import PhoneField from "./PhoneField";
 import Select from "./Select";
 import { Arrow } from "./Icons";
 import { useSubmit } from "@/lib/useSubmit";
-import { enquirySchema, normalisePhone } from "@/lib/validation";
+import { enquirySchema } from "@/lib/validation";
 import { BUDGETS, SERVICES } from "@/data/site";
 import MeetButton from "./MeetButton";
 
-// Phone boxes keep only the 10 digits (a pasted "+91 98765-43210" becomes 9876543210); email boxes drop spaces.
-const onlyPhone = (e: React.FormEvent<HTMLInputElement>) => {
-  const t = e.currentTarget;
-  const v = normalisePhone(t.value);
-  if (t.value !== v) t.value = v;
-};
+// Email boxes drop spaces.
 const noSpaces = (e: React.FormEvent<HTMLInputElement>) => {
   const t = e.currentTarget;
   if (/\s/.test(t.value)) t.value = t.value.replace(/\s+/g, "");
@@ -60,10 +56,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
                 <input id={f("name")} name="name" autoComplete="name" onBlur={blur} aria-invalid={!!errors.name} />
               </Field>
               <Field id={f("mobile")} label="Mobile number" required error={errors.mobile}>
-                <div className="phone">
-                  <span>+91</span>
-                  <input id={f("mobile")} name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98765 43210" pattern="[6-9][0-9]{9}" onInput={onlyPhone} onBlur={blur} aria-invalid={!!errors.mobile} />
-                </div>
+                <PhoneField id={f("mobile")} name="mobile" onBlur={blur} invalid={!!errors.mobile} />
               </Field>
 
               <Field id={f("email")} label="Email" required full error={errors.email}>

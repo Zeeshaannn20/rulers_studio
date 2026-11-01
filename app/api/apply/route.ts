@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { applicationSchema, toFieldErrors, CV_MAX_BYTES, CV_TYPES } from "@/lib/validation";
+import { applicationSchema, toFieldErrors, CV_MAX_BYTES, CV_TYPES, formatPhone } from "@/lib/validation";
 import { rateLimited } from "@/lib/rateLimit";
 import { sendToSheet } from "@/lib/sheet";
 import { getRole } from "@/data/roles";
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     {
       role: role.title,
       name: d.name,
-      phone: "+91 " + d.phone,
+      phone: formatPhone(d.phone),
       email: d.email.toLowerCase(),
       experience: d.experience,
       currentCtc: d.currentCtc,

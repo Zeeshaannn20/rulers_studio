@@ -1861,3 +1861,27 @@ html.modal-open,html.modal-open body{overflow:hidden}
 /* contact → FAQ: one tight gap instead of two full section paddings */
 .contact.sec:has(+ .faq){padding-bottom:clamp(28px,3.5vw,56px)}
 .contact.sec + .faq{padding-top:clamp(28px,3.5vw,56px)}
+
+/* phone fields: country picker in front of the number (India default) */
+.phone{position:relative}
+.phone span{padding-left:0}
+.phone .cc-btn{display:inline-flex;align-items:center;gap:7px;flex:none;align-self:stretch;margin:0;padding:0 12px 0 14px;border:0;border-right:1px solid var(--line);border-radius:14px 0 0 14px;background:transparent;color:var(--paper);font:15px var(--body);cursor:pointer;transition:background .25s}
+.phone .cc-btn:hover,.phone.open .cc-btn{background:rgba(var(--paper-rgb),.05)}
+.phone .cc-btn:focus-visible{outline:2px solid var(--lime);outline-offset:-2px}
+.phone .cc-flag{font-size:19px;line-height:1;color:inherit;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",var(--body)}
+.phone .cc-dial{color:var(--soft);font-variant-numeric:tabular-nums}
+.phone .cc-chev{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.6;transition:transform .25s}
+.phone.open .cc-chev{transform:rotate(180deg)}
+.fld .phone input{min-width:0;flex:1}
+.cc-pop{position:absolute;left:0;top:calc(100% + 8px);z-index:30;width:min(340px,calc(100vw - 48px));padding:8px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:16px;box-shadow:0 30px 70px rgba(0,0,0,.6);animation:drop .22s var(--ease)}
+.cc-pop.up{top:auto;bottom:calc(100% + 8px)}
+.fld .cc-pop .cc-search{width:100%;padding:11px 14px;margin:0 0 6px;border:1px solid var(--line);border-radius:11px;background:rgba(var(--paper-rgb),.04);font-size:15px}
+.fld .cc-pop .cc-search:focus{border-color:var(--lime)}
+.cc-list{margin:0;padding:0;list-style:none;max-height:264px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.cc-list li{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font:15px var(--body);color:var(--paper);cursor:pointer}
+.cc-list li.act{background:rgba(var(--paper-rgb),.07)}
+.cc-list li.on .cc-name{color:var(--lime)}
+.cc-list li.sep{margin-bottom:6px;box-shadow:0 7px 0 -6px var(--line-2)}
+.cc-list .cc-name{flex:1;min-width:0;padding:0;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-list .cc-code{padding:0;color:var(--mute);font-variant-numeric:tabular-nums}
+.cc-list .cc-none{color:var(--mute);cursor:default}

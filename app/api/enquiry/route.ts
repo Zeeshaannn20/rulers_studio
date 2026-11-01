@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { enquirySchema, toFieldErrors } from "@/lib/validation";
+import { enquirySchema, toFieldErrors, formatPhone } from "@/lib/validation";
 import { rateLimited } from "@/lib/rateLimit";
 import { sendToSheet } from "@/lib/sheet";
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
   const record = {
     name: d.name,
-    mobile: "+91 " + d.mobile,
+    mobile: formatPhone(d.mobile),
     email: d.email.toLowerCase(),
     services: d.services,
     projectDetails: d.details || null,
