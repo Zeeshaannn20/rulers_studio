@@ -21,10 +21,10 @@ const TABS = {
   },
   meet: {
     name: "Strategy Meets (paid)",
-    headers: ["Date & time (IST)", "Amount (₹)", "Mobile", "Email", "Paid via", "Razorpay payment ID", "Razorpay order ID", "Status", "Follow-up notes"],
-    widths: [160, 110, 150, 230, 170, 220, 220, 130, 300],
-    row: (d) => [new Date(), Number(d.amount) || 199, d.mobile, d.email, d.method, d.paymentId, d.orderId],
-    bold: ["Amount (₹)", "Mobile"],
+    headers: ["Date & time (IST)", "Amount (₹)", "Name", "Mobile", "Email", "Paid via", "Razorpay payment ID", "Razorpay order ID", "Status", "Follow-up notes"],
+    widths: [160, 110, 180, 150, 230, 170, 220, 220, 130, 300],
+    row: (d) => [new Date(), Number(d.amount) || 199, d.name, d.mobile, d.email, d.method, d.paymentId, d.orderId],
+    bold: ["Amount (₹)", "Name", "Mobile"],
   },
 };
 

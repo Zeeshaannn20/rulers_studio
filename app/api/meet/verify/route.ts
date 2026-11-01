@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   const keys = razorpayKeys();
   if (!keys) return NextResponse.json({ ok: false, error: "Payments are not set up." }, { status: 503 });
 
-  const b = (await req.json().catch(() => null)) as { orderId?: string; paymentId?: string; signature?: string } | null;
+  const b = (await req.json().catch(() => null)) as { orderId?: string; paymentId?: string; signature?: string; name?: string } | null;
   if (!b?.orderId || !b.paymentId || !b.signature) return NextResponse.json({ ok: false, error: "Missing payment details." }, { status: 400 });
 
   const expected = createHmac("sha256", keys.secret).update(`${b.orderId}|${b.paymentId}`).digest("hex");
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
   const payer = await fetchPayer(b.paymentId, keys);
   await sendToSheet("meet", {
     paymentId: b.paymentId,
+    name: String(b.name || "").replace(/\s+/g, " ").trim().slice(0, 80),
     orderId: b.orderId,
     amount: MEET_PRICE_PAISE / 100,
     mobile: payer.contact,

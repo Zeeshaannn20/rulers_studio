@@ -1652,3 +1652,17 @@ html.modal-open,html.modal-open body{overflow:hidden}
 @keyframes bkDraw{to{stroke-dashoffset:0}}
 @media (max-width:600px){.mbk{padding:0;place-items:end center}.mbk-panel{border-radius:20px 20px 0 0;max-height:94svh}.mbk-cal{min-height:620px}}
 @media (prefers-reduced-motion:reduce){.mbk-scrim,.mbk-panel,.mbk-tick,.mbk-tick svg{animation:none;stroke-dashoffset:0}}
+
+/* booking step 1: name */
+.mbk-panel.mbk-name{width:min(500px,100%);display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.mbk-name .talk-tag{color:#d8ff00}
+.mbk-name .talk-tag i{background:#d8ff00;animation:none}
+.mbk-name h3{margin:0;padding-right:44px;font:500 clamp(30px,3.4vw,44px)/1.02 var(--serif);letter-spacing:-.03em;color:#fff}
+.mbk-field{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:6px}
+.mbk-field span{font-size:13px;color:rgba(255,255,255,.6)}
+.mbk-field input{width:100%;height:52px;padding:0 18px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#fff;font:400 16px var(--body);outline:none;transition:border-color .2s}
+.mbk-field input:focus{border-color:#d8ff00}
+.mbk-err{margin:-6px 0 0;color:#ff8a7a;font-size:13px}
+.mbk-name .btn{margin-top:4px}
+.mbk-note{margin:0;font-size:12.5px;color:rgba(255,255,255,.45)}
+@media (max-width:600px){.mbk-panel.mbk-name{border-radius:20px 20px 0 0}}

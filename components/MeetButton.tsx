@@ -30,11 +30,18 @@ export default function MeetButton({ className = "btn dark" }: { className?: str
   const [paid, setPaid] = useState<Paid | null>(null);
   // the payment the open calendar belongs to (kept after booking so the confirmation can show)
   const [session, setSession] = useState<Paid | null>(null);
+  // a small "your name" step before the payment window (Razorpay doesn't ask for a name)
+  const [asking, setAsking] = useState(false);
   useEffect(() => setPaid(readPaid()), []);
 
-  async function start() {
+  function begin() {
     if (busy) return;
     if (paid) return setSession(paid);
+    setAsking(true);
+  }
+
+  async function start(name: string) {
+    setAsking(false);
     setBusy("opening");
     try {
       const [ok, res] = await Promise.all([loadCheckout(), fetch("/api/meet/order", { method: "POST" })]);
@@ -50,19 +57,21 @@ export default function MeetButton({ className = "btn dark" }: { className?: str
         name: "Rulers Studio",
         description: "Strategy meet",
         theme: { color: "#0b0b0b" },
+        prefill: { name },
+        notes: { name },
         modal: { ondismiss: () => setBusy("") },
         handler: async (r: RzpResponse) => {
           setBusy("verifying");
           const v = await fetch("/api/meet/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderId: r.razorpay_order_id, paymentId: r.razorpay_payment_id, signature: r.razorpay_signature }),
+            body: JSON.stringify({ orderId: r.razorpay_order_id, paymentId: r.razorpay_payment_id, signature: r.razorpay_signature, name }),
           })
             .then((x) => x.json())
             .catch(() => ({ ok: false }));
           if (v.ok && v.calLink) {
             setBusy("");
-            const p: Paid = { calLink: v.calLink, email: v.email || "", paymentId: v.paymentId || r.razorpay_payment_id, at: Date.now() };
+            const p: Paid = { calLink: v.calLink, email: v.email || "", name, paymentId: v.paymentId || r.razorpay_payment_id, at: Date.now() };
             savePaid(p);
             setPaid(p);
             setSession(p);
@@ -86,9 +95,10 @@ export default function MeetButton({ className = "btn dark" }: { className?: str
   const label = busy === "opening" ? "Opening payment…" : busy === "verifying" ? "Confirming…" : paid ? "Pick your time" : "Book a call with a founder";
   return (
     <>
-      <button type="button" className={className} onClick={start} disabled={!!busy} aria-busy={!!busy} style={{ alignSelf: "flex-start" }}>
+      <button type="button" className={className} onClick={begin} disabled={!!busy} aria-busy={!!busy} style={{ alignSelf: "flex-start" }}>
         {label} <Arrow />
       </button>
+      {asking && <NameStep onSubmit={start} onClose={() => setAsking(false)} />}
       {session && (
         <BookingModal
           paid={session}
@@ -108,7 +118,7 @@ export default function MeetButton({ className = "btn dark" }: { className?: str
 // booked the calendar closes, a confirmation shows once, and the paid state is cleared, so
 // the same payment can't book a second time. If the visitor closes it without booking, the
 // payment is remembered on this device and the button reopens the calendar.
-type Paid = { calLink: string; email: string; paymentId: string; at: number };
+type Paid = { calLink: string; email: string; name?: string; paymentId: string; at: number };
 const PAID_KEY = "rs-meet-paid";
 const readPaid = (): Paid | null => {
   try {
@@ -209,7 +219,7 @@ function BookingModal({ paid, onBooked, onClose }: { paid: Paid; onBooked: () =>
     window.Cal!.ns[NS]("inline", {
       elementOrSelector: "#rs-cal-embed",
       calLink: paid.calLink,
-      config: { layout: "month_view", theme: "dark", ...(paid.email ? { email: paid.email } : {}), notes: `Paid ₹199 · ${paid.paymentId}` },
+      config: { layout: "month_view", theme: "dark", ...(paid.name ? { name: paid.name } : {}), ...(paid.email ? { email: paid.email } : {}), notes: `Paid ₹199 · ${paid.paymentId}` },
     });
     const esc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", esc);
@@ -259,6 +269,67 @@ function BookingModal({ paid, onBooked, onClose }: { paid: Paid; onBooked: () =>
           </>
         )}
       </div>
+    </div>,
+    document.body
+  );
+}
+
+// Step 1 of booking: ask for the visitor's name, then open the payment window.
+function NameStep({ onSubmit, onClose }: { onSubmit: (name: string) => void; onClose: () => void }) {
+  const [name, setName] = useState("");
+  const [err, setErr] = useState("");
+  useEffect(() => {
+    const lenis = getLenis();
+    lenis?.stop();
+    document.documentElement.classList.add("modal-open");
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", esc);
+    return () => {
+      window.removeEventListener("keydown", esc);
+      document.documentElement.classList.remove("modal-open");
+      lenis?.start();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const n = name.replace(/\s+/g, " ").trim();
+    if (n.length < 2) return setErr("Please enter your name.");
+    onSubmit(n.slice(0, 80));
+  };
+  return createPortal(
+    <div className="mbk" role="dialog" aria-modal="true" aria-label="Your name" data-lenis-prevent>
+      <div className="mbk-scrim" onClick={onClose} />
+      <form className="mbk-panel mbk-name" onSubmit={submit} noValidate>
+        <button type="button" className="mbk-x" onClick={onClose} aria-label="Close">
+          ×
+        </button>
+        <span className="talk-tag">
+          <i /> Founders&apos; desk
+        </span>
+        <h3>First, what should we call you?</h3>
+        <label className="mbk-field">
+          <span>Your name</span>
+          <input
+            autoFocus
+            type="text"
+            name="name"
+            autoComplete="name"
+            value={name}
+            maxLength={80}
+            placeholder="Full name"
+            onChange={(e) => {
+              setName(e.target.value);
+              if (err) setErr("");
+            }}
+          />
+        </label>
+        {err && <p className="mbk-err">{err}</p>}
+        <button type="submit" className="btn solid">
+          Continue to payment <Arrow />
+        </button>
+        <p className="mbk-note">Secure payment by Razorpay. Then pick a time that suits you.</p>
+      </form>
     </div>,
     document.body
   );
