@@ -6,6 +6,13 @@
 export const cleanEnv = (v?: string) => (v || "").trim().replace(/^["']+|["']+$/g, "").trim();
 export const MEET_PRICE_PAISE = 9900; // ₹99
 export const meetBookingUrl = () => cleanEnv(process.env.MEET_BOOKING_URL) || "https://calendar.app.google/u3giLNoQPEix5Bi59";
+// CAL_LINK: the Cal.com event to book after payment, e.g. "rulersstudio/30min" (a full
+// https://cal.com/... URL also works). When set, booking opens inside the site instead of Google.
+export const calLink = () =>
+  cleanEnv(process.env.CAL_LINK)
+    .replace(/^https?:\/\/(app\.)?cal\.com\//i, "")
+    .replace(/^\/+|\/+$/g, "")
+    .split(/[?#]/)[0];
 export const razorpayKeys = () => {
   const id = cleanEnv(process.env.RAZORPAY_KEY_ID);
   const secret = cleanEnv(process.env.RAZORPAY_KEY_SECRET);

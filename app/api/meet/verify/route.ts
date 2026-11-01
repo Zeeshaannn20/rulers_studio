@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
-import { MEET_PRICE_PAISE, meetBookingUrl, razorpayKeys } from "@/lib/meet";
+import { MEET_PRICE_PAISE, calLink, meetBookingUrl, razorpayKeys } from "@/lib/meet";
 import { sendToSheet } from "@/lib/sheet";
 
 // Checks Razorpay's signature; only a genuine, paid order gets the booking link.
@@ -28,6 +28,9 @@ export async function POST(req: Request) {
     email: payer.email,
     method: payer.method,
   });
+  // With Cal.com set up, the booking calendar opens inside the site (one booking, then a confirmation).
+  const cal = calLink();
+  if (cal) return NextResponse.json({ ok: true, calLink: cal, email: payer.email, paymentId: b.paymentId });
   return NextResponse.json({ ok: true, url: meetBookingUrl() });
 }
 
