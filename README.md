@@ -14,13 +14,13 @@ Built with Next.js 14 (App Router), React 18, TypeScript, GSAP + ScrollTrigger, 
 | **Projects** (`/projects`) | Grid of films that autoplay muted, with a tap-for-sound button |
 | **Film page** (`/projects/[slug]`) | A full-screen "screening room" that plays the film, plus more films below |
 | **Join the Crew** (`/join-the-crew`) | Open roles; each role page has an application form with a CV upload |
-| **Contact** (`/contact`) | Enquiry form plus a paid ₹99 "Book a strategy meet" (Razorpay, then Google Calendar booking) |
+| **Contact** (`/contact`) | Enquiry form plus a paid ₹199 "Book a strategy meet" (Razorpay, then Google Calendar booking) |
 
 ### Features
 
 - **Forms that land in Google Sheets.** Website enquiries go to the "Website Sales Call" sheet; job applications go to the "Join the Crew" sheet, with the CV saved to Google Drive and linked in the row.
 - **Strict validation.** Indian 10-digit mobile numbers and real email addresses are checked in the browser and again on the server.
-- **Paid strategy meet.** Razorpay Checkout takes ₹99, the payment is verified on the server (HMAC signature), and only then does the visitor get the Google Calendar booking page.
+- **Paid strategy meet.** Razorpay Checkout takes ₹199, the payment is verified on the server (HMAC signature), and only then does the visitor get the Google Calendar booking page.
 - **SEO.** Page titles and descriptions, canonical URLs, Open Graph and Twitter cards, `sitemap.xml` with video entries, `robots.txt`, and JSON-LD structured data (Organization, WebSite, VideoObject, JobPosting, FAQPage, BreadcrumbList, ItemList).
 - **Motion.** Page-transition curtain, WebGL particle formations, 3D process scenes, a logo marquee and a scroll-pinned services stage. Everything respects `prefers-reduced-motion`.
 
@@ -54,7 +54,7 @@ Put these in `.env.local` (never commit that file). `.env.example` lists them al
 | Variable | What it's for |
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Live site address, used for canonical URLs, the sitemap and social previews |
-| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Razorpay API keys for the ₹99 strategy meet (`rzp_test_…` to try, `rzp_live_…` for real payments) |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Razorpay API keys for the ₹199 strategy meet (`rzp_test_…` to try, `rzp_live_…` for real payments) |
 | `MEET_BOOKING_URL` | Google Calendar appointment page shown after a successful payment |
 | `SHEETS_WEBHOOK_URL` | Apps Script web-app URL of the "Website Sales Call" sheet |
 | `CREW_SHEET_URL` | Apps Script web-app URL of the "Join the Crew" sheet |

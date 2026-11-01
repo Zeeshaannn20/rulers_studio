@@ -22,7 +22,7 @@ const loadCheckout = () =>
     document.body.appendChild(s);
   });
 
-// "Book a strategy meet": pay ₹99 in the Razorpay window (UPI, cards, netbanking, wallets),
+// "Book a strategy meet": pay ₹199 in the Razorpay window (UPI, cards, netbanking, wallets),
 // then go straight to the Google booking page to pick a time.
 export default function MeetButton({ className = "btn dark" }: { className?: string }) {
   const [busy, setBusy] = useState<"" | "opening" | "verifying">("");
@@ -209,7 +209,7 @@ function BookingModal({ paid, onBooked, onClose }: { paid: Paid; onBooked: () =>
     window.Cal!.ns[NS]("inline", {
       elementOrSelector: "#rs-cal-embed",
       calLink: paid.calLink,
-      config: { layout: "month_view", theme: "dark", ...(paid.email ? { email: paid.email } : {}), notes: `Paid ₹99 · ${paid.paymentId}` },
+      config: { layout: "month_view", theme: "dark", ...(paid.email ? { email: paid.email } : {}), notes: `Paid ₹199 · ${paid.paymentId}` },
     });
     const esc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", esc);

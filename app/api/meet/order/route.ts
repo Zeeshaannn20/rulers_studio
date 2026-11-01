@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { MEET_PRICE_PAISE, razorpayKeys } from "@/lib/meet";
 import { rateLimited } from "@/lib/rateLimit";
 
-// Creates a ₹99 Razorpay order for one strategy meet.
+// Creates a ₹199 Razorpay order for one strategy meet.
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
   if (rateLimited("meet:" + ip, 10)) return NextResponse.json({ ok: false, error: "Too many tries. Please wait a few minutes." }, { status: 429 });
