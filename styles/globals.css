@@ -705,8 +705,8 @@ body{font-weight:500;letter-spacing:-.04em;line-height:1.45}
 .sv-bg+.sv-bg{clip-path:polygon(0 100%,100% 100%,100% 100%,0 100%)}
 .sv-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
 .sv-vignette{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(120% 90% at 60% 50%,transparent 40%,rgba(0,0,0,.55) 100%),linear-gradient(90deg,rgba(0,0,0,.45),transparent 45%)}
-.sv-grain{position:absolute;inset:-60px;z-index:4;pointer-events:none;background:url(/media/noise.png);background-size:180px;opacity:.06;animation:svGrain 1s steps(6) infinite}
-@keyframes svGrain{0%{transform:translate(0,0)}20%{transform:translate(-30px,18px)}40%{transform:translate(22px,-26px)}60%{transform:translate(-14px,-10px)}80%{transform:translate(28px,24px)}100%{transform:translate(0,0)}}
+.sv-grain{position:absolute;inset:-60px;z-index:4;pointer-events:none;background:url(/media/noise.png);background-size:180px;opacity:.04;animation:svGrain 2.4s steps(4) infinite}
+@keyframes svGrain{0%{transform:translate(0,0)}25%{transform:translate(-5px,3px)}50%{transform:translate(4px,-4px)}75%{transform:translate(-2px,-3px)}100%{transform:translate(0,0)}}
 .sv-top{position:absolute;z-index:5;top:clamp(88px,11vh,120px);left:var(--gutter,clamp(20px,4vw,56px));right:var(--gutter,clamp(20px,4vw,56px));display:flex;justify-content:space-between;align-items:center}
 .sv-count{font:500 13px/1 var(--mono,ui-monospace),monospace;letter-spacing:.06em;color:rgba(var(--paper-rgb),.5)}
 .sv-count b{color:var(--paper);font-weight:500}
