@@ -52,6 +52,18 @@ const caps = localFont({
   display: "swap",
 });
 
+// Typewriter + handwriting for the "About the studio" screenplay page. Not preloaded: only that section uses them.
+const script = localFont({
+  src: [
+    { path: "./fonts/courier-prime-latin-400-normal.woff2", weight: "400" },
+    { path: "./fonts/courier-prime-latin-700-normal.woff2", weight: "700" },
+  ],
+  variable: "--font-script",
+  display: "swap",
+  preload: false,
+});
+const hand = localFont({ src: "./fonts/caveat-latin-700-normal.woff2", weight: "700", variable: "--font-hand", display: "swap", preload: false });
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: HOME_TITLE, template: "%s | Rulers Studio" },
@@ -89,7 +101,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${inter.variable} ${mono.variable} ${serif.variable} ${caps.variable} ${sans.variable}`}>
+    <html lang="en-IN" className={`${inter.variable} ${mono.variable} ${serif.variable} ${caps.variable} ${sans.variable} ${script.variable} ${hand.variable}`}>
       <body className={SHOW_INTRO ? "intro-on" : undefined}>
         <JsonLd data={orgSchema()} />
         <SmoothScroll />

@@ -1807,3 +1807,53 @@ html.modal-open,html.modal-open body{overflow:hidden}
 @media (max-width:860px){
   .sv-3d{left:0;right:0;top:15%;bottom:auto;height:46%}
 }
+
+/* ═════════════ About the studio · screenplay page + slips + director's red pen ═════════════ */
+.sa{--sheet:#f4f2ea;--red:#d2312a;--cp:var(--font-script),"Courier Prime","Courier New",ui-monospace,monospace;--hand:var(--font-hand),"Caveat","Bradley Hand",cursive}
+.sa .wrap{gap:clamp(18px,2.4vw,30px)}
+.sa-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(28px,4vw,56px);align-items:center}
+.sa-h{margin:0;font:600 clamp(34px,3.8vw,62px)/1.04 var(--serif);letter-spacing:-.02em;color:var(--paper);text-wrap:balance}
+.sa-h em{color:var(--lime);font-style:italic}
+.sa-p{margin:18px 0 0;color:var(--soft);font-size:15px;line-height:1.6;max-width:36ch}
+.sa-page{position:relative;background:var(--sheet);color:#151515;border-radius:4px;padding:44px 54px 96px;font:400 16px/1.7 var(--cp);box-shadow:0 40px 80px rgba(0,0,0,.6);transform:rotate(-1.4deg)}
+.sa-page::before{content:"";position:absolute;left:16px;top:14%;height:72%;width:14px;background:radial-gradient(circle,#0b0b0b 5px,transparent 5.5px) 0 0/14px 50% repeat-y;opacity:.85}
+.sa-no{position:absolute;top:16px;right:22px;font-size:13px;color:#777}
+.sa-sh{font-weight:700;text-transform:uppercase}
+.sa-ac{margin:14px 0}
+.sa-ch{margin:18px 0 0 34%;text-transform:uppercase}
+.sa-dl{margin:2px 16% 0 20%}
+.sa-tr{text-align:right;font-weight:700;text-transform:uppercase;margin-top:18px}
+.sa-hl{background:#d8ff00;color:#111;padding:0 3px}
+.sa-caret::after{content:"";display:inline-block;width:.55em;height:1.05em;vertical-align:-.15em;background:#141414;margin-left:1px}
+.sa-stamp{position:absolute;right:40px;bottom:26px;border:3px solid #c3e000;color:#8aa000;font:700 14px/1 var(--caps);letter-spacing:.2em;padding:8px 12px;border-radius:6px;white-space:nowrap;transform:rotate(-12deg);opacity:.95}
+.sa-armed .sa-stamp{opacity:0;transform:rotate(-12deg) scale(1.3);transition:opacity .28s,transform .42s cubic-bezier(.2,1.4,.4,1)}
+.sa-armed .sa-stamp.on{opacity:.95;transform:rotate(-12deg) scale(1)}
+
+.sa-slips{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.6vw,26px);margin:clamp(44px,5vw,76px) 0 clamp(56px,6vw,84px)}
+.sa-slip{position:relative;background:var(--sheet);color:#141414;border-radius:3px;padding:22px 20px 24px 36px;box-shadow:0 22px 44px rgba(0,0,0,.5);font:400 13.5px/1.5 var(--cp);transform:rotate(var(--r));min-height:170px}
+.sa-armed .sa-slip{opacity:0}
+.sa-slip::before{content:"";position:absolute;left:13px;top:50%;width:9px;height:9px;margin-top:-4px;border-radius:50%;background:#0b0b0b;opacity:.85}
+.sa-k{font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+.sa-num{display:inline-block;padding-right:4px;margin:12px 0 8px;font:500 clamp(46px,4.4vw,68px)/.9 var(--serif);color:#0a0a0a;letter-spacing:-.02em;white-space:nowrap;font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1}
+.sa-plus{display:inline-block;color:#111;background:#d8ff00;padding:2px 4px;margin-left:3px;font-size:.42em;line-height:1;vertical-align:.95em}
+.sa-num small{font:700 12px/1 var(--caps);letter-spacing:.16em;margin-left:7px;color:#333}
+.sa-d{color:#444}
+
+/* red pen: circle, margin note, sign-off. Shown finished unless the section is armed. */
+.sa-circ{position:absolute;pointer-events:none;overflow:visible}
+.sa-circ path{fill:none;stroke:var(--red);stroke-width:2.6;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:0}
+.sa-note{position:absolute;right:10px;top:-24px;font:700 25px/1 var(--hand);color:var(--red);transform:rotate(-7deg);white-space:nowrap}
+.sa-sig{position:absolute;right:0;bottom:-58px;font:700 30px/1 var(--hand);color:var(--red);transform:rotate(-4deg);white-space:nowrap}
+.sa-armed .sa-circ path{stroke-dashoffset:1}
+.sa-armed .sa-slip.pen .sa-circ path{stroke-dashoffset:0;transition:stroke-dashoffset .42s cubic-bezier(.5,0,.3,1)}
+.sa-armed .sa-note{clip-path:inset(0 100% 0 0)}
+.sa-armed .sa-slip.pen .sa-note{clip-path:inset(-10% -10% -10% 0);transition:clip-path .49s .21s steps(12)}
+.sa-armed .sa-sig{clip-path:inset(0 100% 0 0)}
+.sa-armed .sa-sig.on{clip-path:inset(-10% -5% -10% 0);transition:clip-path .63s steps(20)}
+
+@media (max-width:900px){.sa-grid{grid-template-columns:1fr}.sa-slips{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:44px}}
+@media (max-width:600px){
+  .sa-page{padding:34px 22px 80px 34px;font-size:14px}.sa-ch{margin-left:22%}.sa-dl{margin:2px 4% 0 10%}.sa-stamp{right:16px;font-size:11px}
+  .sa-slip{padding:16px 12px 18px 26px;font-size:11.5px;min-height:150px}.sa-slip::before{left:9px}.sa-num{font-size:38px}.sa-num small{font-size:9.5px;margin-left:3px}
+  .sa-note{font-size:17px;right:4px;top:-20px}.sa-sig{font-size:22px;bottom:-44px}
+}
