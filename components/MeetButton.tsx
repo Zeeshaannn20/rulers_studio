@@ -24,7 +24,7 @@ const loadCheckout = () =>
 
 // "Book a strategy meet": pay ₹199 in the Razorpay window (UPI, cards, netbanking, wallets),
 // then go straight to the Google booking page to pick a time.
-export default function MeetButton({ className = "btn dark" }: { className?: string }) {
+export default function MeetButton({ className = "btn dark", label: idle = "Book a call with founders" }: { className?: string; label?: React.ReactNode }) {
   const [busy, setBusy] = useState<"" | "opening" | "verifying">("");
   // paid but not booked yet: the button reopens the calendar instead of asking to pay again
   const [paid, setPaid] = useState<Paid | null>(null);
@@ -92,7 +92,7 @@ export default function MeetButton({ className = "btn dark" }: { className?: str
     }
   }
 
-  const label = busy === "opening" ? "Opening payment…" : busy === "verifying" ? "Confirming…" : paid ? "Pick your time" : "Book a call with a founder";
+  const label = busy === "opening" ? "Opening payment…" : busy === "verifying" ? "Confirming…" : paid ? "Pick your time" : idle;
   return (
     <>
       <button type="button" className={className} onClick={begin} disabled={!!busy} aria-busy={!!busy} style={{ alignSelf: "flex-start" }}>
