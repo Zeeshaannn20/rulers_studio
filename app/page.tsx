@@ -14,7 +14,7 @@ import { HOME_PROJECTS } from "@/data/projects";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
-// Home: opening stage + showreel → work tree → statement → services → process → FAQ → contact → footer
+// Home: opening stage + showreel → work tree → statement → services → process → contact → FAQ → footer
 export default function Home() {
   return (
     <>
@@ -26,8 +26,8 @@ export default function Home() {
       </Statement>
       <ServicesStage />
       <Process />
-      <Faq />
       <ContactBlock id="home-contact" />
+      <Faq />
       <Footer />
     </>
   );
