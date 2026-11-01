@@ -5,7 +5,7 @@
 export const MEET_PRICE_PAISE = 9900; // ₹99
 export const meetBookingUrl = () => process.env.MEET_BOOKING_URL || "https://calendar.app.google/u3giLNoQPEix5Bi59";
 export const razorpayKeys = () => {
-  const id = process.env.RAZORPAY_KEY_ID || "";
-  const secret = process.env.RAZORPAY_KEY_SECRET || "";
+  const id = (process.env.RAZORPAY_KEY_ID || "").trim();
+  const secret = (process.env.RAZORPAY_KEY_SECRET || "").trim();
   return id && secret ? { id, secret } : null;
 };

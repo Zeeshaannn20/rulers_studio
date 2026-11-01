@@ -8,7 +8,7 @@ export async function sendToSheet(
   data: Record<string, string | number | null | undefined>,
   opts: { url?: string; timeoutMs?: number } = {},
 ): Promise<boolean | null> {
-  const url = opts.url ?? process.env.SHEETS_WEBHOOK_URL;
+  const url = (opts.url ?? process.env.SHEETS_WEBHOOK_URL)?.trim();
   if (!url) {
     console.log(`[sheet] web-app URL not set — ${type} not sent to the sheet`);
     return null;
@@ -19,7 +19,7 @@ export async function sendToSheet(
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ secret: process.env.SHEETS_SECRET || "", type, ...data }),
+      body: JSON.stringify({ secret: (process.env.SHEETS_SECRET || "").trim(), type, ...data }),
       signal: ctrl.signal,
       redirect: "follow",
     });
