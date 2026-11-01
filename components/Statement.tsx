@@ -15,7 +15,7 @@ const SCRIPT: [string, string][] = [
 ];
 
 const SLIPS = [
-  { k: "Films delivered", n: 200, p: "+", u: "", d: "for brands worldwide", note: "that's a LOT of films" },
+  { k: "Films delivered", n: 100, p: "+", u: "", d: "for brands worldwide", note: "that's a LOT of films" },
   { k: "Micro dramas", n: 200, p: "+", u: "MIN", d: "of episodes delivered", note: "binge-worthy!" },
   { k: "Brief to final film", n: 7, p: "", u: "DAYS", d: "every project, guaranteed", note: "1 week. done." },
   { k: "Shoot days", n: 0, p: "", u: "", d: "no camera, no crew, no reshoots", note: "ZERO. really." },
@@ -65,7 +65,10 @@ export default function Statement({ children }: { children?: React.ReactNode }) 
         c.style.height = n.offsetHeight + pad * 2 + "px";
       });
     fit();
-    document.fonts?.ready.then(fit);
+    // re-measure once fonts load, but only if the numbers already show their final values
+    document.fonts?.ready.then(() => {
+      if (!el.classList.contains("sa-armed") || el.classList.contains("sa-done")) fit();
+    });
     window.addEventListener("resize", fit);
 
     if (prefersReducedMotion()) {
@@ -132,7 +135,10 @@ export default function Statement({ children }: { children?: React.ReactNode }) 
           if (k < 1) requestAnimationFrame(count);
         };
         requestAnimationFrame(count);
-        later(T.penStart + i * T.penGap, () => s.classList.add("pen"));
+        later(T.penStart + i * T.penGap, () => {
+          fit(); // measure now, when the number shows its final value
+          s.classList.add("pen");
+        });
       });
       later(T.sig, () => sig.classList.add("on"));
       later(T.sig + 1000, () => el.classList.add("sa-done"));
