@@ -85,7 +85,7 @@ const suffix: Record<TypeTag, string> = {
 
 // [slug, name, tag, homeOrder (0 = not on Home), concept, industry, inReel]
 const ROWS: Row[] = [
-  ["neel-kamal", "Neel Kamal", "AI Ad Film", 1, null, undefined, true],
+  ["neel-kamal", "Nilkamal", "AI Ad Film", 1, null, undefined, true],
   ["amul", "Amul", "AI Ad Film", 2, null, "Dairy / FMCG", true],
   ["monster", "Monster", "AI Ad Film", 3, true, "Beverages", true],
   ["the-only-regret", "The Only Regret", "AI Short Film", 4, false, "Original film"],
