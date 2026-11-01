@@ -18,6 +18,36 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "We couldn't verify this payment. If money was deducted, message us and we'll sort it out." }, { status: 400 });
   }
   console.log("[meet] paid", b.orderId, b.paymentId);
-  await sendToSheet("meet", { paymentId: b.paymentId, orderId: b.orderId, amount: MEET_PRICE_PAISE / 100 });
+  // The payer's mobile and email come from Razorpay itself (its checkout asks for them).
+  const payer = await fetchPayer(b.paymentId, keys);
+  await sendToSheet("meet", {
+    paymentId: b.paymentId,
+    orderId: b.orderId,
+    amount: MEET_PRICE_PAISE / 100,
+    mobile: payer.contact,
+    email: payer.email,
+    method: payer.method,
+  });
   return NextResponse.json({ ok: true, url: meetBookingUrl() });
+}
+
+// Reads the payment back from Razorpay to get the mobile number and email the payer entered.
+async function fetchPayer(paymentId: string, keys: { id: string; secret: string }) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6000);
+  try {
+    const res = await fetch(`https://api.razorpay.com/v1/payments/${encodeURIComponent(paymentId)}`, {
+      headers: { Authorization: "Basic " + Buffer.from(`${keys.id}:${keys.secret}`).toString("base64") },
+      signal: ctrl.signal,
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    const p = (await res.json()) as { contact?: string; email?: string; method?: string; vpa?: string; wallet?: string; bank?: string };
+    const via = [p.method, p.vpa || p.wallet || p.bank].filter(Boolean).join(" · ");
+    return { contact: p.contact || "", email: p.email && !/void@razorpay/i.test(p.email) ? p.email : "", method: via };
+  } catch (e) {
+    console.error("[meet] couldn't read payer details", paymentId, String(e));
+    return { contact: "", email: "", method: "" };
+  } finally {
+    clearTimeout(timer);
+  }
 }
