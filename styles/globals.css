@@ -1618,7 +1618,8 @@ button.sv-ring:focus-visible{outline:2px solid var(--lime);outline-offset:6px;bo
 .talk-tag i{width:10px;height:10px;border-radius:50%;background:var(--ink);animation:talkPulse 2.2s ease-out infinite}
 @keyframes talkPulse{0%{box-shadow:0 0 0 0 rgba(10,10,10,.4)}70%,100%{box-shadow:0 0 0 9px rgba(10,10,10,0)}}
 .talk .talk-h{margin:0;font:500 clamp(46px,5vw,84px)/.98 var(--serif);letter-spacing:-.04em;color:var(--ink);max-width:10ch}
-.talk .talk-sub{margin:0;max-width:none;font:italic 400 clamp(32px,3.3vw,54px)/1.05 var(--serif);letter-spacing:-.025em;color:var(--ink)}
+.talk .talk-sub{margin:0;max-width:none;font:italic 400 clamp(22px,2.2vw,34px)/1.15 var(--serif);letter-spacing:-.015em;color:var(--ink)}
+.talk-top>.btn{margin-top:clamp(18px,3vw,48px)}
 @media (prefers-reduced-motion:reduce){.talk-tag i{animation:none}}
 @media (max-width:520px){.talk .btn{max-width:100%;font-size:10.5px;letter-spacing:.1em;gap:10px;padding-left:18px;white-space:nowrap}}
 @media (max-width:380px){.talk .btn{font-size:10px;letter-spacing:.06em;gap:8px;padding:0 6px 0 16px;height:46px}.talk .btn .arr{width:32px;height:32px;padding:9px}}
