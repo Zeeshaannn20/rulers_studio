@@ -4,15 +4,14 @@ import TLink from "./TLink";
 import { Arrow } from "./Icons";
 import { SERVICES } from "@/data/site";
 import { gsap, prefersReducedMotion } from "@/lib/motion";
-import { createField, SCENES, type Field } from "@/lib/particleField";
+import { createObjects } from "@/lib/svObjects";
 
 // Services as one full-screen stage that plays through the four services on its own (reference: the Pioneer "Corn. Revolutionized." site).
-// Each service owns a living background: a WebGL particle formation that disintegrates and
-// re-forms into the next one, a colour-graded panel that sweeps up on a slanted edge, ambient dust
-// and grain, and a headline that decodes in outline before it fills. Wheel, trackpad, touch and
-// the arrow keys all drive the same playhead, one resting point per service.
+// Each service owns a 3D object (film slate, product on a turntable, story book, phone feed; see
+// lib/svObjects.ts), a colour-graded panel that sweeps up on a slanted edge, grain, and a headline
+// whose words slide up into place.
+const SCENES = SERVICES.length;
 const STEPS = SCENES - 1;
-const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*+/<>=";
 const SHORT = ["Ad Creatives", "Product Videos", "Brand Stories", "UGC Ads"];
 const TAGS = [
   ["Brand ads", "TVC", "Campaigns"],
@@ -31,7 +30,7 @@ export default function ServicesStage() {
       return;
     }
     const el = root.current!;
-    const canvas = el.querySelector<HTMLCanvasElement>(".sv-canvas")!;
+    const stage3d = el.querySelector<HTMLElement>(".sv-3d")!;
     const panels = Array.from(el.querySelectorAll<HTMLElement>(".sv-bg"));
     const wraps = panels.map((p) => p.parentElement as HTMLElement);
     const title = el.querySelector<HTMLElement>(".sv-title")!;
@@ -44,80 +43,37 @@ export default function ServicesStage() {
     // false once this stage is torn down (page change, hot reload): late tweens must not touch it
     let alive = true;
 
-    // the particle field is built only when the visitor gets close, in idle time,
-    // so it never competes with the opening animation for the main thread
-    let field: Field | null = null;
+    // the 3D objects are built only when the visitor gets close, in idle time,
+    // so they never compete with the opening animation for the main thread
+    let objects: ReturnType<typeof createObjects> | null = null;
 
-    // ── headline: old letters blow away, new ones decode in outline, then fill ──
+    // ── headline: the old words slide up and away, the new ones slide up into place ──
     let token = 0;
-    let decodeRaf = 0;
-    const charsOf = (text: string) =>
-      text
-        .split(" ")
-        .map((w) => `<span class="w">${w.split("").map((c) => `<span class="c ol">${c}</span>`).join("")}</span>`)
-        .join(" ");
+    const wordsOf = (text: string) => text.split(" ").map((w) => `<span class="w"><span>${w}</span></span>`).join(" ");
     const showText = (i: number, instant = false) => {
       if (!alive) return;
       const s = SERVICES[i];
       const my = ++token;
-      cancelAnimationFrame(decodeRaf);
       no.textContent = s.no;
-      const old = Array.from(title.querySelectorAll<HTMLElement>(".c"));
+      const old = Array.from(title.querySelectorAll<HTMLElement>(".w>span"));
       gsap.killTweensOf([old, body, tags.children]);
       const swap = () => {
-        if (my !== token) return;
-        title.innerHTML = charsOf(s.title);
-        const cs = Array.from(title.querySelectorAll<HTMLElement>(".c"));
-        const real = cs.map((c) => c.textContent || "");
+        if (my !== token || !alive) return;
+        title.innerHTML = wordsOf(s.title);
         body.textContent = s.body;
         tags.innerHTML = TAGS[i].map((t) => `<li>${t}</li>`).join("");
-        gsap.fromTo(body, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: 0.12 });
-        gsap.fromTo(tags.children, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.05, delay: 0.2 });
-        if (instant) {
-          cs.forEach((c) => c.classList.remove("ol"));
-          return;
-        }
-        const t0 = performance.now();
-        const tick = () => {
-          if (my !== token) return;
-          const t = (performance.now() - t0) / 1000;
-          let done = true;
-          cs.forEach((c, k) => {
-            const start = k * 0.022;
-            if (t < start) {
-              c.style.opacity = "0";
-              done = false;
-            } else if (t < start + 0.32) {
-              c.style.opacity = "1";
-              if (real[k] !== " " && Math.random() < 0.5) c.textContent = GLYPHS[(Math.random() * GLYPHS.length) | 0];
-              done = false;
-            } else if (c.classList.contains("ol") || c.textContent !== real[k]) {
-              c.style.opacity = "1";
-              c.textContent = real[k];
-              if (t > start + 0.5) c.classList.remove("ol");
-              else done = false;
-            }
-          });
-          if (!done) decodeRaf = requestAnimationFrame(tick);
-        };
-        decodeRaf = requestAnimationFrame(tick);
+        if (instant) return;
+        gsap.fromTo(title.querySelectorAll(".w>span"), { yPercent: 105 }, { yPercent: 0, duration: 0.75, ease: "power4.out", stagger: 0.07 });
+        gsap.fromTo(body, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: 0.15 });
+        gsap.fromTo(tags.children, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.05, delay: 0.25 });
       };
       if (instant || !old.length) return swap();
-      gsap.to(old, {
-        opacity: 0,
-        y: () => -10 - Math.random() * 30,
-        x: () => (Math.random() - 0.5) * 40,
-        filter: "blur(8px)",
-        duration: 0.32,
-        ease: "power2.in",
-        stagger: { each: 0.008, from: "random" },
-      });
+      gsap.to(old, { yPercent: -105, duration: 0.3, ease: "power2.in", stagger: 0.03 });
       gsap.to([body, tags.children], { opacity: 0, y: -8, duration: 0.22, ease: "power2.in" });
-      window.setTimeout(swap, 230);
+      window.setTimeout(swap, 300);
     };
     cleanups.push(() => {
       token++;
-      cancelAnimationFrame(decodeRaf);
     });
 
     // ── playhead → everything that is drawn (particles, colour panels, headline, tabs) ──
@@ -129,10 +85,6 @@ export default function ServicesStage() {
     const apply = () => {
       if (!alive || !el.isConnected) return;
       const t = head.t;
-      const from = Math.min(STEPS, Math.floor(t));
-      const to = Math.min(STEPS, from + 1);
-      const m = Math.max(0, Math.min(1, (t - from - 0.2) / 0.6));
-      field?.set(from, to, m);
       // slanted colour panels sweeping up from the bottom (right edge leads); transforms only
       const vh = window.innerHeight;
       const es = panels.map((_, i) => (i === 0 ? 1 : ease(Math.max(0, Math.min(1, (t - (i - 1) - 0.08) / 0.84)))));
@@ -158,6 +110,7 @@ export default function ServicesStage() {
         const bar = navs[idx]?.parentElement;
         if (bar && bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: navs[idx].offsetLeft - 20, behavior: "smooth" });
         showText(idx, first);
+        objects?.show(idx);
       }
     };
 
@@ -166,7 +119,7 @@ export default function ServicesStage() {
     // phones, and hovering the text or tabs holds the current one. ──
     const HOLD = 2.8;
     const bars = navs.map((b) => b.querySelector<HTMLElement>(".sv-prog"));
-    const fx = Array.from(el.querySelectorAll<HTMLElement>(".sv-bgw, .sv-canvas"));
+    const fx = Array.from(el.querySelectorAll<HTMLElement>(".sv-bgw, .sv-3d"));
     const prog = { p: 0 };
     let timer: gsap.core.Tween | null = null;
     let glide: gsap.core.Animation | null = null;
@@ -265,24 +218,16 @@ export default function ServicesStage() {
       gsap.killTweensOf([head, prog, fx]);
     });
 
-    // build the field when the stage is ~1.5 screens away; render only while it is on screen
+    // build the objects when the stage is ~1.5 screens away; animate only while it is on screen
     const mobile = window.matchMedia("(max-width: 860px)").matches;
     const cores = navigator.hardwareConcurrency || 4;
     let built = false;
     const build = () => {
-      if (built) return;
+      if (built || !alive) return;
       built = true;
-      field = createField(canvas, mobile || cores <= 4 ? 4200 : 8200);
-      if (!field) return el.classList.add("no-gl");
-      field.resize();
-      apply();
-      const onResize = () => {
-        field?.resize();
-        apply();
-      };
-      window.addEventListener("resize", onResize);
-      cleanups.push(() => window.removeEventListener("resize", onResize));
-      if (visible) field.start();
+      objects = createObjects(stage3d, mobile || cores <= 4);
+      objects.show(Math.max(0, shown));
+      objects.setVisible(visible);
     };
     const idle = (fn: () => void) => {
       const w = window as Window & { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number };
@@ -295,28 +240,26 @@ export default function ServicesStage() {
       ([en]) => {
         visible = en.isIntersecting;
         if (visible && !built) build();
-        if (visible) field?.start();
-        else field?.stop();
+        objects?.setVisible(visible);
         if (visible && !timer && !gliding) startTimer();
         else sync();
       },
       { threshold: 0.35 }
     );
     io.observe(el);
-    const onPtr = (ev: PointerEvent) => field?.pointer((ev.clientX / window.innerWidth) * 2 - 1, (ev.clientY / window.innerHeight) * 2 - 1);
+    const onPtr = (ev: PointerEvent) => objects?.pointer((ev.clientX / window.innerWidth) * 2 - 1, (ev.clientY / window.innerHeight) * 2 - 1);
     window.addEventListener("pointermove", onPtr, { passive: true });
     cleanups.push(() => {
       near.disconnect();
       io.disconnect();
       window.removeEventListener("pointermove", onPtr);
-      field?.destroy();
+      objects?.destroy();
     });
 
     apply();
     return () => {
       alive = false;
       cleanups.forEach((f) => f());
-      cancelAnimationFrame(decodeRaf);
     };
   }, []);
 
@@ -347,7 +290,7 @@ export default function ServicesStage() {
             <div className={"sv-bg sv-bg-" + i} />
           </div>
         ))}
-        <canvas className="sv-canvas" aria-hidden="true" />
+        <div className="sv-3d" aria-hidden="true" />
         <div className="sv-vignette" aria-hidden="true" />
         <div className="sv-grain" aria-hidden="true" />
 
