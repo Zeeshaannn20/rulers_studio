@@ -2,7 +2,7 @@
   "name": "ayushs-ruler",
   "version": "1.0.0",
   "private": true,
-  "description": "Rulers Studio website \u2014 Next.js + Node API routes + Prisma/Neon",
+  "description": "Rulers Studio website — Next.js + Node API routes + Prisma/Neon",
   "scripts": {
     "dev": "next dev",
     "preview": "npm run build && next start",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@prisma/client": "5.22.0",
+    "@vercel/analytics": "^1.6.1",
     "gsap": "3.12.5",
     "lenis": "1.1.13",
     "next": "14.2.35",

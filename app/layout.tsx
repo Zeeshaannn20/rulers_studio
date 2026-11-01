@@ -9,6 +9,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { SITE } from "@/data/site";
 import { HOME_TITLE, HOME_DESC, KEYWORDS, OG_IMAGE, orgSchema } from "@/data/seo";
 import JsonLd from "@/components/JsonLd";
+import { Analytics } from "@vercel/analytics/next";
 
 // Fonts are self-hosted from /app/fonts (no request to Google at runtime). All are SIL Open Font License.
 const inter = localFont({
@@ -96,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Chrome />
         {SHOW_INTRO && <Intro />}
+        <Analytics />
       </body>
     </html>
   );
