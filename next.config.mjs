@@ -6,6 +6,13 @@ const nextConfig = {
   experimental: { optimizePackageImports: ["gsap"] },
   // Let browsers keep videos, images and logos for a day (and reuse them for a week while
   // re-checking in the background), so returning visitors don't download them again.
+  // short addresses people may type or share
+  async redirects() {
+    return [
+      { source: "/join", destination: "/join-the-crew", permanent: true },
+      { source: "/careers", destination: "/join-the-crew", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
