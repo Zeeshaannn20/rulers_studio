@@ -98,7 +98,7 @@ export function createObjects(root: HTMLElement, lite = false): Api {
         if (!live(0)) return;
         take = (take % 99) + 1;
         s.querySelectorAll(".so-take").forEach((t) => (t.textContent = String(take).padStart(2, "0")));
-      }, 3000)
+      }, 2200)
     );
   }
 
@@ -190,11 +190,11 @@ export function createObjects(root: HTMLElement, lite = false): Api {
         sn.textContent = String(n).padStart(2, "0");
         callEls.forEach((e, k) => e.classList.toggle("on", k <= c));
         c = (c + 1) % 4;
-      }, 1600)
+      }, 1200)
     );
   }
   const shadeBottle = (time: number) => {
-    const rot = ((time / 1000) * 36) % 360;
+    const rot = ((time / 1000) * 60) % 360;
     spinner.style.transform = `rotateY(${rot}deg)`;
     const L = (35 * Math.PI) / 180;
     const RL = (-140 * Math.PI) / 180;
@@ -242,7 +242,7 @@ export function createObjects(root: HTMLElement, lite = false): Api {
           { offset: Math.min(0.95, st + 0.55), transform: `translateZ(${z + 0.4}px) rotateY(-178deg)` },
           { transform: `translateZ(${z + 0.4}px) rotateY(-178deg)` },
         ],
-        { duration: 4800, iterations: Infinity }
+        { duration: 3600, iterations: Infinity }
       );
     });
     for (let k = 0; k < (lite ? 6 : 12); k++)
@@ -289,7 +289,7 @@ export function createObjects(root: HTMLElement, lite = false): Api {
           { offset: o + 0.24, opacity: 0, transform: `${t} translateY(-10px)` },
           { opacity: 0, transform: `${t} translateY(-10px)` },
         ],
-        { duration: 8000, iterations: Infinity }
+        { duration: 6000, iterations: Infinity }
       );
     });
   }
@@ -334,8 +334,8 @@ export function createObjects(root: HTMLElement, lite = false): Api {
     },
     pointer(x, y) {
       pars.forEach((p) => {
-        p.style.setProperty("--px", `${x * 16}deg`);
-        p.style.setProperty("--py", `${-y * 10}deg`);
+        p.style.setProperty("--px", `${x * 6}deg`);
+        p.style.setProperty("--py", `${-y * 4}deg`);
       });
     },
     destroy() {

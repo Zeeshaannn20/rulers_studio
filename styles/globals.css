@@ -1718,32 +1718,32 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .so-cover>i{background:#151515}.so-cover>i.t{background:#1e1e1e}
 
 /* slate */
-.so-shake{position:absolute;inset:0;animation:soShake 3s infinite}
-@keyframes soShake{0%,39%{transform:none}40.5%{transform:translate(-6px,4px) rotate(-.6deg)}42%{transform:translate(5px,-3px) rotate(.5deg)}44%{transform:translate(-2px,1px)}46%,100%{transform:none}}
-.so-clap-world{animation:soClapRock 7s ease-in-out infinite}
-@keyframes soClapRock{0%,100%{transform:translateY(46px) rotateX(10deg) rotateY(-26deg)}50%{transform:translateY(46px) rotateX(4deg) rotateY(14deg)}}
-.so-hinge{position:absolute;transform-style:preserve-3d;transform-origin:0 0;animation:soClap 3s cubic-bezier(.6,0,.2,1) infinite}
+.so-shake{position:absolute;inset:0;animation:soShake 2.2s infinite}
+@keyframes soShake{0%,39%{transform:none}40.5%{transform:translate(-2px,1px) rotate(-.15deg)}42%{transform:translate(1.5px,-1px) rotate(.1deg)}44%{transform:translate(-.5px,0)}46%,100%{transform:none}}
+.so-clap-world{animation:soClapRock 10s ease-in-out infinite}
+@keyframes soClapRock{0%,100%{transform:translateY(46px) rotateX(7deg) rotateY(-12deg)}50%{transform:translateY(46px) rotateX(5deg) rotateY(4deg)}}
+.so-hinge{position:absolute;transform-style:preserve-3d;transform-origin:0 0;animation:soClap 2.2s cubic-bezier(.6,0,.2,1) infinite}
 @keyframes soClap{0%{transform:translate3d(-150px,-134px,0) rotateZ(0)}12%,30%{transform:translate3d(-150px,-134px,0) rotateZ(-38deg)}40%{transform:translate3d(-150px,-134px,0) rotateZ(0)}43%{transform:translate3d(-150px,-134px,0) rotateZ(-6deg)}46%,100%{transform:translate3d(-150px,-134px,0) rotateZ(0)}}
 .so-chalk{position:absolute;left:-150px;top:-100px;width:300px;height:200px;transform:translateZ(7.6px);backface-visibility:hidden;overflow:hidden}
 .so-cell{position:absolute;padding:8px 10px;font:600 8.5px/1 var(--caps);letter-spacing:.22em;color:rgba(255,255,255,.55)}
-.so-cell b{display:block;margin-top:8px;font:italic 500 18px/1 var(--serif);letter-spacing:0;color:#f4f4f4;white-space:nowrap;clip-path:inset(0 100% 0 0);animation:soWrite 3s cubic-bezier(.5,0,.2,1) infinite}
+.so-cell b{display:block;margin-top:8px;font:italic 500 18px/1 var(--serif);letter-spacing:0;color:#f4f4f4;white-space:nowrap;clip-path:inset(0 100% 0 0);animation:soWrite 2.2s cubic-bezier(.5,0,.2,1) infinite}
 .so-cell b.lime{color:var(--lime)}
 @keyframes soWrite{0%,50%{clip-path:inset(0 100% 0 0)}72%,100%{clip-path:inset(0 0 0 0)}}
 .so-ln{position:absolute;background:rgba(255,255,255,.22)}
-.so-glare{position:absolute;top:-40%;left:-60%;width:40%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);transform:rotate(18deg);animation:soGlare 3s ease-in-out infinite}
+.so-glare{position:absolute;top:-40%;left:-60%;width:40%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);transform:rotate(18deg);animation:soGlare 2.2s ease-in-out infinite}
 @keyframes soGlare{0%,45%{left:-60%}75%,100%{left:130%}}
-.so-flash{position:absolute;inset:0;background:radial-gradient(closest-side at 62% 40%,rgba(216,255,0,.42),transparent);opacity:0;animation:soFlash 3s infinite}
+.so-flash{position:absolute;inset:0;background:radial-gradient(closest-side at 62% 40%,rgba(216,255,0,.42),transparent);opacity:0;animation:soFlash 2.2s infinite}
 @keyframes soFlash{0%,39%{opacity:0}41%{opacity:1}62%,100%{opacity:0}}
 .so-snap{position:absolute;left:77%;top:36%;width:0;height:0}
-.so-snap i{position:absolute;left:0;top:-2px;height:4px;width:64px;border-radius:2px;background:linear-gradient(90deg,var(--lime),transparent);transform-origin:0 50%;opacity:0;animation:soSnap 3s cubic-bezier(.1,.8,.3,1) infinite}
+.so-snap i{position:absolute;left:0;top:-2px;height:4px;width:64px;border-radius:2px;background:linear-gradient(90deg,var(--lime),transparent);transform-origin:0 50%;opacity:0;animation:soSnap 2.2s cubic-bezier(.1,.8,.3,1) infinite}
 @keyframes soSnap{0%,39%{opacity:0;transform:rotate(var(--r)) translateX(4px) scaleX(.2)}41%{opacity:1;transform:rotate(var(--r)) translateX(10px) scaleX(1)}58%,100%{opacity:0;transform:rotate(var(--r)) translateX(46px) scaleX(.4)}}
-.so-action{position:absolute;left:50%;top:12%;transform:translate(-50%,-50%) scale(.4);font:800 58px/1 var(--caps);letter-spacing:-.03em;color:var(--lime);opacity:0;text-shadow:0 0 34px rgba(216,255,0,.65);white-space:nowrap;animation:soAct 3s cubic-bezier(.2,1.6,.3,1) infinite}
+.so-action{position:absolute;left:50%;top:12%;transform:translate(-50%,-50%) scale(.4);font:800 58px/1 var(--caps);letter-spacing:-.03em;color:var(--lime);opacity:0;text-shadow:0 0 34px rgba(216,255,0,.65);white-space:nowrap;animation:soAct 2.2s cubic-bezier(.2,1.6,.3,1) infinite}
 @keyframes soAct{0%,39%{opacity:0;transform:translate(-50%,-50%) scale(.4)}43%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}70%{opacity:1;transform:translate(-50%,-50%) scale(1)}86%,100%{opacity:0;transform:translate(-50%,-64%) scale(1)}}
 .so-meta{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);display:flex;gap:18px;font:500 10px/1 var(--mono);letter-spacing:.14em;color:rgba(255,255,255,.55);white-space:nowrap}
 .so-meta b{color:var(--lime);font-weight:500}
 
 /* product */
-.so-cone{position:absolute;left:50%;top:-30px;width:320px;height:470px;margin-left:-160px;background:linear-gradient(180deg,rgba(216,255,0,.3),rgba(216,255,0,.05) 75%,transparent);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);filter:blur(6px);animation:soCone 4s ease-in-out infinite}
+.so-cone{position:absolute;left:50%;top:-30px;width:320px;height:470px;margin-left:-160px;background:linear-gradient(180deg,rgba(216,255,0,.3),rgba(216,255,0,.05) 75%,transparent);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);filter:blur(6px);animation:soCone 3s ease-in-out infinite}
 @keyframes soCone{50%{opacity:.65}}
 .so-floorgl{position:absolute;left:50%;top:76%;width:460px;height:120px;margin-left:-230px;border-radius:50%;background:radial-gradient(ellipse,rgba(216,255,0,.22),rgba(216,255,0,.04) 55%,transparent 70%)}
 .so-plate{position:absolute;border-radius:50%;background:repeating-radial-gradient(circle,#1d1d1d 0 6px,#171717 6px 7px);box-shadow:inset 0 0 0 3px rgba(216,255,0,.6);transform:rotateX(90deg)}
@@ -1766,8 +1766,8 @@ html.modal-open,html.modal-open body{overflow:hidden}
 @keyframes soTw{50%{opacity:1;transform:scale(1.6)}}
 
 /* book */
-.so-book-world{animation:soBook 7s ease-in-out infinite}
-@keyframes soBook{0%,100%{transform:rotateX(52deg) rotateZ(-14deg)}50%{transform:rotateX(46deg) rotateZ(-4deg)}}
+.so-book-world{animation:soBook 10s ease-in-out infinite}
+@keyframes soBook{0%,100%{transform:rotateX(50deg) rotateZ(-10deg)}50%{transform:rotateX(48deg) rotateZ(-7deg)}}
 .so-pg{position:absolute;top:-95px;width:150px;height:190px;padding:18px 16px;font:italic 400 14px/1.4 var(--serif);color:#1f1f1f;backface-visibility:hidden}
 .so-pg b{display:block;font:600 9px/1 var(--caps);font-style:normal;letter-spacing:.22em;color:#6b6b5a;margin-bottom:10px}
 .so-pg .drop{float:left;font:500 44px/.8 var(--serif);font-style:normal;color:#0a0a0a;margin:4px 6px 0 0}
@@ -1777,15 +1777,15 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .so-leaf i.bk{transform:rotateY(180deg);background:linear-gradient(270deg,#d6d4c8,#f5f4ee 18%);border-radius:4px 0 0 4px}
 .so-mote{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px 3px rgba(216,255,0,.6);opacity:0;animation:soMote 4s ease-out infinite}
 @keyframes soMote{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx),-220px)}}
-.so-quote{position:absolute;left:50%;top:12%;transform:translateX(-50%);font:italic 400 24px/1.1 var(--serif);color:#fff;white-space:nowrap;opacity:0;animation:soQuote 4.8s ease-in-out infinite}
+.so-quote{position:absolute;left:50%;top:12%;transform:translateX(-50%);font:italic 400 24px/1.1 var(--serif);color:#fff;white-space:nowrap;opacity:0;animation:soQuote 3.6s ease-in-out infinite}
 @keyframes soQuote{0%,10%{opacity:0;transform:translate(-50%,10px)}30%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
 
 /* phone */
-.so-ph-world{animation:soPh 6s ease-in-out infinite}
-@keyframes soPh{0%,100%{transform:rotateY(-20deg) rotateX(8deg)}50%{transform:rotateY(16deg) rotateX(-2deg)}}
+.so-ph-world{animation:soPh 9s ease-in-out infinite}
+@keyframes soPh{0%,100%{transform:rotateY(-10deg) rotateX(5deg)}50%{transform:rotateY(7deg) rotateX(2deg)}}
 .so-screen{position:absolute;left:-82px;top:-177px;width:164px;height:354px;border-radius:24px;overflow:hidden;transform:translateZ(9px);background:#000;backface-visibility:hidden}
 .so-screen .notch{position:absolute;left:50%;top:8px;width:54px;height:16px;margin-left:-27px;border-radius:10px;background:#000;z-index:4}
-.so-feed{position:absolute;inset:0;animation:soFeed 8s cubic-bezier(.75,0,.2,1) infinite}
+.so-feed{position:absolute;inset:0;animation:soFeed 6s cubic-bezier(.75,0,.2,1) infinite}
 @keyframes soFeed{0%,22%{transform:translateY(0)}25%,47%{transform:translateY(-100%)}50%,72%{transform:translateY(-200%)}75%,97%{transform:translateY(-300%)}100%{transform:translateY(-400%)}}
 .so-rl{position:relative;height:100%;overflow:hidden}
 .so-rl .bgx{position:absolute;inset:0}
@@ -1795,7 +1795,7 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .so-rl .ui{position:absolute;right:8px;bottom:58px;display:flex;flex-direction:column;gap:12px;align-items:center;font:600 8px/1 var(--caps);color:#fff;text-shadow:0 1px 4px #000}
 .so-rl .ui em{font-style:normal;font-size:17px}
 .so-rl .cpt{position:absolute;left:10px;right:40px;bottom:14px;font:600 9px/1.35 var(--caps);color:#fff;text-shadow:0 1px 4px #000}
-.so-rl .bar{position:absolute;left:0;bottom:0;height:2px;background:#fff;width:0;animation:soBar 2s linear infinite}
+.so-rl .bar{position:absolute;left:0;bottom:0;height:2px;background:#fff;width:0;animation:soBar 1.5s linear infinite}
 @keyframes soBar{to{width:100%}}
 .so-toast{position:absolute;display:flex;align-items:center;gap:8px;background:rgba(18,18,18,.92);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:14px;padding:9px 12px;font:600 11px/1.2 var(--caps);white-space:nowrap;box-shadow:0 18px 40px rgba(0,0,0,.5);opacity:0}
 .so-toast i{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-style:normal;font-size:13px;color:#0a0a0a}
