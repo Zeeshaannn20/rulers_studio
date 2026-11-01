@@ -3,12 +3,13 @@
 //   SHEETS_WEBHOOK_URL  — the Apps Script web-app URL (…/macros/s/…/exec)
 //   SHEETS_SECRET       — the same secret word written in the script
 // If it isn't set, or Google is slow, the visitor's submission still succeeds — we only log the problem.
+import { cleanEnv } from "./meet";
 export async function sendToSheet(
   type: "enquiry" | "meet" | "application",
   data: Record<string, string | number | null | undefined>,
   opts: { url?: string; timeoutMs?: number } = {},
 ): Promise<boolean | null> {
-  const url = (opts.url ?? process.env.SHEETS_WEBHOOK_URL)?.trim();
+  const url = cleanEnv(opts.url ?? process.env.SHEETS_WEBHOOK_URL);
   if (!url) {
     console.log(`[sheet] web-app URL not set — ${type} not sent to the sheet`);
     return null;
@@ -19,7 +20,7 @@ export async function sendToSheet(
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ secret: (process.env.SHEETS_SECRET || "").trim(), type, ...data }),
+      body: JSON.stringify({ secret: cleanEnv(process.env.SHEETS_SECRET), type, ...data }),
       signal: ctrl.signal,
       redirect: "follow",
     });
