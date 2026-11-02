@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import Hero from "./Hero";
 import { R_PATHS, R_VIEWBOX } from "./RMark";
 import { gsap, getLenis, afterIntro, prefersReducedMotion } from "@/lib/motion";
+import { createLedLights } from "@/lib/ledLights";
 
 // Opening stage on Home (reference: alche.studio). One smooth, reversible timeline driven by
 // scroll / swipe / arrow keys, settling on three resting points:
@@ -198,10 +199,39 @@ export default function HeroStage() {
         el.classList.add("stage-done");
         removeSkip();
       };
+      // LED profile lights: once "Rulers Studio" has landed, the stage holds while light lines grow
+      // out of the letters and sweep across the ceiling; they dim as the stage goes to black.
+      const ledCanvas = el.querySelector<HTMLCanvasElement>(".led-canvas")!;
+      const leds = createLedLights(ledCanvas, el.querySelector<HTMLElement>(".stage")!, workTitle.querySelector<HTMLElement>(".work-word")!);
+      const light = { p: 0 };
+      let ledsOn = false;
+      const drawLeds = () => {
+        if (!ledsOn) return;
+        leds.draw(light.p, head.t);
+        if (head.t > 1.12) {
+          ledsOn = false;
+          leds.clear();
+          workTitle.classList.remove("lit");
+        }
+      };
+      const relayout = () => {
+        if (!ledsOn) return;
+        leds.layout();
+        drawLeds();
+      };
+      window.addEventListener("resize", relayout);
+      cleanups.push(() => window.removeEventListener("resize", relayout));
       const run = gsap
         .timeline({ paused: true, onComplete: finish })
-        .to(head, { t: 1, duration: 1.3, ease: "none", onUpdate: apply })
-        .to(head, { t: STEPS, duration: 2.0, ease: "none", onUpdate: apply });
+        .to(head, { t: 0.95, duration: 1.235, ease: "none", onUpdate: apply })
+        .add(() => {
+          ledsOn = true;
+          leds.layout();
+          workTitle.classList.add("lit");
+        })
+        .to(light, { p: 1, duration: 2.4, ease: "none", onUpdate: drawLeds })
+        .to(head, { t: 1, duration: 0.065, ease: "none", onUpdate: apply })
+        .to(head, { t: STEPS, duration: 2.0, ease: "none", onUpdate: () => (apply(), drawLeds()) });
       // start right after the R has built in (the load-in below takes about a second)
       const kick = gsap.delayedCall(1.05, () => {
         settleEntrance();
@@ -299,6 +329,8 @@ export default function HeroStage() {
         {/* giant title that lights up behind the blast */}
         {/* plain black that the stage fades into before the video fills the letters */}
         <div className="stage-black" aria-hidden="true" />
+        {/* LED profile lights that grow out of the name (drawn by lib/ledLights.ts) */}
+        <canvas className="led-canvas" aria-hidden="true" />
 
         <div className="work">
           <div className="work-title" aria-hidden="true">
