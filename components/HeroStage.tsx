@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import Hero from "./Hero";
 import { R_PATHS, R_VIEWBOX } from "./RMark";
 import { gsap, getLenis, afterIntro, prefersReducedMotion } from "@/lib/motion";
-import { createLedLights } from "@/lib/ledLights";
+import { createLedTitle } from "@/lib/ledTitle";
 
 // Opening stage on Home (reference: alche.studio). One smooth, reversible timeline driven by
 // scroll / swipe / arrow keys, settling on three resting points:
@@ -199,19 +199,20 @@ export default function HeroStage() {
         el.classList.add("stage-done");
         removeSkip();
       };
-      // LED profile lights: once "Rulers Studio" has landed, the stage holds while light lines grow
-      // out of the letters and sweep across the ceiling; they dim as the stage goes to black.
-      const ledCanvas = el.querySelector<HTMLCanvasElement>(".led-canvas")!;
-      const leds = createLedLights(ledCanvas, el.querySelector<HTMLElement>(".stage")!, workTitle.querySelector<HTMLElement>(".work-word")!);
+      // LED profile lighting in the letters: once "Rulers Studio" has landed, the stage holds while a
+      // line of light runs along the outline of every letter; it dims as the stage goes to black.
+      const ledSvg = el.querySelector<SVGSVGElement>(".led-title")!;
+      const leds = createLedTitle(ledSvg, el.querySelector<HTMLElement>(".stage")!, workTitle.querySelector<HTMLElement>(".work-word")!);
       const light = { p: 0 };
       let ledsOn = false;
       const drawLeds = () => {
         if (!ledsOn) return;
         leds.draw(light.p, head.t);
+        workTitle.classList.toggle("lit", light.p > 0.55);
         if (head.t > 1.12) {
           ledsOn = false;
           leds.clear();
-          workTitle.classList.remove("lit");
+          workTitle.classList.remove("lit", "leds");
         }
       };
       const relayout = () => {
@@ -227,7 +228,7 @@ export default function HeroStage() {
         .add(() => {
           ledsOn = true;
           leds.layout();
-          workTitle.classList.add("lit");
+          workTitle.classList.add("leds");
         })
         .to(light, { p: 1, duration: 2.4, ease: "none", onUpdate: drawLeds })
         .to(head, { t: 1, duration: 0.065, ease: "none", onUpdate: apply })
@@ -329,13 +330,12 @@ export default function HeroStage() {
         {/* giant title that lights up behind the blast */}
         {/* plain black that the stage fades into before the video fills the letters */}
         <div className="stage-black" aria-hidden="true" />
-        {/* LED profile lights that grow out of the name (drawn by lib/ledLights.ts) */}
-        <canvas className="led-canvas" aria-hidden="true" />
 
         <div className="work">
           <div className="work-title" aria-hidden="true">
             <div className="work-word">
               <span className="ww-r">Rulers</span> <em>Studio</em>
+              <i className="ww-base" />
             </div>
             {/* a band of light that slides across the title (transform-only, so it costs nothing to animate) */}
             <div className="work-shine">
@@ -347,6 +347,9 @@ export default function HeroStage() {
             </div>
           </div>
         </div>
+
+        {/* LED profile lighting along the letters of the title (drawn by lib/ledTitle.ts) */}
+        <svg className="led-title" aria-hidden="true" />
 
         <div className="stage-tilt">
           <svg className="bp" viewBox="-500 -500 1000 1000" aria-hidden="true">
