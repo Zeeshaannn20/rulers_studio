@@ -19,7 +19,7 @@ const FLARE = 0.75; // the brief bloom as a letter comes on
 export function createLedTitle(host: HTMLElement, word: HTMLElement) {
   let layer: HTMLDivElement | null = null;
   let anims: Animation[] = [];
-  let parts: { main: HTMLElement; flare: HTMLElement }[] = [];
+  let parts: { main: HTMLElement; flare: HTMLElement | null }[] = [];
 
   function svgFor(contours: string[], w: number, h: number, ox: number, oy: number, k: number, kind: "main" | "flare", m: number) {
     const s = document.createElementNS(NS, "svg");
@@ -61,6 +61,8 @@ export function createLedTitle(host: HTMLElement, word: HTMLElement) {
     const F = parseFloat(getComputedStyle(word).fontSize) || 160;
     const k = F / GLYPH_UPM;
     const m = Math.min(1.3, Math.max(0.5, F / 180));
+    // phones and low-power machines skip the bloom layer: half the layers, same look
+    const lite = window.innerWidth < 760 || (navigator.hardwareConcurrency || 8) <= 4;
     const base = word.querySelector<HTMLElement>(".ww-base");
     const baseline = base ? (base.getBoundingClientRect().top - wr.top) / sc : F * 0.8;
 
@@ -96,7 +98,7 @@ export function createLedTitle(host: HTMLElement, word: HTMLElement) {
           layer!.appendChild(el);
           return el;
         };
-        parts.push({ flare: make("flare"), main: make("main") });
+        parts.push({ flare: lite ? null : make("flare"), main: make("main") });
       }
     }
     host.appendChild(layer);
@@ -109,10 +111,9 @@ export function createLedTitle(host: HTMLElement, word: HTMLElement) {
     host.classList.add("leds");
     parts.forEach((p, i) => {
       const delay = (FIRST + i * GAP) * 1000;
-      anims.push(
-        p.main.animate([{ opacity: 0 }, { opacity: 1 }], { duration: RAMP * 1000, delay, easing: "cubic-bezier(.33,0,.2,1)", fill: "both" }),
-        p.flare.animate([{ opacity: 0 }, { opacity: 1, offset: 0.32 }, { opacity: 0.2 }], { duration: FLARE * 1000, delay, easing: "cubic-bezier(.4,0,.3,1)", fill: "both" })
-      );
+      anims.push(p.main.animate([{ opacity: 0 }, { opacity: 1 }], { duration: RAMP * 1000, delay, easing: "cubic-bezier(.33,0,.2,1)", fill: "both" }));
+      // the bloom fades all the way out, so its layer costs nothing once the letter is lit
+      if (p.flare) anims.push(p.flare.animate([{ opacity: 0 }, { opacity: 1, offset: 0.32 }, { opacity: 0 }], { duration: FLARE * 1000, delay, easing: "cubic-bezier(.4,0,.3,1)", fill: "both" }));
     });
     // once the whole name is lit it breathes slowly
     const lit = (FIRST + (parts.length - 1) * GAP + RAMP) * 1000;

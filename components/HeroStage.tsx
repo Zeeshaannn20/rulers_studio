@@ -147,6 +147,11 @@ export default function HeroStage() {
           revealing = rev;
           el.classList.toggle("revealing", rev);
         }
+        // the title has faded out by now: free the lit letters' layers right away
+        if (p > 1.33 && ledsBuilt) {
+          ledsBuilt = false;
+          leds.destroy();
+        }
         const on = p > 0.4 && p < 1.2;
         if (on !== titleOn) {
           titleOn = on;
@@ -198,12 +203,15 @@ export default function HeroStage() {
         document.body.classList.remove("in-stage");
         el.classList.add("stage-done");
         removeSkip();
+        // the lit letters are gone from view by now: free their layers
+        leds.destroy();
       };
       // LED lighting in the letters: once "Rulers Studio" has landed, the stage holds while the letters
       // switch on one by one (lib/ledTitle.ts; opacity-only animations on the GPU, drawn once up front).
       const leds = createLedTitle(workTitle, workTitle.querySelector<HTMLElement>(".work-word")!);
       let ledsBuilt = false;
       const buildLeds = () => {
+        if (head.t > 1.3) return; // the title has already gone by
         leds.build();
         ledsBuilt = true;
       };

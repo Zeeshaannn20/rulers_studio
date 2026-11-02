@@ -1887,9 +1887,9 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .cc-list .cc-none{color:var(--mute);cursor:default}
 
 /* LED lighting in the letters of "Rulers Studio" on the home stage (lib/ledTitle.ts).
-   Each lit letter is its own layer and only its opacity animates, so it runs on the GPU. */
+   Only opacity animates (Web Animations), so the browser runs it on the GPU; layers are freed when the opening ends. */
 .led-layer{position:absolute;pointer-events:none;z-index:2}
-.led-l{position:absolute;opacity:0;will-change:opacity;contain:strict}
+.led-l{position:absolute;opacity:0;contain:strict}
 .led-l svg{display:block;overflow:visible}
 .ww-base{display:inline-block;width:0;height:0;vertical-align:baseline}
 /* while the letters light up, the unlit ones show as a dim outline (LED off) and the shine band steps aside */
