@@ -1,54 +1,78 @@
-// LED profile lighting inside the letters of the stage title "Rulers Studio".
-// Reference: curved LED profile lines set into walls and ceilings. Here the profile IS the outline
-// of each letter: a white-hot line with a lime halo runs along every contour, letter after letter,
-// with a bright head travelling in front of it. When all letters are lit they surge once, the
-// insides fill with a soft glow, and the light breathes until the stage goes to black.
+// LED lighting in the letters of the stage title "Rulers Studio": the letters switch on one by one,
+// like LED profile strips being powered up in a chain, R first and o last.
 //
-// SVG laid exactly over the HTML title (glyph outlines come from the site's own font files, placed
-// at the browser's own letter positions), so it lines up on every screen size.
-//   draw(p, t)  p 0 → 1 lighting progress during the hold · t stage playhead (fades out 0.96 → 1.1)
+// Built for smoothness: every lit letter is drawn ONCE (a static SVG of its outline as a white LED
+// line with a lime halo, from the site's own font outlines) on its own layer, and the animation only
+// changes opacity, which the browser runs on the GPU compositor (Web Animations API). Nothing is
+// redrawn while it plays, so it stays smooth even while the page is busy.
+//
+// The layer sits inside .work-title, so it moves, scales and fades together with the title.
 
 import { GLYPHS, GLYPH_UPM } from "./titleGlyphs";
 
 const NS = "http://www.w3.org/2000/svg";
-const HOLD = 2.4; // seconds the stage holds on the title (must match HeroStage)
+const GAP = 0.17; // seconds between letters
+const FIRST = 0.12; // first letter starts after this
+const RAMP = 0.4; // each letter powers up over this
+const FLARE = 0.75; // the brief bloom as a letter comes on
 
-const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const smooth = (a: number, b: number, v: number) => {
-  const x = clamp((v - a) / (b - a));
-  return x * x * (3 - 2 * x);
-};
-const easeTrace = (x: number) => -(Math.cos(Math.PI * x) - 1) / 2; // sine in-out: no snap at either end
+export function createLedTitle(host: HTMLElement, word: HTMLElement) {
+  let layer: HTMLDivElement | null = null;
+  let anims: Animation[] = [];
+  let parts: { main: HTMLElement; flare: HTMLElement }[] = [];
 
-type Letter = { g: SVGGElement; core: SVGPathElement[]; halo: SVGPathElement[]; bloom: SVGPathElement[]; head: SVGPathElement[]; fill: SVGPathElement; start: number; dur: number };
-
-export function createLedTitle(svg: SVGSVGElement, stage: HTMLElement, word: HTMLElement) {
-  let letters: Letter[] = [];
-  let m = 1; // stroke scale for the screen size
-
-  function mk<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string | number>, parent: Element) {
-    const el = document.createElementNS(NS, tag);
-    for (const k in attrs) el.setAttribute(k, String(attrs[k]));
-    parent.appendChild(el);
-    return el;
+  function svgFor(contours: string[], w: number, h: number, ox: number, oy: number, k: number, kind: "main" | "flare", m: number) {
+    const s = document.createElementNS(NS, "svg");
+    s.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    s.setAttribute("width", String(w));
+    s.setAttribute("height", String(h));
+    const g = document.createElementNS(NS, "g");
+    g.setAttribute("transform", `translate(${ox} ${oy}) scale(${k} ${-k})`);
+    const d = contours.join("");
+    const add = (attrs: Record<string, string>) => {
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", d);
+      p.setAttribute("vector-effect", "non-scaling-stroke");
+      for (const a in attrs) p.setAttribute(a, attrs[a]);
+      g.appendChild(p);
+    };
+    if (kind === "flare") {
+      add({ fill: "none", stroke: "#d8ff00", "stroke-width": String(20 * m), "stroke-opacity": "0.22", "stroke-linejoin": "round" });
+      add({ fill: "none", stroke: "#f4ffc8", "stroke-width": String(7 * m), "stroke-opacity": "0.45", "stroke-linejoin": "round" });
+    } else {
+      add({ fill: "#eaff9a", "fill-opacity": "0.07" });
+      add({ fill: "none", stroke: "#d8ff00", "stroke-width": String(10 * m), "stroke-opacity": "0.14", "stroke-linejoin": "round" });
+      add({ fill: "none", stroke: "#d8ff00", "stroke-width": String(3.6 * m), "stroke-opacity": "0.42", "stroke-linejoin": "round" });
+      add({ fill: "none", stroke: "#fffbec", "stroke-width": String(1.8 * m), "stroke-linejoin": "round" });
+    }
+    s.appendChild(g);
+    return s;
   }
 
-  function layout() {
-    svg.textContent = "";
-    letters = [];
-    const box = stage.getBoundingClientRect();
-    svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
-    const size = parseFloat(getComputedStyle(word).fontSize) || 160;
-    const k = size / GLYPH_UPM;
-    m = clamp(size / 180, 0.5, 1.3);
+  // Draw every lit letter once, hidden. Works mid-animation too: positions are taken in the title's
+  // own (untransformed) coordinates.
+  function build() {
+    cancel();
+    layer?.remove();
+    parts = [];
+    const wr = word.getBoundingClientRect();
+    if (!wr.width || !word.offsetWidth) return;
+    const sc = wr.width / word.offsetWidth; // the title's current GSAP scale
+    const F = parseFloat(getComputedStyle(word).fontSize) || 160;
+    const k = F / GLYPH_UPM;
+    const m = Math.min(1.3, Math.max(0.5, F / 180));
     const base = word.querySelector<HTMLElement>(".ww-base");
-    const baseline = base ? base.getBoundingClientRect().top - box.top : 0;
+    const baseline = base ? (base.getBoundingClientRect().top - wr.top) / sc : F * 0.8;
+
+    layer = document.createElement("div");
+    layer.className = "led-layer";
+    layer.setAttribute("aria-hidden", "true");
+    Object.assign(layer.style, { left: word.offsetLeft + "px", top: word.offsetTop + "px", width: word.offsetWidth + "px", height: word.offsetHeight + "px" });
 
     const walk = document.createTreeWalker(word, NodeFilter.SHOW_TEXT);
     const range = document.createRange();
-    let i = 0;
     for (let n = walk.nextNode(); n; n = walk.nextNode()) {
-      const italic = !!(n.parentElement && n.parentElement.closest(".ww-r"));
+      const italic = !!n.parentElement?.closest(".ww-r");
       const set = GLYPHS[italic ? "italic" : "bold"];
       const text = n.textContent || "";
       for (let c = 0; c < text.length; c++) {
@@ -57,60 +81,60 @@ export function createLedTitle(svg: SVGSVGElement, stage: HTMLElement, word: HTM
         range.setStart(n, c);
         range.setEnd(n, c + 1);
         const r = range.getBoundingClientRect();
-        const g = mk("g", { transform: `translate(${r.left - box.left} ${baseline}) scale(${k} ${-k})` }, svg);
-        const fill = mk("path", { d: contours.join(""), class: "led-fill" }, g);
-        const layer = (cls: string) =>
-          contours.map((d) => mk("path", { d, class: cls, pathLength: 1, "vector-effect": "non-scaling-stroke" }, g));
-        const bloom = layer("led-bloom");
-        const halo = layer("led-halo");
-        const core = layer("led-core");
-        const head = layer("led-head");
-        // the profiles come on one letter after another, left to right, overlapping like a chain
-        letters.push({ g, core, halo, bloom, head, fill, start: 0.1 + i * 0.075, dur: 0.85 });
-        i++;
+        const x = (r.left - wr.left) / sc;
+        const w = r.width / sc;
+        // a generous box around the glyph: italic overhang plus room for the glow
+        const padX = F * 0.35;
+        const top = baseline - F * 1.05;
+        const bw = Math.ceil(w + padX * 2);
+        const bh = Math.ceil(F * 1.45);
+        const make = (kind: "main" | "flare") => {
+          const el = document.createElement("div");
+          el.className = "led-l " + kind;
+          Object.assign(el.style, { left: x - padX + "px", top: top + "px", width: bw + "px", height: bh + "px" });
+          el.appendChild(svgFor(contours, bw, bh, padX, baseline - top, k, kind, m));
+          layer!.appendChild(el);
+          return el;
+        };
+        parts.push({ flare: make("flare"), main: make("main") });
       }
     }
-    svg.style.setProperty("--m", String(m));
+    host.appendChild(layer);
   }
 
-  function draw(p: number, t: number) {
-    const fade = 1 - smooth(0.96, 1.1, t);
-    svg.style.opacity = String(fade);
-    if (fade <= 0) return;
-    const sec = p * HOLD;
-    const last = letters.length ? letters[letters.length - 1].start + letters[letters.length - 1].dur : 1;
-    // one surge once every letter is lit, then a slow breath
-    const surge = Math.sin(clamp((sec - last) / 0.5) * Math.PI);
-    const breathe = sec > last + 0.5 ? 0.92 + 0.08 * Math.cos((sec - last - 0.5) * 3.2) : 1;
-    const full = smooth(last - 0.2, last + 0.3, sec);
-    for (const L of letters) {
-      const raw = clamp((sec - L.start) / L.dur);
-      const f = easeTrace(raw);
-      const off = String(1 - f);
-      const headOff = String(0.05 - f);
-      const headOn = raw > 0 && raw < 1 ? String(Math.sin(raw * Math.PI) * 0.6 + 0.4) : "0";
-      for (const el of L.core) el.style.strokeDashoffset = off;
-      for (const el of L.halo) el.style.strokeDashoffset = off;
-      for (const el of L.bloom) el.style.strokeDashoffset = off;
-      for (const el of L.head) {
-        el.style.strokeDashoffset = headOff;
-        el.style.opacity = headOn;
-      }
-      const lit = raw >= 1 ? 1 : 0;
-      L.g.style.opacity = String(breathe);
-      L.fill.style.opacity = String((0.06 * full + 0.07 * surge) * (lit || f));
-      // brighter halo during the surge
-      const h = 0.24 + 0.3 * surge;
-      for (const el of L.halo) el.style.opacity = String(h);
-      for (const el of L.bloom) el.style.opacity = String(0.12 + 0.22 * surge);
-    }
+  // Letters come on one by one, left to right. Opacity only, on the compositor.
+  function play() {
+    if (!layer) build();
+    cancel();
+    host.classList.add("leds");
+    parts.forEach((p, i) => {
+      const delay = (FIRST + i * GAP) * 1000;
+      anims.push(
+        p.main.animate([{ opacity: 0 }, { opacity: 1 }], { duration: RAMP * 1000, delay, easing: "cubic-bezier(.33,0,.2,1)", fill: "both" }),
+        p.flare.animate([{ opacity: 0 }, { opacity: 1, offset: 0.32 }, { opacity: 0.2 }], { duration: FLARE * 1000, delay, easing: "cubic-bezier(.4,0,.3,1)", fill: "both" })
+      );
+    });
+    // once the whole name is lit it breathes slowly
+    const lit = (FIRST + (parts.length - 1) * GAP + RAMP) * 1000;
+    if (layer) anims.push(layer.animate([{ opacity: 1 }, { opacity: 0.86 }, { opacity: 1 }], { duration: 1800, delay: lit, iterations: Infinity, easing: "ease-in-out" }));
   }
 
-  function clear() {
-    svg.textContent = "";
-    letters = [];
-    svg.style.opacity = "0";
+  // fast-forward with the rest of the opening when the visitor skips it
+  function speed(rate: number) {
+    anims.forEach((a) => a.updatePlaybackRate(rate));
   }
 
-  return { layout, draw, clear };
+  function cancel() {
+    anims.forEach((a) => a.cancel());
+    anims = [];
+  }
+
+  function destroy() {
+    cancel();
+    layer?.remove();
+    layer = null;
+    host.classList.remove("leds");
+  }
+
+  return { build, play, speed, destroy };
 }

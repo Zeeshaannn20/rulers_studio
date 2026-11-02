@@ -199,40 +199,37 @@ export default function HeroStage() {
         el.classList.add("stage-done");
         removeSkip();
       };
-      // LED profile lighting in the letters: once "Rulers Studio" has landed, the stage holds while a
-      // line of light runs along the outline of every letter; it dims as the stage goes to black.
-      const ledSvg = el.querySelector<SVGSVGElement>(".led-title")!;
-      const leds = createLedTitle(ledSvg, el.querySelector<HTMLElement>(".stage")!, workTitle.querySelector<HTMLElement>(".work-word")!);
-      const light = { p: 0 };
-      let ledsOn = false;
-      const drawLeds = () => {
-        if (!ledsOn) return;
-        leds.draw(light.p, head.t);
-        workTitle.classList.toggle("lit", light.p > 0.55);
-        if (head.t > 1.12) {
-          ledsOn = false;
-          leds.clear();
-          workTitle.classList.remove("lit", "leds");
-        }
+      // LED lighting in the letters: once "Rulers Studio" has landed, the stage holds while the letters
+      // switch on one by one (lib/ledTitle.ts; opacity-only animations on the GPU, drawn once up front).
+      const leds = createLedTitle(workTitle, workTitle.querySelector<HTMLElement>(".work-word")!);
+      let ledsBuilt = false;
+      const buildLeds = () => {
+        leds.build();
+        ledsBuilt = true;
       };
-      const relayout = () => {
-        if (!ledsOn) return;
-        leds.layout();
-        drawLeds();
+      // draw the lit letters ahead of time, while nothing else is happening
+      document.fonts?.ready.then(() => {
+        const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback;
+        if (idle) idle(buildLeds);
+        else setTimeout(buildLeds, 200);
+      });
+      let resizeT = 0;
+      const rebuild = () => {
+        window.clearTimeout(resizeT);
+        resizeT = window.setTimeout(() => ledsBuilt && leds.build(), 200);
       };
-      window.addEventListener("resize", relayout);
-      cleanups.push(() => window.removeEventListener("resize", relayout));
+      window.addEventListener("resize", rebuild);
+      cleanups.push(() => {
+        window.removeEventListener("resize", rebuild);
+        leds.destroy();
+      });
       const run = gsap
         .timeline({ paused: true, onComplete: finish })
         .to(head, { t: 0.95, duration: 1.235, ease: "none", onUpdate: apply })
-        .add(() => {
-          ledsOn = true;
-          leds.layout();
-          workTitle.classList.add("leds");
-        })
-        .to(light, { p: 1, duration: 2.4, ease: "none", onUpdate: drawLeds })
+        .add(() => leds.play())
+        .to({}, { duration: 2.4 }) // hold on the name while the letters light up
         .to(head, { t: 1, duration: 0.065, ease: "none", onUpdate: apply })
-        .to(head, { t: STEPS, duration: 2.0, ease: "none", onUpdate: () => (apply(), drawLeds()) });
+        .to(head, { t: STEPS, duration: 2.0, ease: "none", onUpdate: apply });
       // start right after the R has built in (the load-in below takes about a second)
       const kick = gsap.delayedCall(1.05, () => {
         settleEntrance();
@@ -244,6 +241,7 @@ export default function HeroStage() {
         kick.kill();
         settleEntrance();
         run.play().timeScale(3.5);
+        leds.speed(3.5);
       };
       const opts = { passive: true } as AddEventListenerOptions;
       window.addEventListener("wheel", skip, opts);
@@ -347,9 +345,6 @@ export default function HeroStage() {
             </div>
           </div>
         </div>
-
-        {/* LED profile lighting along the letters of the title (drawn by lib/ledTitle.ts) */}
-        <svg className="led-title" aria-hidden="true" />
 
         <div className="stage-tilt">
           <svg className="bp" viewBox="-500 -500 1000 1000" aria-hidden="true">

@@ -1886,18 +1886,13 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .cc-list .cc-code{padding:0;color:var(--mute);font-variant-numeric:tabular-nums}
 .cc-list .cc-none{color:var(--mute);cursor:default}
 
-/* LED profile lighting along the letters of "Rulers Studio" on the home stage (lib/ledTitle.ts) */
-.led-title{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;overflow:visible;--m:1}
-.led-title path{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 1;stroke-dashoffset:1}
-.led-title .led-bloom{stroke:#d8ff00;stroke-width:calc(var(--m)*11px);opacity:.16}
-.led-title .led-halo{stroke:#d8ff00;stroke-width:calc(var(--m)*4px);opacity:.34}
-.led-title .led-core{stroke:#fffbec;stroke-width:calc(var(--m)*1.9px)}
-.led-title .led-head{stroke:#ffffff;stroke-width:calc(var(--m)*4px);stroke-dasharray:.05 2;opacity:0}
-.led-title .led-fill{fill:#eaff9a;stroke:none;opacity:0}
+/* LED lighting in the letters of "Rulers Studio" on the home stage (lib/ledTitle.ts).
+   Each lit letter is its own layer and only its opacity animates, so it runs on the GPU. */
+.led-layer{position:absolute;pointer-events:none;z-index:2}
+.led-l{position:absolute;opacity:0;will-change:opacity;contain:strict}
+.led-l svg{display:block;overflow:visible}
 .ww-base{display:inline-block;width:0;height:0;vertical-align:baseline}
-/* while the LEDs run, they replace the drawn outline and the sweeping shine */
-.work-title.leds .work-word:not(.solid),.work-title.leds .work-word:not(.solid) span{-webkit-text-stroke-color:transparent}
-.work-title .work-shine-in{transition:opacity .5s ease}
+/* while the letters light up, the unlit ones show as a dim outline (LED off) and the shine band steps aside */
+.work-title.leds .work-word:not(.solid),.work-title.leds .work-word:not(.solid) span{-webkit-text-stroke-color:rgba(242,242,238,.22)}
+.work-title .work-shine-in{transition:opacity .35s ease}
 .work-title.leds .work-shine-in{opacity:0}
-.work-title .work-word{transition:text-shadow 1.2s cubic-bezier(.3,.1,.2,1),-webkit-text-stroke-color .4s ease}
-.work-title.lit .work-word:not(.solid){text-shadow:0 0 26px rgba(216,255,0,.18),0 0 80px rgba(216,255,0,.08)}
