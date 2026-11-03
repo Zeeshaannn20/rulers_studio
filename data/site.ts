@@ -59,9 +59,9 @@ export const SERVICES = [
 export const FILM_STRIP: { slug: string; clip?: string }[] = [
   { slug: "neel-kamal", clip: "/media/previews/neel-kamal.mp4" },
   { slug: "amul", clip: "/media/previews/amul.mp4" },
-  { slug: "monster", clip: "/media/previews/monster.mp4" },
+  { slug: "swish", clip: "/media/previews/swish.mp4" },
   { slug: "bonkers-corner", clip: "/media/previews/bonkers-corner.mp4" },
-  { slug: "rolex", clip: "/media/previews/rolex.mp4" },
+  { slug: "overlays", clip: "/media/previews/overlays.mp4" },
 ];
 
 // Client names (kept for later use; the strip under the hero now shows the film strip)

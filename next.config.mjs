@@ -11,6 +11,9 @@ const nextConfig = {
     return [
       { source: "/join", destination: "/join-the-crew", permanent: true },
       { source: "/careers", destination: "/join-the-crew", permanent: true },
+      // films taken off the site (Monster → Swish, Rolex → Overlays): old links land on the Projects page
+      { source: "/projects/monster", destination: "/projects", permanent: true },
+      { source: "/projects/rolex", destination: "/projects", permanent: true },
     ];
   },
   async headers() {

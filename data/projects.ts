@@ -72,7 +72,7 @@ export const driveCover = (slug: string, w = 1600) =>
   DRIVE[slug] ? `https://drive.google.com/thumbnail?id=${DRIVE[slug]}&sz=w${w}` : undefined;
 
 // Ad films that were made vertical (9:16)
-const VERTICAL = new Set(["rolex", "snitch"]);
+const VERTICAL = new Set(["rolex", "snitch", "overlays"]);
 
 type Row = [string, string, TypeTag, number, boolean | null, string | undefined, boolean?];
 
@@ -87,9 +87,11 @@ const suffix: Record<TypeTag, string> = {
 const ROWS: Row[] = [
   ["neel-kamal", "Nilkamal", "AI Ad Film", 1, null, undefined, true],
   ["amul", "Amul", "AI Ad Film", 2, null, "Dairy / FMCG", true],
-  ["monster", "Monster", "AI Ad Film", 3, true, "Beverages", true],
+  ["swish", "Swish", "AI Ad Film", 3, null, "Food delivery", true],
+  ["monster", "Monster", "AI Ad Film", 0, true, "Beverages", true],
   ["the-only-regret", "The Only Regret", "AI Short Film", 4, false, "Original film"],
-  ["rolex", "Rolex", "AI Ad Film", 5, true, "Luxury watches", true],
+  ["overlays", "Overlays", "AI Ad Film", 5, true, "Streetwear", true],
+  ["rolex", "Rolex", "AI Ad Film", 0, true, "Luxury watches", true],
   ["snitch", "Snitch", "AI Ad Film", 6, true, "Fashion", true],
   ["noctis", "Noctis", "UGC Ad", 0, null, undefined],
   ["paper-boat", "Paper Boat", "AI Ad Film", 7, true, "Beverages", true],
@@ -134,7 +136,7 @@ const LOCAL_PREVIEW: Record<string, string> = { "neel-kamal": "/media/previews/n
 
 // Full films with sound (in /public/media/films): muted at first, visitors can turn the sound on.
 // Blinkit: add /public/media/films/blinkit.mp4 + blinkit.jpg and put "blinkit" in this list.
-const FILMS = new Set(["bonkers-corner", "snitch", "rolex", "amul", "automotive-film", "neel-kamal"]);
+const FILMS = new Set(["bonkers-corner", "snitch", "rolex", "amul", "automotive-film", "neel-kamal", "swish", "overlays"]);
 
 export const PROJECTS: Project[] = ROWS.map(([slug, name, typeTag, home, isConcept, industry, inReel]) => ({
   slug,
@@ -163,7 +165,7 @@ export const PROJECTS: Project[] = ROWS.map(([slug, name, typeTag, home, isConce
 // ─── WORK SHOWN ON THE SITE (max 6) ───────────────────────────────────────────
 // Only these projects appear anywhere on the site, in this order.
 // To swap one, replace its slug with any slug from the list above. Keep 6 or fewer.
-export const SHOWN_SLUGS = ["bonkers-corner", "snitch", "rolex", "amul", "neel-kamal", "automotive-film"];
+export const SHOWN_SLUGS = ["bonkers-corner", "snitch", "overlays", "amul", "neel-kamal", "automotive-film"];
 export const MAX_SHOWN = 6;
 
 export const SHOWN_PROJECTS: Project[] = SHOWN_SLUGS.slice(0, MAX_SHOWN)
@@ -175,7 +177,7 @@ export const SORTED_PROJECTS = SHOWN_PROJECTS;
 export const HOME_PROJECTS = SHOWN_PROJECTS;
 
 // Films on the Home work tree also keep their pages
-const TREE_SLUGS = ["neel-kamal", "amul", "monster", "bonkers-corner", "rolex", "snitch"];
+const TREE_SLUGS = ["neel-kamal", "amul", "swish", "bonkers-corner", "overlays", "snitch"];
 export const PAGE_PROJECTS: Project[] = PROJECTS.filter((p) => SHOWN_SLUGS.includes(p.slug) || TREE_SLUGS.includes(p.slug));
 
 // Only these projects have a page; any other slug returns 404
