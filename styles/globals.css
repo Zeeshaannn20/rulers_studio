@@ -1896,3 +1896,35 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .work-title.leds .work-word:not(.solid),.work-title.leds .work-word:not(.solid) span{-webkit-text-stroke-color:rgba(242,242,238,.22)}
 .work-title .work-shine-in{transition:opacity .35s ease}
 .work-title.leds .work-shine-in{opacity:0}
+
+/* ═════ Projects page: justified rows. Each card's width follows its film's shape (--a = width/height),
+   so every card in a row has the same height and vertical films show whole at 9:16. ═════ */
+.pg{display:flex;flex-direction:column;gap:clamp(12px,1.4vw,20px)}
+.pg-row{display:flex;gap:clamp(12px,1.4vw,20px);align-items:flex-start}
+/* 16px = the card's padding and border, so the film boxes line up exactly */
+.card.fit{flex:var(--a) 1 16px;min-width:0}
+.card.fit .card-media{aspect-ratio:var(--a)}
+.card.fit .card-media.v img{filter:none;transform:scale(1.015)}
+.card.fit:hover .card-media.v img{transform:scale(1.07)}
+.card.fit .card-media.v video{object-fit:cover}
+.pg-one .card-title{font-size:clamp(19px,1.8vw,26px)}
+/* same bar height on every card, so the films in a row line up even when a label is hidden */
+@media (min-width:701px){.card.fit .card-bar{box-sizing:border-box;min-height:53px}}
+@media (max-width:1100px){.card.fit.vc .tag{display:none}}
+@media (max-width:700px){
+  .pg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row dense;gap:12px}
+  .pg-row{display:contents}
+  .card.fit{grid-column:span 2}
+  /* the wide opener gets a taller 16:9 box on phones so it isn't a thin strip */
+  .pg-one .card.fit .card-media{aspect-ratio:16/9}
+  .card.fit.vc{grid-column:span 1;padding:5px;border-radius:20px}
+  .card.fit.vc .card-bar{padding:10px 8px 11px 9px}
+  .card.fit.vc .card-title{font-size:16px}
+  .card.fit.vc .card-watch{display:none}
+  .card.fit.vc .card-sound{right:8px;bottom:8px}
+  /* an odd vertical film out: full width, cut to 4:5 so it doesn't fill the whole screen */
+  .card.fit.vc.solo{grid-column:span 2;padding:7px;border-radius:24px}
+  .card.fit.vc.solo .card-media{aspect-ratio:4/5}
+  .card.fit.vc.solo .card-watch{display:inline-flex}
+  .card.fit.vc.solo .tag{display:inline-block}
+}

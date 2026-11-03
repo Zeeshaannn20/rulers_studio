@@ -15,6 +15,7 @@ export type Project = {
   isConcept: boolean | null; // null = [confirm]
   industry?: string;
   aspectRatio: "16:9" | "9:16" | "1:1";
+  ratio: number; // width / height of the cover and card loop
   videoUrl?: string;
   previewUrl?: string;
   coverImage?: string;
@@ -73,6 +74,8 @@ export const driveCover = (slug: string, w = 1600) =>
 
 // Ad films that were made vertical (9:16)
 const VERTICAL = new Set(["rolex", "snitch", "overlays"]);
+// Films framed wider than 16:9 (cover and card loop are cut to the picture, no black bars)
+const WIDE: Record<string, number> = { "automotive-film": 1920 / 804 };
 
 type Row = [string, string, TypeTag, number, boolean | null, string | undefined, boolean?];
 
@@ -85,7 +88,7 @@ const suffix: Record<TypeTag, string> = {
 
 // [slug, name, tag, homeOrder (0 = not on Home), concept, industry, inReel]
 const ROWS: Row[] = [
-  ["neel-kamal", "Nilkamal", "AI Ad Film", 1, null, undefined, true],
+  ["neel-kamal", "Nilkamal", "AI Ad Film", 1, null, "Furniture", true],
   ["amul", "Amul", "AI Ad Film", 2, null, "Dairy / FMCG", true],
   ["swish", "Swish", "AI Ad Film", 3, null, "Food delivery", true],
   ["monster", "Monster", "AI Ad Film", 0, true, "Beverages", true],
@@ -148,6 +151,7 @@ export const PROJECTS: Project[] = ROWS.map(([slug, name, typeTag, home, isConce
   isConcept,
   industry,
   aspectRatio: typeTag === "UGC Ad" || typeTag === "AI Avatar" || VERTICAL.has(slug) ? "9:16" : "16:9",
+  ratio: typeTag === "UGC Ad" || typeTag === "AI Avatar" || VERTICAL.has(slug) ? 9 / 16 : WIDE[slug] ?? 16 / 9,
   deliverables: typeTag,
   coverImage: FILMS.has(slug) ? `/media/films/${slug}.jpg` : LOCAL_COVER[slug] ?? driveCover(slug),
   // Projects page cards play a light 6-second silent loop; the full film loads only on tap-for-sound or its own page
@@ -172,14 +176,24 @@ export const SHOWN_PROJECTS: Project[] = SHOWN_SLUGS.slice(0, MAX_SHOWN)
   .map((slug) => PROJECTS.find((p) => p.slug === slug))
   .filter((p): p is Project => !!p);
 
-// Extra films shown ONLY on the Projects page (after the 6 above), never on Home
+// ─── PROJECTS PAGE LAYOUT ─────────────────────────────────────────────────────
+// Each inner list is one row on desktop. The cards in a row share one height, so a vertical
+// film sits next to a wide one at its true 9:16 shape. Monster and Rolex appear ONLY here.
+// Rhythm: one wide opener, then wide + vertical pairs that swap sides, a pair of wides, and a
+// luxury closer. To reorder, move slugs between rows (2 per row reads best, 1 = full width).
+export const PROJECT_LAYOUT: string[][] = [
+  ["automotive-film"],
+  ["neel-kamal", "snitch"],
+  ["overlays", "swish"],
+  ["amul", "monster"],
+  ["bonkers-corner", "rolex"],
+];
+const bySlug = (slug: string) => PROJECTS.find((p) => p.slug === slug);
+export const PROJECT_ROWS: Project[][] = PROJECT_LAYOUT.map((r) => r.map(bySlug).filter((p): p is Project => !!p));
 export const PROJECTS_PAGE_ONLY = ["monster", "rolex"];
 
-// Projects page: the 6 above plus the Projects-only films. Home keeps just the 6.
-export const SORTED_PROJECTS: Project[] = [
-  ...SHOWN_PROJECTS,
-  ...PROJECTS_PAGE_ONLY.map((slug) => PROJECTS.find((p) => p.slug === slug)).filter((p): p is Project => !!p),
-];
+// Projects page order (also used for "next film" links and the page's structured data)
+export const SORTED_PROJECTS: Project[] = PROJECT_ROWS.flat();
 export const HOME_PROJECTS = SHOWN_PROJECTS;
 
 // Films on the Home work tree also keep their pages

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Words from "@/components/Words";
 import ProjectGrid from "@/components/ProjectGrid";
 import Footer from "@/components/Footer";
-import { SORTED_PROJECTS } from "@/data/projects";
+import { PROJECT_ROWS, SORTED_PROJECTS } from "@/data/projects";
 import JsonLd from "@/components/JsonLd";
 import { OG_IMAGE, breadcrumbs, itemListSchema } from "@/data/seo";
 
@@ -25,7 +25,7 @@ export default function ProjectsPage() {
         <p className="lede">AI ad films, product videos and brand stories from our AI video production studio.</p>
       </section>
       <section className="wrap" style={{ paddingBottom: "clamp(80px,10vw,140px)" }}>
-        <ProjectGrid projects={SORTED_PROJECTS} />
+        <ProjectGrid rows={PROJECT_ROWS} />
       </section>
       <Footer />
     </>

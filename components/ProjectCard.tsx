@@ -24,13 +24,16 @@ export function SoundIcon({ on }: { on: boolean }) {
 
 // Project card: a light, silent preview loop plays while the card is on screen. The full film
 // (with sound) is only downloaded when someone taps for sound, so the page stays fast.
-export default function ProjectCard({ p }: { p: Project }) {
+// fit: the card takes its film's own shape (Projects page rows) instead of the fixed 16:10 box.
+export default function ProjectCard({ p, fit, solo, priority }: { p: Project; fit?: boolean; solo?: boolean; priority?: boolean }) {
   const vid = useRef<HTMLVideoElement>(null);
   const [imgOk, setImgOk] = useState(true);
   const [sound, setSound] = useState(false);
   const src = p.previewUrl || p.videoUrl;
   const swapToFilm = !!(p.videoUrl && p.previewUrl && p.videoUrl !== p.previewUrl);
   const vertical = p.aspectRatio === "9:16";
+  // the label beside the name: the brand's industry (unless the name already says it), else the film type
+  const label = p.industry && !p.name.toLowerCase().includes(p.industry.toLowerCase()) ? p.industry : p.typeTag;
 
   // play while visible, pause (and go quiet) when scrolled away
   useEffect(() => {
@@ -85,15 +88,21 @@ export default function ProjectCard({ p }: { p: Project }) {
   };
 
   return (
-    <TLink className="card" href={`/projects/${p.slug}`} data-cursor="Watch" data-reveal="">
+    <TLink
+      className={"card" + (fit ? " fit" : "") + (vertical ? " vc" : "") + (solo ? " solo" : "")}
+      href={`/projects/${p.slug}`}
+      data-cursor="Watch"
+      data-reveal=""
+      style={fit ? { ["--a" as string]: p.ratio.toFixed(4) } : undefined}
+    >
       <div className="card-bar">
-        <span className="card-title">{p.title}</span>
-        <span className="tag">{p.typeTag}</span>
+        <span className="card-title">{fit ? p.name : p.title}</span>
+        <span className="tag">{fit ? label : p.typeTag}</span>
       </div>
       <div className={"card-media" + (vertical ? " v" : "") + (src ? " has-film" : "")} style={{ ["--g" as string]: posterGradient(p) }}>
         {p.coverImage && imgOk ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.coverImage} alt={`${p.title} still`} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setImgOk(false)} />
+          <img src={p.coverImage} alt={`${p.title} still`} loading={priority ? "eager" : "lazy"} decoding="async" referrerPolicy="no-referrer" onError={() => setImgOk(false)} />
         ) : (
           <span className="card-name">{p.name}</span>
         )}
