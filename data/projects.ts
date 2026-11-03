@@ -136,7 +136,7 @@ const LOCAL_PREVIEW: Record<string, string> = { "neel-kamal": "/media/previews/n
 
 // Full films with sound (in /public/media/films): muted at first, visitors can turn the sound on.
 // Blinkit: add /public/media/films/blinkit.mp4 + blinkit.jpg and put "blinkit" in this list.
-const FILMS = new Set(["bonkers-corner", "snitch", "rolex", "amul", "automotive-film", "neel-kamal", "swish", "overlays"]);
+const FILMS = new Set(["bonkers-corner", "snitch", "rolex", "amul", "automotive-film", "neel-kamal", "swish", "overlays", "monster"]);
 
 export const PROJECTS: Project[] = ROWS.map(([slug, name, typeTag, home, isConcept, industry, inReel]) => ({
   slug,
@@ -172,20 +172,27 @@ export const SHOWN_PROJECTS: Project[] = SHOWN_SLUGS.slice(0, MAX_SHOWN)
   .map((slug) => PROJECTS.find((p) => p.slug === slug))
   .filter((p): p is Project => !!p);
 
-// Kept for compatibility: Home and Projects both use the same 6
-export const SORTED_PROJECTS = SHOWN_PROJECTS;
+// Extra films shown ONLY on the Projects page (after the 6 above), never on Home
+export const PROJECTS_PAGE_ONLY = ["monster", "rolex"];
+
+// Projects page: the 6 above plus the Projects-only films. Home keeps just the 6.
+export const SORTED_PROJECTS: Project[] = [
+  ...SHOWN_PROJECTS,
+  ...PROJECTS_PAGE_ONLY.map((slug) => PROJECTS.find((p) => p.slug === slug)).filter((p): p is Project => !!p),
+];
 export const HOME_PROJECTS = SHOWN_PROJECTS;
 
 // Films on the Home work tree also keep their pages
 const TREE_SLUGS = ["neel-kamal", "amul", "swish", "bonkers-corner", "overlays", "snitch"];
-export const PAGE_PROJECTS: Project[] = PROJECTS.filter((p) => SHOWN_SLUGS.includes(p.slug) || TREE_SLUGS.includes(p.slug));
+export const PAGE_PROJECTS: Project[] = PROJECTS.filter((p) => SHOWN_SLUGS.includes(p.slug) || TREE_SLUGS.includes(p.slug) || PROJECTS_PAGE_ONLY.includes(p.slug));
 
 // Only these projects have a page; any other slug returns 404
 export const getProject = (slug: string) => PAGE_PROJECTS.find((p) => p.slug === slug);
 
 export function nextProjects(slug: string, n = 2) {
-  const i = Math.max(0, SHOWN_PROJECTS.findIndex((p) => p.slug === slug));
-  return Array.from({ length: Math.min(n, SHOWN_PROJECTS.length - 1) }, (_, k) => SHOWN_PROJECTS[(i + 1 + k) % SHOWN_PROJECTS.length]);
+  const list = SORTED_PROJECTS;
+  const i = Math.max(0, list.findIndex((p) => p.slug === slug));
+  return Array.from({ length: Math.min(n, list.length - 1) }, (_, k) => list[(i + 1 + k) % list.length]);
 }
 
 // Poster mood per industry: two dark tones, no stock imagery

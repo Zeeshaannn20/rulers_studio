@@ -9,7 +9,7 @@ import { OG_IMAGE, breadcrumbs, itemListSchema } from "@/data/seo";
 export const metadata: Metadata = {
   title: "AI Ad Films & AI Video Portfolio",
   description:
-    "Watch AI ad films and AI commercials by Rulers Studio, an AI video production studio working with brands worldwide. Films for Swish, Overlays, Amul, Snitch and more.",
+    "Watch AI ad films and AI commercials by Rulers Studio, an AI video production studio working with brands worldwide. Films for Swish, Overlays, Monster, Rolex, Amul, Snitch and more.",
   alternates: { canonical: "/projects" },
   openGraph: { url: "/projects", title: "AI Ad Films & AI Video Portfolio | Rulers Studio", images: [OG_IMAGE] },
 };
