@@ -26,7 +26,7 @@ export default function WorkTree() {
     const world = el.querySelector<HTMLElement>(".wt-world")!;
     const cards = Array.from(el.querySelectorAll<HTMLElement>(".wt-card"));
     const vids = cards.map((c) => c.querySelector("video"));
-    const names = Array.from(el.querySelectorAll<HTMLElement>(".wt-list button"));
+    const names = Array.from(el.querySelectorAll<HTMLElement>(".wt-list button, .wt-nm, .wt-bar i"));
     const count = el.querySelector<HTMLElement>(".wt-count b")!;
     const canvas = el.querySelector<HTMLCanvasElement>(".wt-canvas")!;
     const cleanups: Array<() => void> = [];
@@ -43,7 +43,7 @@ export default function WorkTree() {
       const w = window.innerWidth;
       const mobile = w < 861;
       // big, cinematic panels: the film is the hero, the trunk peeks out from behind it
-      const cw = mobile ? Math.min(w * 0.88, 560) : Math.min(w * 0.56, 1000);
+      const cw = mobile ? Math.min(w * 0.92, 560) : Math.min(w * 0.56, 1000);
       el.style.setProperty("--cw", cw + "px");
       R = cw * (mobile ? 0.6 : 0.62);
       off = cw * (mobile ? 0.12 : 0.34);
@@ -107,7 +107,11 @@ export default function WorkTree() {
       if (idx !== shown) {
         shown = idx;
         count.textContent = String(idx + 1).padStart(2, "0");
-        names.forEach((b, k) => b.classList.toggle("on", k === idx));
+        names.forEach((b) => {
+          const k = Number(b.dataset.k);
+          b.classList.toggle("on", k === idx);
+          b.classList.toggle("done", k < idx);
+        });
         cards.forEach((c, k) => c.classList.toggle("focus", k === idx));
         vids.forEach((v, k) => {
           if (!v) return;
@@ -204,8 +208,8 @@ export default function WorkTree() {
     );
 
     // the list and the side panels jump to their film; the facing panel opens the project
-    names.forEach((b, i) => {
-      const h = () => glideTo(i);
+    names.forEach((b) => {
+      const h = () => glideTo(Number(b.dataset.k));
       b.addEventListener("click", h);
       cleanups.push(() => b.removeEventListener("click", h));
     });
@@ -286,12 +290,33 @@ export default function WorkTree() {
         </div>
         <div className="wt-vignette" aria-hidden="true" />
 
+        {/* phones: the film's name sits big above the panel, with a progress line for the 5 films */}
+        <div className="wt-now" aria-hidden="true">
+          <span className="eyebrow">Selected work</span>
+          <div className="wt-names">
+            {films.map(({ p }, i) => (
+              <span key={p.slug} data-k={i} className={"wt-nm" + (i === 0 ? " on" : "")}>
+                <b>{p.name}</b>
+                <em>
+                  {p.typeTag}
+                  {p.industry ? ` · ${p.industry}` : ""}
+                </em>
+              </span>
+            ))}
+          </div>
+          <span className="wt-bar">
+            {films.map(({ p }, i) => (
+              <i key={p.slug} data-k={i} className={i === 0 ? "on" : ""} />
+            ))}
+          </span>
+        </div>
+
         <div className="wt-ui">
           <span className="eyebrow">Selected work</span>
           <p className="wt-q">What are you looking for?</p>
           <div className="wt-list">
             {films.map(({ p }, i) => (
-              <button type="button" key={p.slug} className={i === 0 ? "on" : ""}>
+              <button type="button" key={p.slug} data-k={i} className={i === 0 ? "on" : ""}>
                 <span>→</span> {p.name}
               </button>
             ))}
