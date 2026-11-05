@@ -24,7 +24,7 @@ const loadCheckout = () =>
 
 // "Book a strategy meet": pay ₹199 in the Razorpay window (UPI, cards, netbanking, wallets),
 // then go straight to the Google booking page to pick a time.
-export default function MeetButton({ className = "btn dark", label: idle = "Book a call with founders" }: { className?: string; label?: React.ReactNode }) {
+export default function MeetButton({ className = "btn dark", label: idle = "Book a call" }: { className?: string; label?: React.ReactNode }) {
   const [busy, setBusy] = useState<"" | "opening" | "verifying">("");
   // paid but not booked yet: the button reopens the calendar instead of asking to pay again
   const [paid, setPaid] = useState<Paid | null>(null);
@@ -258,7 +258,7 @@ function BookingModal({ paid, onBooked, onClose }: { paid: Paid; onBooked: () =>
               <span className="talk-tag">
                 <i /> Payment received
               </span>
-              <h3>Pick a time with the founders.</h3>
+              <h3>Pick a time that suits you.</h3>
               <p>One booking per payment. Close this and come back any time; the button will bring you right here.</p>
             </div>
             {state === "failed" ? (
@@ -305,7 +305,7 @@ function NameStep({ onSubmit, onClose }: { onSubmit: (name: string) => void; onC
           ×
         </button>
         <span className="talk-tag">
-          <i /> Founders&apos; desk
+          <i /> Let&apos;s talk
         </span>
         <h3>First, what should we call you?</h3>
         <label className="mbk-field">

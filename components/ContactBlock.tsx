@@ -107,7 +107,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
         <aside className="talk">
           <div className="talk-top">
             <span className="talk-tag">
-              <i /> Founders&apos; desk
+              <i /> Let&apos;s talk
             </span>
             <h2 className="talk-h">Big ideas deserve a seat at the table.</h2>
             <p className="talk-sub">Let&rsquo;s build something remarkable.</p>
