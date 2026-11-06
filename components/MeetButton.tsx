@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { track } from "@/lib/fbq";
 import { createPortal } from "react-dom";
 import { Arrow } from "./Icons";
 import { getLenis, toast } from "@/lib/motion";
@@ -69,6 +70,8 @@ export default function MeetButton({ className = "btn dark", label: idle = "Book
           })
             .then((x) => x.json())
             .catch(() => ({ ok: false }));
+          // payment confirmed by the server: count it once, whichever way the booking page opens
+          if (v.ok) track("Purchase", { value: order.amount / 100, currency: order.currency || "INR", content_name: "Strategy call" });
           if (v.ok && v.calLink) {
             setBusy("");
             const p: Paid = { calLink: v.calLink, email: v.email || "", name, paymentId: v.paymentId || r.razorpay_payment_id, at: Date.now() };
@@ -86,6 +89,7 @@ export default function MeetButton({ className = "btn dark", label: idle = "Book
       });
       rzp.on("payment.failed", (e) => toast(e.error?.description || "Payment failed. Please try again."));
       rzp.open();
+      track("InitiateCheckout", { value: order.amount / 100, currency: order.currency || "INR", content_name: "Strategy call" });
     } catch (e) {
       toast((e as Error).message);
       setBusy("");

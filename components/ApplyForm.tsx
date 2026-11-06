@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import { track } from "@/lib/fbq";
 import TLink from "./TLink";
 import Field from "./Field";
 import PhoneField from "./PhoneField";
@@ -29,7 +30,7 @@ const size = (b: number) => (b < 1024 * 1024 ? `${Math.max(1, Math.round(b / 102
 
 // Join the Crew application: name, phone, email, experience, CTC, CV upload, portfolio → Google Sheet
 export default function ApplyForm({ role, roleTitle }: { role: string; roleTitle: string }) {
-  const { errors, state, formError, onSubmit, validateField, clearError } = useSubmit("/api/apply", applicationSchema);
+  const { errors, state, formError, onSubmit, validateField, clearError } = useSubmit("/api/apply", applicationSchema, () => track("CrewApplication", {}, true));
   const [cv, setCv] = useState<CV | null>(null);
   const [cvError, setCvError] = useState("");
   const [drag, setDrag] = useState(false);

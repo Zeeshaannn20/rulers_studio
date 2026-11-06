@@ -11,6 +11,7 @@ import { useSubmit } from "@/lib/useSubmit";
 import { enquirySchema } from "@/lib/validation";
 import { BUDGETS, SERVICES } from "@/data/site";
 import MeetButton from "./MeetButton";
+import { track } from "@/lib/fbq";
 
 // Email boxes drop spaces.
 const noSpaces = (e: React.FormEvent<HTMLInputElement>) => {
@@ -25,7 +26,9 @@ const REQUIREMENTS = [...SERVICES.map((s) => s.title), OTHER];
 // every project page, and is the whole Contact page.
 export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?: string; headingAs?: "h1" | "h2" }) {
   const pathname = usePathname();
-  const { errors, state, formError, onSubmit, validateField, clearError } = useSubmit("/api/enquiry", enquirySchema);
+  const { errors, state, formError, onSubmit, validateField, clearError } = useSubmit("/api/enquiry", enquirySchema, () =>
+    track("Lead", { content_name: "Website contact form" })
+  );
   const [picked, setPicked] = useState<string[]>([]);
   const f = (n: string) => `${id}-${n}`;
   const blur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => validateField(e.target.name, e.target.form!);

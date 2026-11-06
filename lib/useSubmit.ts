@@ -4,7 +4,8 @@ import type { ZodTypeAny } from "zod";
 import { toFieldErrors, type FieldErrors } from "./validation";
 
 // Validates in the browser with the same schema the API uses, then posts JSON.
-export function useSubmit(endpoint: string, schema: ZodTypeAny) {
+// onSent runs once the server has accepted the form (used for the Meta Pixel events).
+export function useSubmit(endpoint: string, schema: ZodTypeAny, onSent?: () => void) {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [state, setState] = useState<"idle" | "sending" | "sent" | "failed">("idle");
   const [formError, setFormError] = useState("");
@@ -42,6 +43,11 @@ export function useSubmit(endpoint: string, schema: ZodTypeAny) {
         setFormError(json.error || "Couldn't send right now. Check your connection and try again.");
         setState("failed");
         return;
+      }
+      try {
+        onSent?.();
+      } catch {
+        // tracking must never block the thank-you message
       }
       setState("sent");
     } catch {
