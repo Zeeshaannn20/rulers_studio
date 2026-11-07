@@ -2019,3 +2019,8 @@ html.modal-open,html.modal-open body{overflow:hidden}
    Each section renders once on arrival so its true height is remembered, then html.cv switches skipping on. */
 main > .statement,main > .sv-host,main > .process,main > .contact,main > .faq,main > .ftr{contain-intrinsic-size:auto 1200px}
 html.cv main > .statement,html.cv main > .sv-host,html.cv main > .process,html.cv main > .contact,html.cv main > .faq,html.cv main > .ftr{content-visibility:auto}
+
+/* Work tree: the deep black drop shadows were invisible on the black stage but tripled the size of every
+   moving 3D panel the GPU has to draw. Only the hairline edge and the lime glow of the facing film stay. */
+.wt-card{box-shadow:0 0 0 1px rgba(246,246,246,.06);transition:none}
+.wt-card.focus{box-shadow:0 0 0 1px rgba(214,214,214,.16),0 0 90px -20px rgba(216,255,0,.18)}

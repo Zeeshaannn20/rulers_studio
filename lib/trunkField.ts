@@ -29,7 +29,8 @@ void main(){
   sc.x += uOffX;
   gl_Position = vec4(sc.x / uHalf.x, -sc.y / uHalf.y, 0.0, 1.0);
   float neb = step(0.86, aR.w);   // ~14% are large soft glows that give the trunk its volume
-  gl_PointSize = mix(2.2 + aR.z * aR.z * aR.z * 14.0, 34.0 + aR.x * 70.0, neb) * k * uDpr * uPx;
+  // the big soft glows are capped: past ~70px they only cost GPU time, the look stays the same
+  gl_PointSize = min(mix(2.2 + aR.z * aR.z * aR.z * 14.0, 34.0 + aR.x * 70.0, neb) * k * uPx, 70.0) * uDpr;
   // iridescent palette drawn from the site: champagne, rose-gold, mist blue, ivory
   vec3 a = vec3(0.85, 1.0, 0.0);
   vec3 b = vec3(0.92, 0.95, 0.88);
@@ -130,7 +131,10 @@ export function createTrunk(canvas: HTMLCanvasElement, count: number, yMin: numb
   let running = false;
   const t0 = performance.now();
   const resize = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, window.matchMedia("(pointer:coarse)").matches ? 1 : 1.5);
+    // The trunk is soft glow, so it renders at a lower resolution than the screen and the browser
+    // scales it up: a fraction of the pixels to fill, no visible difference.
+    const coarse = window.matchMedia("(pointer:coarse)").matches;
+    const dpr = coarse ? 0.75 : (window.devicePixelRatio || 1) >= 2 ? 1 : 0.75;
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     canvas.width = Math.max(1, Math.round(w * dpr));
@@ -140,19 +144,16 @@ export function createTrunk(canvas: HTMLCanvasElement, count: number, yMin: numb
     gl.uniform1f(uDpr, dpr);
     gl.uniform1f(uPx, Math.max(0.7, Math.min(1.3, h / 900)));
   };
-  // Phones: while the camera holds still the trunk only shimmers, so 30 frames a second is plenty.
+  // While the camera holds still the trunk only shimmers, so 30 frames a second is plenty.
   // Any camera move draws on the very next frame.
-  const coarse = window.matchMedia("(pointer:coarse)").matches;
   let drawn: Cam | null = null;
   let skip = false;
   const frame = () => {
     raf = requestAnimationFrame(frame);
-    if (coarse) {
-      const still = drawn === cam;
-      skip = still ? !skip : false;
-      if (still && skip) return;
-      drawn = cam;
-    }
+    const still = drawn === cam;
+    skip = still ? !skip : false;
+    if (still && skip) return;
+    drawn = cam;
     gl.uniform1f(uRot, cam.rot);
     gl.uniform1f(uY, cam.y);
     gl.uniform1f(uBack, cam.back);

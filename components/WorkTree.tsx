@@ -64,7 +64,7 @@ export default function WorkTree() {
     const cores = navigator.hardwareConcurrency || 4;
     const build = () => {
       if (trunk || reduce) return;
-      trunk = createTrunk(canvas, window.innerWidth < 861 ? 2600 : cores <= 4 ? 4200 : 9000, -window.innerHeight, STEPS * GAPY + window.innerHeight);
+      trunk = createTrunk(canvas, window.innerWidth < 861 ? 2600 : cores <= 4 ? 3600 : 6500, -window.innerHeight, STEPS * GAPY + window.innerHeight);
       if (trunk) {
         trunk.resize();
         apply();
@@ -175,8 +175,9 @@ export default function WorkTree() {
       apply();
       glide = gsap.to(head, {
         t: target,
-        duration: 1.1 + Math.max(0, Math.min(dist, 3) - 1) * 0.4,
-        ease: "power2.inOut",
+        // starts moving the instant you scroll, then settles softly: responsive, never sluggish
+        duration: 0.8 + Math.max(0, Math.min(dist, 3) - 1) * 0.25,
+        ease: "power3.out",
         onUpdate: apply,
         onComplete: () => {
           follow(target, target);
