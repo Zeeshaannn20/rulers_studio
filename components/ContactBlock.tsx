@@ -11,6 +11,7 @@ import { useSubmit } from "@/lib/useSubmit";
 import { enquirySchema } from "@/lib/validation";
 import { BUDGETS, SERVICES } from "@/data/site";
 import MeetButton from "./MeetButton";
+import TalkScript from "./TalkScript";
 import { track } from "@/lib/fbq";
 
 // Email boxes drop spaces.
@@ -114,7 +115,11 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
             </span>
             <h2 className="talk-h">Big ideas deserve a seat at the table.</h2>
             <p className="talk-sub">Let&rsquo;s build something remarkable.</p>
+          </div>
+          <TalkScript />
+          <div className="tk-foot">
             <MeetButton />
+            <em aria-hidden="true">Cut to: the call.</em>
           </div>
         </aside>
         </div>
