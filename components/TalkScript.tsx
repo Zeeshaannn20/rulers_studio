@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 
 // The screenplay picks up again on the "Book a call" card. It types itself once when the card
-// comes into view (about 3 s), then the button and "Cut to: the call." fade in.
+// comes into view (about 3 s). Only the text animates; the "Book a call" button stays put the whole time.
 // The full text is in the HTML from the start, so search engines and no-JS visitors see it all.
 const LINES: [string, string][] = [
   ["sh", "INT. YOUR OFFICE. DAY."],
@@ -24,7 +24,7 @@ export default function TalkScript() {
     const card = el?.closest<HTMLElement>(".talk");
     if (!el || !card || prefersReducedMotion()) return;
     const rows = Array.from(el.children) as HTMLElement[];
-    // arm: empty the lines and hide the button until the scene has played
+    // arm: empty the lines (the button is never hidden)
     el.style.minHeight = el.offsetHeight + "px";
     rows.forEach((r) => (r.textContent = ""));
     card.classList.add("tk-wait");
@@ -69,7 +69,7 @@ export default function TalkScript() {
       io.disconnect();
       clearTimeout(timer);
       if (!done) {
-        // leaving mid-scene: put the full text and the button back
+        // leaving mid-scene: put the full text back
         rows.forEach((r, j) => (r.textContent = LINES[j][1]));
         card.classList.remove("tk-wait");
       }
