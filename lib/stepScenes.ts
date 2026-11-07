@@ -334,7 +334,7 @@ export function createStepScene(canvas: HTMLCanvasElement, kind: StepKind, count
   const ptr = { x: 0, y: 0, tx: 0, ty: 0 };
 
   const resize = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, window.matchMedia("(pointer:coarse)").matches ? 1 : 1.5);
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     canvas.width = Math.max(1, Math.round(w * dpr));

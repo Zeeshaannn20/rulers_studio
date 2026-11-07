@@ -23,7 +23,7 @@ const inter = localFont({
   variable: "--font-inter",
   display: "swap",
 });
-const mono = localFont({ src: "./fonts/jetbrains-mono-500.woff2", weight: "500", variable: "--font-mono", display: "swap" });
+const mono = localFont({ src: "./fonts/jetbrains-mono-500.woff2", weight: "500", variable: "--font-mono", display: "swap", preload: false });
 // Cinematic upright serif for headlines (Cormorant Garamond, like film title cards)
 const serif = localFont({
   src: [

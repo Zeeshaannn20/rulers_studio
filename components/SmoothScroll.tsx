@@ -9,7 +9,9 @@ export default function SmoothScroll() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    // Phones and tablets already scroll smoothly with their own momentum; a JS scroller on top of
+    // that only costs battery and frames. Lenis is for mouse wheels and trackpads.
+    if (prefersReducedMotion() || window.matchMedia("(pointer:coarse)").matches) return;
     const lenis = new Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 0.85, touchMultiplier: 1.3 });
     setLenis(lenis);
 
@@ -56,10 +58,34 @@ export default function SmoothScroll() {
   // Decorative loops (sheens, rays, grain) pause while their section is off screen
   useEffect(() => {
     const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("is-off", !e.isIntersecting)), { rootMargin: "15% 0px" });
-    const id = requestAnimationFrame(() => document.querySelectorAll(".stage-wrap,.sv,.light,.ftr,.fs,.reel").forEach((el) => io.observe(el)));
+    const id = requestAnimationFrame(() => document.querySelectorAll("main > *,.stage-wrap,.sv,.light,.ftr,.fs,.reel,.contact").forEach((el) => io.observe(el)));
     return () => {
       cancelAnimationFrame(id);
       io.disconnect();
+    };
+  }, [pathname]);
+
+  // Sections far from the screen skip layout and paint (content-visibility in globals.css). If a section's
+  // height changes later (fonts, an opened answer), the scroll triggers below it re-measure.
+  useEffect(() => {
+    let t = 0;
+    const ro = new ResizeObserver(() => {
+      clearTimeout(t);
+      t = window.setTimeout(() => ScrollTrigger.refresh(), 250);
+    });
+    const html = document.documentElement;
+    html.classList.remove("cv");
+    let id = requestAnimationFrame(() => {
+      id = requestAnimationFrame(() => {
+        // Two frames in: every section has been laid out once and its height remembered
+        html.classList.add("cv");
+        document.querySelectorAll("main > .statement,main > .sv-host,main > .process,main > .contact,main > .faq,main > .ftr").forEach((el) => ro.observe(el));
+      });
+    });
+    return () => {
+      cancelAnimationFrame(id);
+      clearTimeout(t);
+      ro.disconnect();
     };
   }, [pathname]);
 

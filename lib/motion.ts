@@ -3,7 +3,12 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
 
-if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+  // Phones show/hide the address bar while scrolling, which counts as a resize. Without this,
+  // every pinned section re-measures mid-scroll and the page jumps.
+  ScrollTrigger.config({ ignoreMobileResize: true });
+}
 
 export { gsap, ScrollTrigger };
 

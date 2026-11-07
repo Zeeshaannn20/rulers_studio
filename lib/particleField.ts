@@ -388,7 +388,7 @@ export function createField(canvas: HTMLCanvasElement, count: number): Field | n
   const wt = new Float32Array(SCENES);
 
   const resize = () => {
-    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    dpr = Math.min(window.devicePixelRatio || 1, window.matchMedia("(pointer:coarse)").matches ? 1 : 1.5);
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     canvas.width = Math.max(1, Math.round(w * dpr));

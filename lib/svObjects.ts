@@ -310,12 +310,17 @@ export function createObjects(root: HTMLElement, lite = false): Api {
       s.querySelectorAll("*").forEach((x) => (x as HTMLElement).getAnimations?.().forEach((a) => (run ? a.play() : a.pause())));
     });
   };
+  // the frame loop only runs while the stage is on screen (an idle loop still makes the browser
+  // redraw every frame, everywhere on the page)
   let raf = 0;
   const loop = (t: number) => {
     raf = requestAnimationFrame(loop);
     if (live(1)) shadeBottle(t);
   };
-  raf = requestAnimationFrame(loop);
+  const runLoop = (on: boolean) => {
+    cancelAnimationFrame(raf);
+    raf = on ? requestAnimationFrame(loop) : 0;
+  };
 
   const show = (i: number) => {
     active = i;
@@ -330,6 +335,7 @@ export function createObjects(root: HTMLElement, lite = false): Api {
     show,
     setVisible(v) {
       visible = v;
+      runLoop(v);
       playState();
     },
     pointer(x, y) {

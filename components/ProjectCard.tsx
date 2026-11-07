@@ -5,6 +5,7 @@ import { posterGradient, type Project } from "@/data/projects";
 
 // Only one film plays with sound at a time across the page
 const SOUND_EVENT = "rs:film-sound";
+const PLAY_EVENT = "rs:film-play";
 
 export function SoundIcon({ on }: { on: boolean }) {
   return (
@@ -39,11 +40,14 @@ export default function ProjectCard({ p, fit, solo, priority }: { p: Project; fi
   useEffect(() => {
     const v = vid.current;
     if (!v) return;
+    const coarse = window.matchMedia("(pointer:coarse)").matches;
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
           if (v.preload !== "auto") v.preload = "auto";
           v.play().catch(() => {});
+          // phones decode one preview at a time: the newest one on screen plays, the others rest on their cover
+          if (coarse) document.dispatchEvent(new CustomEvent(PLAY_EVENT, { detail: p.slug }));
         } else {
           v.pause();
           if (!v.muted) {
@@ -62,9 +66,14 @@ export default function ProjectCard({ p, fit, solo, priority }: { p: Project; fi
       }
     };
     document.addEventListener(SOUND_EVENT, other);
+    const rest = (e: Event) => {
+      if ((e as CustomEvent).detail !== p.slug && v.muted && !v.paused) v.pause();
+    };
+    if (coarse) document.addEventListener(PLAY_EVENT, rest);
     return () => {
       io.disconnect();
       document.removeEventListener(SOUND_EVENT, other);
+      document.removeEventListener(PLAY_EVENT, rest);
     };
   }, [p.slug]);
 

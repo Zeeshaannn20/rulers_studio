@@ -33,7 +33,7 @@ export default function Process() {
             if (e.isIntersecting && !sc) {
               const cv = e.target.querySelector<HTMLCanvasElement>(".step-3d");
               const kind = (e.target as HTMLElement).dataset.kind as StepKind;
-              const made = cv ? createStepScene(cv, kind, mobile ? 1500 : 2600) : null;
+              const made = cv ? createStepScene(cv, kind, mobile ? 1000 : 2600) : null;
               if (!made) return;
               sc = made;
               scenes.set(e.target, sc);
@@ -44,7 +44,8 @@ export default function Process() {
               sc.start();
             } else sc.stop();
           }),
-        { rootMargin: "0px 0px -15% 0px" }
+        // phones: only the card in the middle of the screen draws its scene, so one runs at a time
+        { rootMargin: mobile ? "-30% 0px -30% 0px" : "0px 0px -15% 0px" }
       );
       cards.forEach((c) => io.observe(c));
       const onPtr = (ev: PointerEvent) => {
@@ -53,7 +54,7 @@ export default function Process() {
         scenes.forEach((sc) => sc.pointer(x, y));
       };
       const onResize = () => scenes.forEach((sc) => sc.resize());
-      window.addEventListener("pointermove", onPtr, { passive: true });
+      if (window.matchMedia("(pointer:fine)").matches) window.addEventListener("pointermove", onPtr, { passive: true });
       window.addEventListener("resize", onResize);
       cleanups.push(() => {
         io.disconnect();

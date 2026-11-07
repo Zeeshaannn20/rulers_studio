@@ -248,7 +248,9 @@ export default function ServicesStage() {
     );
     io.observe(el);
     const onPtr = (ev: PointerEvent) => objects?.pointer((ev.clientX / window.innerWidth) * 2 - 1, (ev.clientY / window.innerHeight) * 2 - 1);
-    window.addEventListener("pointermove", onPtr, { passive: true });
+    // pointer tilt is for mice; on phones a finger scroll would fire it on every move
+    const fine = window.matchMedia("(pointer:fine)").matches;
+    if (fine) window.addEventListener("pointermove", onPtr, { passive: true });
     cleanups.push(() => {
       near.disconnect();
       io.disconnect();

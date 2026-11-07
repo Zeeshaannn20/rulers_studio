@@ -64,7 +64,7 @@ export default function WorkTree() {
     const cores = navigator.hardwareConcurrency || 4;
     const build = () => {
       if (trunk || reduce) return;
-      trunk = createTrunk(canvas, window.innerWidth < 861 || cores <= 4 ? 4200 : 9000, -window.innerHeight, STEPS * GAPY + window.innerHeight);
+      trunk = createTrunk(canvas, window.innerWidth < 861 ? 2600 : cores <= 4 ? 4200 : 9000, -window.innerHeight, STEPS * GAPY + window.innerHeight);
       if (trunk) {
         trunk.resize();
         apply();

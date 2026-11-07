@@ -37,9 +37,15 @@ export default function Header() {
         last = y;
         return;
       }
-      if (y > last + 4 && y > 300) el.classList.add("hide");
-      else if (y < last - 4) el.classList.remove("hide");
-      last = y;
+      // only react after 12px of travel in one direction, so a finger's wobble doesn't flick the header
+      const d = y - last;
+      if (d > 12) {
+        if (y > 300) el.classList.add("hide");
+        last = y;
+      } else if (d < -12) {
+        el.classList.remove("hide");
+        last = y;
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

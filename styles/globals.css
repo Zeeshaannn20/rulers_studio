@@ -50,7 +50,7 @@ img{display:block;max-width:100%}
 .dot,.lime{color:var(--lime)}
 .lede{color:var(--mute);font-size:clamp(16px,1.25vw,18px);line-height:1.5;max-width:46ch;margin:0}
 .w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .03em .12em;margin:0 -.03em -.12em}
-.w>span{display:inline-block;will-change:transform}
+.w>span{display:inline-block}
 
 /* buttons: pill with a round arrow chip */
 .btn{--bg:rgba(var(--paper-rgb),.04);--fg:var(--paper);--chip:var(--paper);--chipfg:var(--ink);
@@ -549,7 +549,6 @@ body{font-weight:500;letter-spacing:-.04em;line-height:1.45}
 @media (max-width:860px){.step{position:relative;top:auto!important;grid-template-columns:1fr;min-height:0}.step-main{justify-content:flex-start}}
 
 /* buttons keep their own transform for the magnetic pull */
-.btn{will-change:transform}
 .btn{transition:color .4s var(--ease),border-color .4s,background .4s}
 .step{overflow:hidden}.step-dim{position:absolute;inset:0;background:#000000;opacity:0;pointer-events:none;border-radius:inherit;z-index:2}
 .reel-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
@@ -907,14 +906,12 @@ body{letter-spacing:-.01em;font-weight:400}
 @keyframes rSheenGpu{0%{transform:translate3d(-130%,0,0) skewX(-18deg)}60%,100%{transform:translate3d(480%,0,0) skewX(-18deg)}}
 /* no filters or blend modes on anything that scrolls or animates */
 .light::before{mix-blend-mode:normal;opacity:.05}
-.light::after{will-change:transform}
 .light .step,.light .stat,.light .card{backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(180deg,rgba(238,238,238,.42),rgba(224,224,224,.26))}
 .light .card:hover{background:linear-gradient(180deg,rgba(238,238,238,.55),rgba(224,224,224,.34))}
 .ring-info .tg,.sv-tags li{backdrop-filter:none;-webkit-backdrop-filter:none}
-.stage::before{will-change:transform}
 .step{contain:paint}
 /* pause decorative loops while their section is off screen (set from JS) */
-.is-off *, .is-off *::before, .is-off *::after{animation-play-state:paused!important}
+.is-off, .is-off::before, .is-off::after, .is-off *, .is-off *::before, .is-off *::after{animation-play-state:paused!important}
 /* services panels: rotated wrapper + counter-rotated colour = a slanted edge that only ever transforms */
 .sv-bgw{position:absolute;left:-12%;right:-12%;top:-35%;bottom:-35%;overflow:hidden;z-index:0;will-change:transform;backface-visibility:hidden}
 .sv-bgw.first{left:0;right:0;top:0;bottom:0;will-change:auto}
@@ -1731,7 +1728,8 @@ html.modal-open,html.modal-open body{overflow:hidden}
 @keyframes soWrite{0%,50%{clip-path:inset(0 100% 0 0)}72%,100%{clip-path:inset(0 0 0 0)}}
 .so-ln{position:absolute;background:rgba(255,255,255,.22)}
 .so-glare{position:absolute;top:-40%;left:-60%;width:40%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);transform:rotate(18deg);animation:soGlare 2.2s ease-in-out infinite}
-@keyframes soGlare{0%,45%{left:-60%}75%,100%{left:130%}}
+/* moves with translate (GPU) rather than left (re-layout every frame); 475% of its width = the old -60% → 130% */
+@keyframes soGlare{0%,45%{translate:0 0}75%,100%{translate:475% 0}}
 .so-flash{position:absolute;inset:0;background:radial-gradient(closest-side at 62% 40%,rgba(216,255,0,.42),transparent);opacity:0;animation:soFlash 2.2s infinite}
 @keyframes soFlash{0%,39%{opacity:0}41%{opacity:1}62%,100%{opacity:0}}
 .so-snap{position:absolute;left:77%;top:36%;width:0;height:0}
@@ -1803,7 +1801,7 @@ html.modal-open,html.modal-open body{overflow:hidden}
 
 /* services headline: clean word reveal instead of the scrambled letters */
 .sv-title .w{display:inline-block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em;vertical-align:top}
-.sv-title .w>span{display:inline-block;will-change:transform}
+.sv-title .w>span{display:inline-block}
 @media (max-width:860px){
   .sv-3d{left:0;right:0;top:15%;bottom:auto;height:46%}
 }
@@ -1990,3 +1988,34 @@ html.modal-open,html.modal-open body{overflow:hidden}
   .tk-ch{padding-left:26%}.tk-dl{padding-left:10%;padding-right:0}
   .tk-foot{padding-top:32px}
 }
+
+
+/* ═════ Performance ═════
+   Pulsing dots: the ring is a scaled, fading copy of the dot (moves on the GPU) instead of an
+   animated box-shadow, which made the browser repaint every frame on every page. */
+.talk-tag i,.fx-open b,.hdr-status b{position:relative;box-shadow:none!important;animation:none!important}
+.talk-tag i::after,.fx-open b::after,.hdr-status b::after{content:"";position:absolute;inset:0;border-radius:50%;background:currentColor;opacity:0;pointer-events:none;animation:dotRing 2.3s ease-out infinite}
+.talk-tag i{color:rgba(10,10,10,.45)}
+.mbk-head .talk-tag i::after,.mbk-name .talk-tag i::after{animation:none}
+.fx-open b,.hdr-status b{color:rgba(216,255,0,.6)}
+@keyframes dotRing{0%{transform:scale(1);opacity:.9}80%,100%{transform:scale(2.8);opacity:0}}
+@media (prefers-reduced-motion:reduce){.talk-tag i::after,.fx-open b::after,.hdr-status b::after{animation:none}}
+
+/* Phones and tablets: same design, lighter to draw.
+   Frosted-glass blur is replaced with a solid tint, film-grain/light-leak loops are switched off,
+   and the slow drifting fog in the light sections stands still. */
+@media (max-width:860px),(pointer:coarse){
+  .hdr::before{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(var(--ink-rgb),.94)}
+  .nav,.btn.glass,.ring-info .tg,.sv-tags li{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .btn.glass{--bg:rgba(var(--ink-rgb),.72)}
+  .reel-grade::before,.fr-grain,.sv-grain,.fr-scratch{display:none}
+  .light::after,.leaks i,.fr-film,.step-film::after{animation:none!important}
+  /* the lime "film" word keeps its colour sweep but drops the soft glow, which is repainted every frame */
+  .hero-title .lime{filter:none}
+  .fx-halo{filter:none}
+}
+
+/* Sections far from the screen skip layout and paint: the browser only works on what is near the view.
+   Each section renders once on arrival so its true height is remembered, then html.cv switches skipping on. */
+main > .statement,main > .sv-host,main > .process,main > .contact,main > .faq,main > .ftr{contain-intrinsic-size:auto 1200px}
+html.cv main > .statement,html.cv main > .sv-host,html.cv main > .process,html.cv main > .contact,html.cv main > .faq,html.cv main > .ftr{content-visibility:auto}
