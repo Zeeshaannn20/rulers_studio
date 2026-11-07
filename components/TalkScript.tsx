@@ -11,10 +11,11 @@ const LINES: [string, string][] = [
   ["dl", "I have an idea."],
   ["ch", "RULERS STUDIO"],
   ["dl", "Let’s hear it."],
+  ["tr", "Cut to: the call."],
 ];
-const PER_CHAR = 23; // ms per letter
-const AFTER_LINE = 220; // pause after a line
-const AFTER_NAME = 90; // shorter pause after a character name
+const PER_CHAR = 18; // ms per letter
+const AFTER_LINE = 180; // pause after a line
+const AFTER_NAME = 70; // shorter pause after a character name
 
 export default function TalkScript() {
   const box = useRef<HTMLDivElement>(null);

@@ -113,13 +113,17 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
             <span className="talk-tag">
               <i /> Let&apos;s talk
             </span>
-            <h2 className="talk-h">Big ideas deserve a seat at the table.</h2>
+            <h2 className="talk-h">
+              Big ideas <br />
+              deserve a <br />
+              seat at the <br />
+              table.
+            </h2>
             <p className="talk-sub">Let&rsquo;s build something remarkable.</p>
           </div>
           <TalkScript />
           <div className="tk-foot">
             <MeetButton />
-            <em aria-hidden="true">Cut to: the call.</em>
           </div>
         </aside>
         </div>

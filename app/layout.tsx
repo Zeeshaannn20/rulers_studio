@@ -12,7 +12,6 @@ import JsonLd from "@/components/JsonLd";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 import MetaPixel from "@/components/MetaPixel";
-import WhatsAppButton from "@/components/WhatsAppButton";
 
 // Fonts are self-hosted from /app/fonts (no request to Google at runtime). All are SIL Open Font License.
 const inter = localFont({
@@ -66,6 +65,16 @@ const script = localFont({
   preload: false,
 });
 const hand = localFont({ src: "./fonts/caveat-latin-700-normal.woff2", weight: "700", variable: "--font-hand", display: "swap", preload: false });
+// Playfair Display: headline and subline of the "Book a call" card only. Not preloaded.
+const display = localFont({
+  src: [
+    { path: "./fonts/playfair-display-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/playfair-display-latin-400-italic.woff2", weight: "400", style: "italic" },
+  ],
+  variable: "--font-pf",
+  display: "swap",
+  preload: false,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -104,7 +113,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${inter.variable} ${mono.variable} ${serif.variable} ${caps.variable} ${sans.variable} ${script.variable} ${hand.variable}`}>
+    <html lang="en-IN" className={`${inter.variable} ${mono.variable} ${serif.variable} ${caps.variable} ${sans.variable} ${script.variable} ${hand.variable} ${display.variable}`}>
       <body className={SHOW_INTRO ? "intro-on" : undefined}>
         <JsonLd data={orgSchema()} />
         <SmoothScroll />
@@ -112,7 +121,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Chrome />
         {SHOW_INTRO && <Intro />}
-        <WhatsAppButton />
         <Analytics />
         <Suspense fallback={null}>
           <MetaPixel />

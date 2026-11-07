@@ -43,8 +43,7 @@ export default function PrivacyPage() {
           <h2>Analytics and advertising</h2>
           <p>
             We use Vercel Analytics to count visits. It does not use cookies or identify you. We also use the Meta Pixel, a small piece of
-            code from Meta (Facebook and Instagram). It tells Meta when someone visits a page, sends a form, starts or completes a payment,
-            or taps the WhatsApp button, so we can measure our ads and show them to people likely to be interested. We never send your name,
+            code from Meta (Facebook and Instagram). It tells Meta when someone visits a page, sends a form, or starts or completes a payment, so we can measure our ads and show them to people likely to be interested. We never send your name,
             email or phone number with these events. Meta may use cookies and combine this with what it already knows from your Meta
             account, under{" "}
             <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">
@@ -53,9 +52,6 @@ export default function PrivacyPage() {
             . You can control ads based on this activity in your Facebook or Instagram ad settings, or block it with your browser&rsquo;s
             tracking protection.
           </p>
-
-          <h2>WhatsApp</h2>
-          <p>If you message us on WhatsApp, that conversation is handled by WhatsApp under its own privacy policy.</p>
 
           <h2>Your choices</h2>
           <p>

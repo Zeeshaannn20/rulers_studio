@@ -1961,27 +1961,32 @@ html.modal-open,html.modal-open body{overflow:hidden}
   .fx-bot span{letter-spacing:.12em!important}
 }
 
-/* ═════ Floating WhatsApp button ═════ */
-.wa-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px) + 16px);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:45;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#0d0d0d;border:1px solid rgba(246,246,246,.14);box-shadow:0 10px 30px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(14px) scale(.9);transition:opacity .35s var(--ease),transform .45s var(--ease),visibility 0s linear .45s,border-color .3s}
-.wa-fab.on{opacity:1;visibility:visible;transform:none;transition:opacity .35s var(--ease),transform .45s var(--ease),visibility 0s,border-color .3s}
-.wa-fab svg{width:27px;height:27px;fill:#25d366}
-.wa-fab:hover{border-color:#25d366}
-.wa-tip{position:absolute;right:calc(100% + 10px);top:50%;transform:translate(6px,-50%);white-space:nowrap;background:var(--paper);color:var(--ink);font-size:13px;font-weight:500;padding:8px 12px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .25s,transform .3s var(--ease)}
-@media (hover:hover){.wa-fab:hover .wa-tip{opacity:1;transform:translate(0,-50%)}}
-@media (max-width:700px){.wa-fab{width:50px;height:50px}.wa-fab svg{width:25px;height:25px}}
-@media print{.wa-fab{display:none}}
 .legal a{color:var(--paper);text-decoration:underline;text-underline-offset:3px}
 
-/* ═════ Book a call card: the screenplay continues (types once, about 2.2 s). The button never moves. ═════ */
-.talk{gap:0}
-.tk-sp{margin-top:auto;padding-top:clamp(20px,2vw,26px);border-top:1px solid rgba(7,7,7,.22);font:400 clamp(14px,1.05vw,15.5px)/1.6 var(--font-script),"Courier Prime","Courier New",ui-monospace,monospace;color:var(--ink)}
-.talk-top+.tk-sp{margin-top:auto}
-.talk-top{margin-bottom:clamp(36px,4vw,56px)}
+/* ═════ Book a call card: the screenplay continues (types once, about 2.2 s), ending on "Cut to: the call."
+   Spacing follows the approved demo card "A · Classic". Headline and subline in Playfair Display (approved option 4). The script sits right under the headline;
+   all the spare height of the card goes into one space above the "Book a call" button. ═════ */
+.talk{gap:0;padding:38px 36px 36px}
+.talk-top{gap:0;margin:0}
+.talk .talk-tag{gap:11px;font-size:11.5px;letter-spacing:.3em}
+.talk .talk-tag i{width:9px;height:9px}
+.talk .talk-h{margin:22px 0 0;font-family:var(--font-pf),"Playfair Display",Georgia,serif!important;font-weight:400!important;font-style:normal;font-size:60px;line-height:1.02;letter-spacing:-.035em;max-width:none}
+.talk .talk-sub{margin:18px 0 0;font-family:var(--font-pf),"Playfair Display",Georgia,serif!important;font-weight:400!important;font-style:italic;font-size:23px;line-height:1.25;letter-spacing:-.015em}
+.tk-sp{margin-top:32px;padding-top:22px;border-top:1px solid rgba(7,7,7,.22);font:400 15px/1.6 var(--font-script),"Courier Prime","Courier New",ui-monospace,monospace;color:var(--ink)}
 .tk-sh{font-weight:700;text-transform:uppercase}
 .tk-ch{text-transform:uppercase;padding-left:34%;margin-top:12px}
 .tk-dl{padding-left:18%;padding-right:8%}
+.tk-tr{margin-top:14px;text-align:right;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(7,7,7,.55)}
 .tk-car::after{content:"";display:inline-block;width:.55em;height:1.05em;background:var(--ink);vertical-align:-2px;margin-left:2px;animation:tkBlink 1s steps(2) infinite}
 @keyframes tkBlink{50%{opacity:0}}
-.tk-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:clamp(22px,2.4vw,30px)}
-.tk-foot em{font:700 12px/1 var(--font-script),"Courier Prime",monospace;letter-spacing:.06em;text-transform:uppercase;font-style:normal;color:rgba(7,7,7,.55)}
-@media (max-width:520px){.tk-ch{padding-left:26%}.tk-dl{padding-left:10%;padding-right:0}.tk-foot em{display:none}}
+.tk-foot{margin-top:auto;padding-top:40px}
+.tk-foot .btn{height:58px;padding:0 8px 0 26px;gap:16px;font-size:12px;letter-spacing:.22em}
+.tk-foot .btn .arr{width:42px;height:42px;padding:12px}
+@media (max-width:520px){
+  .talk{padding:30px 24px 26px}
+  .talk .talk-h{font-size:46px}
+  .talk .talk-sub{font-size:20px}
+  .tk-sp{font-size:13.5px;margin-top:28px}
+  .tk-ch{padding-left:26%}.tk-dl{padding-left:10%;padding-right:0}
+  .tk-foot{padding-top:32px}
+}
