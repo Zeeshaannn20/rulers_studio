@@ -1972,7 +1972,7 @@ html.modal-open,html.modal-open body{overflow:hidden}
 @media print{.wa-fab{display:none}}
 .legal a{color:var(--paper);text-decoration:underline;text-underline-offset:3px}
 
-/* ═════ Book a call card: the screenplay continues (types once, about 3 s). The button never moves. ═════ */
+/* ═════ Book a call card: the screenplay continues (types once, about 2.2 s). The button never moves. ═════ */
 .talk{gap:0}
 .tk-sp{margin-top:auto;padding-top:clamp(20px,2vw,26px);border-top:1px solid rgba(7,7,7,.22);font:400 clamp(14px,1.05vw,15.5px)/1.6 var(--font-script),"Courier Prime","Courier New",ui-monospace,monospace;color:var(--ink)}
 .talk-top+.tk-sp{margin-top:auto}

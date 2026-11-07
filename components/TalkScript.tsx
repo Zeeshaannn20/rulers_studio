@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 
 // The screenplay picks up again on the "Book a call" card. It types itself once when the card
-// comes into view (about 3 s). Only the text animates; the "Book a call" button stays put the whole time.
+// comes into view (about 2.2 s). Only the text animates; the "Book a call" button stays put the whole time.
 // The full text is in the HTML from the start, so search engines and no-JS visitors see it all.
 const LINES: [string, string][] = [
   ["sh", "INT. YOUR OFFICE. DAY."],
@@ -12,9 +12,9 @@ const LINES: [string, string][] = [
   ["ch", "RULERS STUDIO"],
   ["dl", "Let’s hear it."],
 ];
-const PER_CHAR = 32; // ms per letter
-const AFTER_LINE = 300; // pause after a line
-const AFTER_NAME = 120; // shorter pause after a character name
+const PER_CHAR = 23; // ms per letter
+const AFTER_LINE = 220; // pause after a line
+const AFTER_NAME = 90; // shorter pause after a character name
 
 export default function TalkScript() {
   const box = useRef<HTMLDivElement>(null);
