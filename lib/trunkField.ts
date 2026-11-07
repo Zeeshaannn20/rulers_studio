@@ -140,8 +140,19 @@ export function createTrunk(canvas: HTMLCanvasElement, count: number, yMin: numb
     gl.uniform1f(uDpr, dpr);
     gl.uniform1f(uPx, Math.max(0.7, Math.min(1.3, h / 900)));
   };
+  // Phones: while the camera holds still the trunk only shimmers, so 30 frames a second is plenty.
+  // Any camera move draws on the very next frame.
+  const coarse = window.matchMedia("(pointer:coarse)").matches;
+  let drawn: Cam | null = null;
+  let skip = false;
   const frame = () => {
     raf = requestAnimationFrame(frame);
+    if (coarse) {
+      const still = drawn === cam;
+      skip = still ? !skip : false;
+      if (still && skip) return;
+      drawn = cam;
+    }
     gl.uniform1f(uRot, cam.rot);
     gl.uniform1f(uY, cam.y);
     gl.uniform1f(uBack, cam.back);

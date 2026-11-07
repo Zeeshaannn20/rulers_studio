@@ -2011,7 +2011,7 @@ html.modal-open,html.modal-open body{overflow:hidden}
   .reel-grade::before,.fr-grain,.sv-grain,.fr-scratch{display:none}
   .light::after,.leaks i,.fr-film,.step-film::after{animation:none!important}
   /* the lime "film" word keeps its colour sweep but drops the soft glow, which is repainted every frame */
-  .hero-title .lime{filter:none}
+  .hero-title .lime{filter:none;animation-iteration-count:2}
   .fx-halo{filter:none}
 }
 
