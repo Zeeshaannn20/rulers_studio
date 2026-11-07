@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import HeroStage from "@/components/HeroStage";
 import WorkTree from "@/components/WorkTree";
+import WorkStrip from "@/components/WorkStrip";
 import ServicesStage from "@/components/ServicesStage";
 import Statement from "@/components/Statement";
 import BrandMarquee from "@/components/BrandMarquee";
@@ -21,6 +22,7 @@ export default function Home() {
       <JsonLd data={[faqSchema(), itemListSchema(HOME_PROJECTS)]} />
       <HeroStage />
       <WorkTree />
+      <WorkStrip />
       <Statement>
         <BrandMarquee />
       </Statement>

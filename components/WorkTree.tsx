@@ -23,6 +23,8 @@ export default function WorkTree() {
 
   useEffect(() => {
     const el = root.current!;
+    // phones get WorkStrip instead (a native swipe row); the 3D tree stays switched off there
+    if (window.matchMedia("(max-width:860px)").matches) return;
     const world = el.querySelector<HTMLElement>(".wt-world")!;
     const cards = Array.from(el.querySelectorAll<HTMLElement>(".wt-card"));
     const vids = cards.map((c) => c.querySelector("video"));

@@ -2024,3 +2024,29 @@ html.cv main > .statement,html.cv main > .sv-host,html.cv main > .process,html.c
    moving 3D panel the GPU has to draw. Only the hairline edge and the lime glow of the facing film stay. */
 .wt-card{box-shadow:0 0 0 1px rgba(246,246,246,.06);transition:none}
 .wt-card.focus{box-shadow:0 0 0 1px rgba(214,214,214,.16),0 0 90px -20px rgba(216,255,0,.18)}
+
+/* ═════ phones: selected work is a native swipe row (WorkStrip) instead of the 3D tree.
+   The browser does all the moving, so it stays smooth on any phone ═════ */
+.ws{display:none}
+@media (max-width:860px){
+  .wt-host{display:none}
+  .ws{display:block;position:relative;padding:84px 0 64px;background:#070707}
+  .ws-head{display:flex;align-items:center;justify-content:space-between;padding:0 var(--gut)}
+  .ws-count{font:500 13px/1 var(--mono);letter-spacing:.06em;color:rgba(230,230,230,.5)}
+  .ws-count b{color:var(--paper);font-weight:500}
+  .ws-bar{display:flex;gap:6px;margin:18px var(--gut) 24px}
+  .ws-bar i{flex:1;height:2px;border-radius:2px;background:rgba(230,230,230,.16);transition:background .4s var(--ease)}
+  .ws-bar i.done{background:rgba(230,230,230,.5)}
+  .ws-bar i.on{background:var(--lime)}
+  .ws-track{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:0 var(--gut);scroll-padding:0 var(--gut);scrollbar-width:none}
+  .ws-track::-webkit-scrollbar{display:none}
+  .ws-card{flex:0 0 84%;scroll-snap-align:start;display:flex;flex-direction:column;gap:18px;color:var(--paper);text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .ws-media{position:relative;display:block;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:var(--g,#181818);box-shadow:0 0 0 1px rgba(246,246,246,.08);transition:opacity .45s var(--ease)}
+  .ws-media video,.ws-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .ws-card:not(.on) .ws-media{opacity:.5}
+  .ws-cap{display:flex;flex-direction:column;gap:9px;padding-right:8px}
+  .ws-cap b{font:500 clamp(32px,9.5vw,44px)/.95 var(--serif);font-style:normal;letter-spacing:-.015em;color:var(--paper)}
+  .ws-cap em{font:600 10px/1.3 var(--caps);font-style:normal;letter-spacing:.2em;text-transform:uppercase;color:rgba(230,230,230,.62)}
+  .ws-foot{display:flex;align-items:center;justify-content:space-between;margin:34px var(--gut) 0}
+  .ws-hint{font:600 10px/1 var(--caps);letter-spacing:.2em;text-transform:uppercase;color:rgba(230,230,230,.45)}
+}
