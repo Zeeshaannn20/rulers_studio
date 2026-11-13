@@ -13,6 +13,7 @@ import { BUDGETS, SERVICES } from "@/data/site";
 import MeetButton from "./MeetButton";
 import TalkScript from "./TalkScript";
 import { track } from "@/lib/fbq";
+import { leadSource } from "@/lib/analytics";
 
 // Email boxes drop spaces.
 const noSpaces = (e: React.FormEvent<HTMLInputElement>) => {
@@ -55,7 +56,7 @@ export default function ContactBlock({ id = "contact", headingAs = "h2" }: { id?
               <b>Got it. We&apos;ll get back to you soon.</b>
             </div>
           ) : (
-            <form className="form" noValidate onSubmit={(e) => onSubmit(e, { sourcePage: pathname, services: picked.join(", ") })}>
+            <form className="form" noValidate onSubmit={(e) => onSubmit(e, { sourcePage: `${pathname} | ${leadSource()}`.slice(0, 200), services: picked.join(", ") })}>
               <Field id={f("name")} label="Your name" required error={errors.name}>
                 <input id={f("name")} name="name" autoComplete="name" onBlur={blur} aria-invalid={!!errors.name} />
               </Field>

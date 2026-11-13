@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { track } from "@/lib/fbq";
+import { leadSource } from "@/lib/analytics";
 import { createPortal } from "react-dom";
 import { Arrow } from "./Icons";
 import { getLenis, toast } from "@/lib/motion";
@@ -45,7 +46,7 @@ export default function MeetButton({ className = "btn dark", label: idle = "Book
     setAsking(false);
     setBusy("opening");
     try {
-      const [ok, res] = await Promise.all([loadCheckout(), fetch("/api/meet/order", { method: "POST" })]);
+      const [ok, res] = await Promise.all([loadCheckout(), fetch("/api/meet/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ source: leadSource() }) })]);
       const order = await res.json().catch(() => ({}));
       if (!ok || !window.Razorpay) throw new Error("Couldn't load the payment window. Check your connection and try again.");
       if (!res.ok || !order.ok) throw new Error(order.error || "Couldn't start the payment. Please try again.");

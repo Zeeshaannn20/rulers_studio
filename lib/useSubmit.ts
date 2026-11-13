@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { ZodTypeAny } from "zod";
 import { toFieldErrors, type FieldErrors } from "./validation";
+import { ev } from "./analytics";
 
 // Validates in the browser with the same schema the API uses, then posts JSON.
 // onSent runs once the server has accepted the form (used for the Meta Pixel events).
@@ -26,6 +27,8 @@ export function useSubmit(endpoint: string, schema: ZodTypeAny, onSent?: () => v
     if (!r.success) {
       const errs = toFieldErrors(r.error);
       setErrors(errs);
+      // which fields stop people (field names only, never what they typed)
+      ev("form_error", { form: endpoint, fields: Object.keys(errs).join(",").slice(0, 100) });
       // never fail silently: say something even if the problem is in a field without its own message
       setFormError("Please check the highlighted fields and try again.");
       const first = form.querySelector<HTMLElement>(`[name="${Object.keys(errs)[0]}"]`);
@@ -42,6 +45,7 @@ export function useSubmit(endpoint: string, schema: ZodTypeAny, onSent?: () => v
         if (json.errors) setErrors(json.errors);
         setFormError(json.error || "Couldn't send right now. Check your connection and try again.");
         setState("failed");
+        ev("form_failed", { form: endpoint, status: res.status });
         return;
       }
       try {

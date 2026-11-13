@@ -12,6 +12,7 @@ import JsonLd from "@/components/JsonLd";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 import MetaPixel from "@/components/MetaPixel";
+import SiteAnalytics from "@/components/SiteAnalytics";
 
 // Fonts are self-hosted from /app/fonts (no request to Google at runtime). All are SIL Open Font License.
 const inter = localFont({
@@ -122,6 +123,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Chrome />
         {SHOW_INTRO && <Intro />}
         <Analytics />
+        <SiteAnalytics />
         <Suspense fallback={null}>
           <MetaPixel />
         </Suspense>

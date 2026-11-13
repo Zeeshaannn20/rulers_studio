@@ -10,13 +10,17 @@ export async function POST(req: Request) {
   const keys = razorpayKeys();
   if (!keys) return NextResponse.json({ ok: false, error: "Payments are being set up. Please send us a message for now." }, { status: 503 });
 
+  // where the visitor came from (traffic source text from the browser), shown on the order in Razorpay
+  const body = (await req.json().catch(() => null)) as { source?: unknown } | null;
+  const source = typeof body?.source === "string" ? body.source.replace(/[^\w\s/.,:()|@-]/g, "").slice(0, 250) : "";
+
   const res = await fetch("https://api.razorpay.com/v1/orders", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Basic " + Buffer.from(`${keys.id}:${keys.secret}`).toString("base64"),
     },
-    body: JSON.stringify({ amount: MEET_PRICE_PAISE, currency: "INR", receipt: `meet_${Date.now()}`, notes: { product: "Strategy meet" } }),
+    body: JSON.stringify({ amount: MEET_PRICE_PAISE, currency: "INR", receipt: `meet_${Date.now()}`, notes: source ? { product: "Strategy meet", source } : { product: "Strategy meet" } }),
   }).catch(() => null);
 
   if (!res || !res.ok) {

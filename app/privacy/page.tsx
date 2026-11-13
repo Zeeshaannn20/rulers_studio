@@ -52,6 +52,22 @@ export default function PrivacyPage() {
             . You can control ads based on this activity in your Facebook or Instagram ad settings, or block it with your browser&rsquo;s
             tracking protection.
           </p>
+          <p>
+            To understand how people use the site and improve it, we also use Google Analytics and Microsoft Clarity. They record
+            which pages and sections you view, how far you scroll, what you click, how long you stay, and which website or link brought
+            you here. Clarity can replay a visit as a recording and show heatmaps; it hides what you type into forms. Both use cookies
+            and handle the data under{" "}
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+              Google&rsquo;s privacy policy
+            </a>{" "}
+            and{" "}
+            <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener noreferrer">
+              Microsoft&rsquo;s privacy statement
+            </a>
+            . When you send us a form or book a call, we save the source of your visit (for example &ldquo;Instagram ad&rdquo;) with
+            it, so we know which of our posts and ads work. You can block all of this with your browser&rsquo;s tracking protection or an
+            ad blocker; the site works the same.
+          </p>
 
           <h2>Your choices</h2>
           <p>
