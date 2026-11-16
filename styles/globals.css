@@ -2050,3 +2050,27 @@ html.cv main > .statement,html.cv main > .sv-host,html.cv main > .process,html.c
   .ws-foot{display:flex;align-items:center;justify-content:space-between;margin:34px var(--gut) 0}
   .ws-hint{font:600 10px/1 var(--caps);letter-spacing:.2em;text-transform:uppercase;color:rgba(230,230,230,.45)}
 }
+
+/* ═════ Phones: the hero is split. The film fills the top with nothing over the faces, and the
+   words sit below it on clean black, so both read clearly. ═════ */
+@media (max-width:700px) and (orientation:portrait){
+  .hero-panel{display:flex;flex-direction:column;background:transparent;border-radius:0;overflow:visible;isolation:auto}
+  .hero-panel .reel{position:relative;inset:auto;flex:1 1 auto;min-height:38%;border-radius:var(--r);overflow:hidden;background:#0d0d0d}
+  .hero-panel .reel video,.hero-panel .reel-video{object-position:50% 32%}
+  .hero-panel .reel-dim{background:linear-gradient(0deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 28%)!important}
+  .hero-copy{position:relative;left:auto;right:auto;bottom:auto;flex:0 0 auto;padding:20px 2px 2px}
+  .hero-title{font-size:clamp(36px,11vw,46px);line-height:.98;margin:0 0 14px;text-shadow:none}
+  .hero-left{gap:16px;max-width:none}
+  .hero-sub{font-size:14px;line-height:1.5}
+  .hero-ctas{flex-wrap:nowrap;gap:8px}
+  .hero-ctas .btn{flex:1 1 auto;justify-content:center;padding-left:16px;padding-right:12px;font-size:10.5px;letter-spacing:.14em;white-space:nowrap}
+}
+@media (max-width:370px) and (orientation:portrait){
+  .hero-ctas{flex-wrap:wrap}
+  .hero-ctas .btn{flex:1 1 100%;min-width:0}
+  .hero-title{font-size:34px}
+  .hero-sub{font-size:13.5px}
+}
+@media (max-width:700px) and (orientation:portrait) and (max-height:700px){
+  .hero-panel .reel video,.hero-panel .reel-video{object-position:50% 20%}
+}
